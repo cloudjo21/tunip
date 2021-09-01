@@ -317,5 +317,10 @@ if __name__ == "__main__":
     # ap.test_post_call_to_etri()
     # ap.test_post_call_to_nugget()
     text = "현금”이 필요할때 보유한 주식을 담보로 대출받는 서비스 증권담보대출이란? 보유한 주식을 담보로 최대 10억원까지 현금 ..."
+    response = list(ap.record([text]))
     # ap.test_post_call_to_etri(text)
-    ap.test_post_call_to_nugget(text, "seunjeon")
+    # ap.test_post_call_to_nugget(text, "seunjeon")
+    response = list(ap.record([text]))
+    print("#### response:")
+    print(response)
+
