@@ -139,13 +139,12 @@ class CorpusRecordMaker:
         self.output_columns = output_columns
         self.out_json = out_json
 
-    def __call__(self, index, row):
+    def __call__(self, row):
         record = CorpusRecord(
             text=row[self.input_columns[0]],
             tokens=row[self.input_columns[1]] if len(self.input_columns) > 1 else [],
             labels=row[self.output_columns[0]]
         )
-        # print(record)
         if self.out_json:
             return record.to_json()
         else:
@@ -153,8 +152,8 @@ class CorpusRecordMaker:
 
 
 class CorpusBuildColumnOperation(Enum):
-    add = 0
-    update = 1
+    ADD = 0
+    UPDATE = 1
 
 
 @dataclass
@@ -162,8 +161,8 @@ class CorpusBuildRequest:
     entry: CorpusInput
     column_ops: List[CorpusBuildColumnOperation] = field(
         default_factory=lambda: [
-            CorpusBuildColumnOperation.add,
-            CorpusBuildColumnOperation.add
+            CorpusBuildColumnOperation.ADD,
+            CorpusBuildColumnOperation.ADD
         ]
     )
 
