@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from collections.abc import Iterator
+from typing import Iterator
 from dataclasses import dataclass
 from typing import List
 
@@ -29,12 +29,13 @@ class EntityCorpusRecorder(ABC):
     def record(
         self,
         inputs: List[CorpusInput],
-        golden_labels: List[List[int, int, str]] = None
+        golden_labels: List[list] = None
     ) -> Iterator[CorpusRecord]:
         """
         :param texts:  list of text
         :param golden_labels:   we can inject the external golden label annotations,
                                 or it can be carried on the instance of CorpusRecorder
+                                List[List[int, int, str]]
         """
         pass
 
@@ -57,7 +58,7 @@ class TokenizerBasedEntityCorpusRecorder(EntityCorpusRecorder):
     def record(
         self,
         inputs: List[CorpusInput],
-        golden_labels: List[List[int, int, str]] = None
+        golden_labels: List[list] = None
     ) -> Iterator[CorpusRecord]:
 
         texts = [input_.text for input_ in inputs]
@@ -70,7 +71,8 @@ class TokenizerBasedEntityCorpusRecorder(EntityCorpusRecorder):
             return_special_tokens_mask=True,
             return_offsets_mapping=True
         )
-        corpus_tokens_list: List[List[CorpusToken]] = convert_tokenized_inputs_to_corpus_tokens(
+        # List[List[CorpusToken]]
+        corpus_tokens_list: List[list] = convert_tokenized_inputs_to_corpus_tokens(
             tokenized_inputs=tokenized_inputs,
             convert_ids_to_tokens=self.tokenizer.convert_ids_to_tokens,
         )
@@ -117,7 +119,7 @@ class NuggetBasedEntityCorpusRecorder(EntityCorpusRecorder):
     def record(
         self,
         inputs: List[CorpusInput],
-        golden_labels: List[List[int, int, str]] = None
+        golden_labels: List[list] = None
     ) -> Iterator[CorpusRecord]:
         texts = [input_.text for input_ in inputs]
         res = self.call_fn(texts)
