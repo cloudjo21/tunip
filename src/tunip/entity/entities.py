@@ -16,9 +16,10 @@ class Entity(ABC):
 class TaggedEntity:
     lexical: str
     tag: str
+    domain: str
 
     def __str__(self):
-        return f"{self.lexical}/{self.tag}"
+        return f"{self.lexical}/{self.tag}/{self.domain}"
 
 
 @dataclass
@@ -31,6 +32,8 @@ class MetaSourcedEntity:
             return entity.lexical
         elif key == "tag":
             return entity.tag
+        elif key == "domain":
+            return entity.domain
         else:
             raise NotImplementedError("Not supported key for MetaSourcedEntity")
 

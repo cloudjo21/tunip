@@ -18,7 +18,7 @@ class EntitySetsTest(unittest.TestCase):
         pass
 
     def test_init_entities_set(self):
-        tagged_entity = TaggedEntity(lexical="국민은행", tag="COMPANY")
+        tagged_entity = TaggedEntity(lexical="국민은행", tag="COMPANY", domain="kb")
         assert tagged_entity.tag == "COMPANY"
 
         kwd_meta_value = RawKwsMetaSourceValue(domain="kb", column_name="BRAND")
