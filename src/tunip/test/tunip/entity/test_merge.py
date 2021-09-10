@@ -28,10 +28,10 @@ class MergeTest(unittest.TestCase):
         a_ent_set = MetaSourcedEntitySet(
             entities=[
                 MetaSourcedEntity(
-                    TaggedEntity(lexical="국민은행", tag="COMPANY"), a_meta_source
+                    TaggedEntity(lexical="국민은행", tag="COMPANY", domain="kb"), a_meta_source
                 ),
                 MetaSourcedEntity(
-                    TaggedEntity(lexical="kb국민은행", tag="COMPANY"), a_meta_source
+                    TaggedEntity(lexical="kb국민은행", tag="COMPANY", domain="kb"), a_meta_source
                 ),
             ]
         )
@@ -39,11 +39,11 @@ class MergeTest(unittest.TestCase):
         b_ent_set = MetaSourcedEntitySet(
             entities=[
                 MetaSourcedEntity(
-                    TaggedEntity(lexical="kb국민은행", tag="COMPANY"),
+                    TaggedEntity(lexical="kb국민은행", tag="COMPANY", domain="kb"),
                     b_meta_source_alias_False,
                 ),
                 MetaSourcedEntity(
-                    TaggedEntity(lexical="국민은행", tag="COMPANY"), b_meta_source
+                    TaggedEntity(lexical="국민은행", tag="COMPANY", domain="kb"), b_meta_source
                 ),
             ]
         )
