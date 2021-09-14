@@ -33,6 +33,9 @@ class HdfsFileHandler(FileHandler):
         self.hdfs_url_builder = HdfsUrlProvider(config)
         self.client = InsecureClient(self.hdfs_url_builder.hdfs_host_root)
     
+    def list_dir(self, path):
+        return self.client.list(path, status=False)
+    
     def load(self, path, encoding="utf-8"):
         with self.client.read(path, encoding=encoding) as f:
             contents = f.read()
@@ -43,14 +46,14 @@ class HdfsFileHandler(FileHandler):
         :param: path    the path which has the prefix as user root hdfs path(/user/[HDFS_USER_NAME])
                         e.g., 'path' from /user/[HDFS_USER_NAME]/'path'
         """
-        file_path = self.hdfs_url_builder.path_by_user(path)
-        with self.client.read(file_path, encoding=encoding) as f:
+        file_path = self.hdfs_url_builder.build(path)
+        with self.client.read(file_path, encoding="utf-8") as f:
             contents = f.read()
         return contents
     
     def load_pickle(self, path, encoding="utf-8"):
         # TODO test
-        file_path = self.hdfs_url_builder.path(path)
+        file_path = self.hdfs_url_builder.build(path)
         with self.client.read(file_path, encoding=encoding) as reader:
             bt_contents = reader.read()
             contents = pickle.load(bt_contents)
@@ -66,6 +69,9 @@ class HdfsFileHandler(FileHandler):
 class LocalFileHandler(FileHandler):
     def __init__(self, config):
         self.local_path_builder = LocalPathProvider(config)
+    
+    def list_dir(self, path):
+        return list(Path(path).glob("*"))
     
     def load(self, path, encoding="utf-8"):
         file_path = self.local_path_builder.build(path)

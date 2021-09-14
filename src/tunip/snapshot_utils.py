@@ -1,3 +1,4 @@
+from abc import ABC
 from datetime import datetime
 
 
@@ -14,3 +15,8 @@ def snapshot2datetime(snapshot):
 # dt = snapshot2datetime(snapshot)
 # print(snapshot)
 # print(dt)
+
+
+class Snapshot(ABC):
+    def has_snapshot(self):
+        return False
