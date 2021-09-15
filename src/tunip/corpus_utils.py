@@ -87,7 +87,7 @@ class CorpusSeqLabel(CorpusLabel):
         if label_entry:
             return CorpusSeqLabel(
                 start=int(label_entry[0]),
-                end=int(label_entry[1],
+                end=int(label_entry[1]),
                 label=label_entry[2]
             )
         else:
