@@ -1,5 +1,12 @@
 from abc import ABC
 from operator import attrgetter
+from pyspark.sql.types import (
+    ArrayType,
+    BooleanType,
+    StructType,
+    StructField,
+    StringType
+)
 from typing import List, Optional
 
 from .entities import MetaSourcedEntity
@@ -27,3 +34,37 @@ class MetaSourcedEntitySet:
     
     def sort(self):
         self.entities = sorted(self.entities, key=attrgetter("lexical"))
+
+
+entity_set_schema = StructType([
+    StructField("entity", 
+        StructType([
+            StructField("lexical", StringType()),
+            StructField("tag", StringType()),
+            StructField("domain", StringType())
+        ])
+    ),
+    StructField("source",
+        StructType([
+            StructField("values",
+                StructType([
+                    StructField("KWD",
+                        StructType([
+                            StructField("domain", StringType()),
+                            StructField("column_name", StringType())
+                        ]),
+                        True
+                    ),
+                    StructField("WIKI",
+                        StructType([
+                            StructField("head_entity", StringType()),
+                            StructField("alias", BooleanType()),
+                            StructField("categories", ArrayType(StringType(), True), True)
+                        ]),
+                        True
+                    )
+                ])
+            )
+        ])
+    )
+])

@@ -1,0 +1,6 @@
+{
+    "hdfs.protocol": "hdfs://",
+    "hdfs.hostname": "dev01.ascent.com",
+    "hdfs.port": "8020",
+    "hdfs.username": "nauts"
+}

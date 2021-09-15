@@ -24,10 +24,9 @@ class WikiMetaSourceValue(MetaSourceValue):
     alias: bool
     categories: list = field(default_factory=lambda: [])
 
-
+@dataclass
 class MetaSource:
-    def __init__(self, values: Dict[str, MetaSourceValue]):
-        self.values = values
+    values: Dict[str, MetaSourceValue]
     
     def __getitem__(self, key: str):
         return self.values.get(key)

@@ -13,6 +13,9 @@ from .logger import *
 from .nugget_api import *
 from .nugget_utils import *
 from .object_factory import *
+from .path import *
 from .path_utils import *
+from .singleton import *
 from .snapshot_utils import *
+from .spark_utils import *
 from .yaml_loader import *
