@@ -1,5 +1,4 @@
-from . import LakePath
-
+from .lake import LakePath
 
 class LakeMetaPath(LakePath):
     def __init__(self, user_name):

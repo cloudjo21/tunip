@@ -1,4 +1,4 @@
-from . import LakePath
+from .lake import LakePath
 
 
 class LakeCorpusPath(LakePath):
