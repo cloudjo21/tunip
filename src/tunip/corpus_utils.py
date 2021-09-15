@@ -86,8 +86,8 @@ class CorpusSeqLabel(CorpusLabel):
     def from_tuple_entry(cls, label_entry):
         if label_entry:
             return CorpusSeqLabel(
-                start=label_entry[0],
-                end=label_entry[1],
+                start=int(label_entry[0]),
+                end=int(label_entry[1],
                 label=label_entry[2]
             )
         else:
