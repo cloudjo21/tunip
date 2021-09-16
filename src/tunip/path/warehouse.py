@@ -20,19 +20,31 @@ class WarehouseEntitySetPath(WarehousePath):
 
 
 class WarehouseEntitySetDomainPath(WarehouseEntitySetPath):
-    def __init__(self, user_name, source_type, domain_name, snapshot_dt):
+    def __init__(self, user_name, source_type, domain_name):
         super(WarehouseEntitySetDomainPath, self).__init__(user_name, source_type)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class WarehouseEntitySetDomainSnapshotPath(WarehouseEntitySetDomainPath):
+    def __init__(self, user_name, source_type, domain_name, snapshot_dt):
+        super(WarehouseEntitySetDomainSnapshotPath, self).__init__(user_name, source_type)
         self.domain_name = domain_name
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
         return f"{super().__repr__()}/{self.domain_name}/{self.snapshot_dt}"
-
+    
     def has_snapshot(self):
-        return True
+        return False
 
     @classmethod
-    def from_parent(cls, parent: WarehouseEntitySetPath, domain_name: str, sanpshot_dt: str):
-        return WarehouseEntitySetDomainPath(
-            parent.user_name, parent.source_type, domain_name, snapshot_dt
+    def from_parent(cls, parent: WarehouseEntitySetDomainPath, snapshot_dt: str):
+        return WarehouseEntitySetDomainSnapshotPath(
+            parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
         )

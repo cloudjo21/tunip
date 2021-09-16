@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from glob import glob
 from typing import Optional, TypeVar
 
@@ -44,8 +45,11 @@ def get_service_repo_dir(config):
     return (config.get("service_repo_dir") or default_local_user_dir(config)) or NAUTS_LOCAL_ROOT
 
 
-class NautsPath:
-    pass
+class NautsPath(ABC):
+
+    @abstractmethod
+    def __repr__(self):
+        pass
 
 class NotSupportNautsPathException(Exception):
     pass
