@@ -8,7 +8,7 @@ from tunip.config import Config
 class FileUtilsTest(unittest.TestCase):
 
     def setUp(self):
-        self.config = Config(
+        config = Config(
             Path(__file__).parent.parent.parent.parent.parent / "experiments" / "application.json"
         )
         self.hdfs_handler = fu.services.get("HDFS", config=config)
