@@ -34,7 +34,7 @@ class HdfsFileHandler(FileHandler):
         self.client = InsecureClient(self.hdfs_url_builder.hdfs_host_root)
     
     def list_dir(self, path):
-        return self.client.list(path, status=False)
+        return [f"{path}/{p}" for p in self.client.list(path, status=False)]
     
     def load(self, path, encoding="utf-8"):
         with self.client.read(path, encoding=encoding) as f:
@@ -71,7 +71,7 @@ class LocalFileHandler(FileHandler):
         self.local_path_builder = LocalPathProvider(config)
     
     def list_dir(self, path):
-        return list(Path(path).glob("*"))
+        return [str(p.absolute()) for p in Path(path).glob("*")]
     
     def load(self, path, encoding="utf-8"):
         file_path = self.local_path_builder.build(path)
