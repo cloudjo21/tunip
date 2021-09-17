@@ -49,7 +49,7 @@ class SnapshotPathProvider:
             raise NotSupportSnapshotException()
         return snapshot_paths
 
-    def lastest(self, nauts_path: NautsPath) -> Optional[str]:
+    def latest(self, nauts_path: NautsPath) -> Optional[str]:
         paths = self.provide(nauts_path)
         if paths:
             return paths[-1]
