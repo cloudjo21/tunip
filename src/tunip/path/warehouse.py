@@ -33,8 +33,7 @@ class WarehouseEntitySetDomainPath(WarehouseEntitySetPath):
 
 class WarehouseEntitySetDomainSnapshotPath(WarehouseEntitySetDomainPath):
     def __init__(self, user_name, source_type, domain_name, snapshot_dt):
-        super(WarehouseEntitySetDomainSnapshotPath, self).__init__(user_name, source_type)
-        self.domain_name = domain_name
+        super(WarehouseEntitySetDomainSnapshotPath, self).__init__(user_name, source_type, domain_name)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
