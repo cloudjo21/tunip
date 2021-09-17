@@ -37,7 +37,7 @@ class WarehouseEntitySetDomainSnapshotPath(WarehouseEntitySetDomainPath):
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
-        return f"{super().__repr__()}/{self.domain_name}/{self.snapshot_dt}"
+        return f"{super().__repr__()}/{self.snapshot_dt}"
     
     def has_snapshot(self):
         return False
