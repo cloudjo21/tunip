@@ -35,7 +35,7 @@ class NotSupportSnapshotException(Exception):
 class NoSnapshotPathException(Exception):
     pass
 
-class ShapshotPathProvider:
+class SnapshotPathProvider:
 
     def __init__(self, service_config: ServiceLevelConfig):
         self.config = service_config

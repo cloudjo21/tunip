@@ -131,6 +131,16 @@ class CorpusRecord:
 
     def update_labels(self, other):
         self.labels = other.labels
+    
+    @classmethod
+    def from_json_entry(self, entry):
+        record = CorpusRecord(
+            text=entry["text"],
+            # labels for entiy
+            labels=[CorpusSeqLabel.from_tuple_entry(e) for e in entry["labels"]],
+            tokens=[CorpusToken.from_tuple_entry(e) for e in entry["tokens"]]
+        )
+        return record
 
 
 class CorpusRecordMaker:
