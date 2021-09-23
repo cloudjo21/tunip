@@ -64,6 +64,9 @@ class HdfsFileHandler(FileHandler):
 
     def write(self, path, contents):
         self.client.write(path, data=contents, encoding="utf-8")
+
+    def exist(self, path):
+        return self.client.status(path, strict=False)
     
 
 class LocalFileHandler(FileHandler):
@@ -98,6 +101,9 @@ class LocalFileHandler(FileHandler):
         file_path = self.local_path_builder.build(path)
         with open(file_path, "wb") as f:
              pickle.dump(contents, f)
+
+    def exist(self, path):
+        return os.path.isfile(path)
 
 
 
