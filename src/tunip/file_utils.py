@@ -103,7 +103,7 @@ class LocalFileHandler(FileHandler):
              pickle.dump(contents, f)
 
     def exist(self, path):
-        return os.path.isfile(path)
+        return os.path.exists(path)
 
 
 
