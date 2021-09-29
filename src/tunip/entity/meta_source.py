@@ -22,6 +22,7 @@ class WikiMetaSourceValue(MetaSourceValue):
 
     head_entity: str
     alias: bool
+    has_es_wiki_search_result: bool
     categories: list = field(default_factory=lambda: [])
 
 @dataclass
