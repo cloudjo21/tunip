@@ -24,7 +24,7 @@ class MartCorpusTaskPath(MartCorpusPath):
         self.task_name = task_name
 
     def __repr__(self):
-        return f"{super().__repr__()}/{task_name}"
+        return f"{super().__repr__()}/{self.task_name}"
 
 
 class MartCorpusDomainPath(MartCorpusTaskPath):
