@@ -41,7 +41,7 @@ class MartCorpusDomainPath(MartCorpusTaskPath):
 
 class MartCorpusDomainSnapshotPath(MartCorpusDomainPath):
     def __init__(self, user_name, task_name, domain_name, snapshot_dt):
-        super(MartCorpusDomainPath, self).__init__(user_name, task_name, domain_name)
+        super(MartCorpusDomainSnapshotPath, self).__init__(user_name, task_name, domain_name)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
