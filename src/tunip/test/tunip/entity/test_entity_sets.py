@@ -22,11 +22,13 @@ class EntitySetsTest(unittest.TestCase):
         assert tagged_entity.tag == "COMPANY"
 
         kwd_meta_value = RawKwsMetaSourceValue(domain="kb", column_name="BRAND")
-        wiki_meta_value = WikiMetaSourceValue(head_entity="KB국민은행", alias=True)
+        wiki_meta_value = WikiMetaSourceValue(head_entity="KB국민은행", alias=True, has_es_wiki_search_result=True)
         meta_source = MetaSource({"KWD": kwd_meta_value, "WIKI": wiki_meta_value})
 
         meta_entity = MetaSourcedEntity(entity=tagged_entity, source=meta_source)
         entity_set = MetaSourcedEntitySet(entities=[meta_entity])
 
+        assert entity_set.entities[0].entity.domain == "kb"
         assert entity_set.entities[0].source["KWD"].domain == "kb"
         assert entity_set.entities[0].source["WIKI"].head_entity == "KB국민은행"
+        assert entity_set.entities[0].source["WIKI"].has_es_wiki_search_result == True

@@ -59,6 +59,7 @@ entity_set_schema = StructType([
                         StructType([
                             StructField("head_entity", StringType()),
                             StructField("alias", BooleanType()),
+                            StructField("has_es_wiki_search_result", BooleanType()),
                             StructField("categories", ArrayType(StringType(), True), True)
                         ]),
                         True
