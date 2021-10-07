@@ -1,7 +1,9 @@
+from tunip.snapshot_utils import Snapshot
+
 from . import LakePath
 
 
-class LakeCorpusPath(LakePath):
+class LakeCorpusPath(LakePath, Snapshot):
     def __init__(self, user_name):
         super(LakeCorpusPath, self).__init__(user_name)
 
