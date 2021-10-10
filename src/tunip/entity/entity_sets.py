@@ -25,6 +25,7 @@ class EntitySet(ABC):
 class MetaSourcedEntitySet:
     def __init__(self, entities: List[MetaSourcedEntity]):
         self.entities = entities
+        self.distinct()
     
     def __iter__(self):
         return iter(self.entities)
@@ -40,6 +41,21 @@ class MetaSourcedEntitySet:
     
     def sort(self):
         self.entities = sorted(self.entities, key=attrgetter("lexical"))
+        
+    def distinct(self):
+        # initialize
+        self.sort()
+        dis_entities = [self.entities[0]]
+        for ent in self.entities:
+            unique = True
+            for d_ent in dis_entities:
+                if ent.__eq__(d_ent):
+                    unique = False
+                    break
+            if unique:
+                dis_entities.append(ent)
+
+        self.entities = dis_entities
         
     @classmethod
     def from_dataframe_for_wiki(cls, dataframe) -> List[MetaSourcedEntity]:

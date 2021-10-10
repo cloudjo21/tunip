@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 from .meta_source import MetaSource
 
+from tunip.hash_utils import hash_func
 
 class NotEqualEntityLexcialException(Exception):
     pass
@@ -26,6 +27,13 @@ class TaggedEntity:
 class MetaSourcedEntity:
     entity: TaggedEntity
     source: MetaSource
+
+    def __hash__(self):
+        text = f"{self.entity}|{self.source}"
+        return hash_func(text)
+
+    def __eq__(self,other):
+        return other.__hash__() == self.__hash__()
 
     def __getitem__(self, key):
         if key == "lexical":
