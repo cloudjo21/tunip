@@ -9,8 +9,14 @@ from pyspark.sql.types import (
 )
 from typing import List, Optional
 
-from .entities import MetaSourcedEntity
-
+from .entities import (
+    TaggedEntity,
+    MetaSourcedEntity
+)
+from .meta_source import (
+    MetaSource,
+    WikiMetaSourceValue
+)
 
 class EntitySet(ABC):
     pass
@@ -34,6 +40,32 @@ class MetaSourcedEntitySet:
     
     def sort(self):
         self.entities = sorted(self.entities, key=attrgetter("lexical"))
+        
+    @classmethod
+    def from_dataframe_for_wiki(cls, dataframe) -> List[MetaSourcedEntity]:
+        entity_set_df = dataframe.toPandas()
+        entities = []
+
+        for row in range(len(entity_set_df)):
+            entity = entity_set_df["entity"][row]
+            source = entity_set_df["source"][row]
+            tagged_entity = TaggedEntity(
+                lexical=entity.lexical,
+                tag=entity.tag,
+                domain=entity.domain,
+            )
+            wiki_meta_value = WikiMetaSourceValue(
+                head_entity=source.values["WIKI"].head_entity,
+                alias=source.values["WIKI"].alias,
+                has_es_wiki_search_result=source.values["WIKI"].has_es_wiki_search_result
+            )
+            meta_source = MetaSource({"WIKI": wiki_meta_value})
+            meta_entity = MetaSourcedEntity(
+                entity=tagged_entity, source=meta_source
+            )
+            entities.append(meta_entity)
+
+        return entities       
 
 
 entity_set_schema = StructType([
