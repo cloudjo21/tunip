@@ -1,5 +1,6 @@
 from abc import ABC
 from operator import attrgetter
+import pyspark
 from pyspark.sql.types import (
     ArrayType,
     BooleanType,
@@ -58,7 +59,7 @@ class MetaSourcedEntitySet:
         self.entities = dis_entities
         
     @classmethod
-    def from_dataframe_for_wiki(cls, dataframe) -> List[MetaSourcedEntity]:
+    def from_dataframe_for_wiki(cls, dataframe: pyspark.sql.DataFrame) -> List[MetaSourcedEntity]:
         entity_set_df = dataframe.toPandas()
         entities = []
 
