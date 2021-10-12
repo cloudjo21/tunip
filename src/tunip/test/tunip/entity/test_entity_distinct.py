@@ -47,9 +47,12 @@ class EntityDistinctTest(unittest.TestCase):
         print()
         entities = MetaSourcedEntitySet(entities= entities)
         print("[중복 제거 후 메타 소스 엔티티 셋]")
+        ent_cnt = 0
         for ent in entities:
+            ent_cnt += 1
             print(ent)
 
+        assert ent_cnt == 2
 
 if __name__ == "__main__":
    unittest.main()
