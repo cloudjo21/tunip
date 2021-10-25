@@ -4,6 +4,7 @@ import pyspark
 from pyspark.sql.types import (
     ArrayType,
     BooleanType,
+    IntegerType,
     StructType,
     StructField,
     StringType
@@ -110,6 +111,14 @@ entity_set_schema = StructType([
                             StructField("alias", BooleanType()),
                             StructField("has_es_wiki_search_result", BooleanType()),
                             StructField("categories", ArrayType(StringType(), True), True)
+                        ]),
+                        True
+                    ),
+                    StructField("DOCCANO",
+                        StructType([
+                            StructField("project_id", IntegerType()),
+                            StructField("doc_id", IntegerType()),
+                            StructField("annotation_id", IntegerType())
                         ]),
                         True
                     )

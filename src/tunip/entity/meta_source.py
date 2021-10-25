@@ -26,6 +26,14 @@ class WikiMetaSourceValue(MetaSourceValue):
     categories: list = field(default_factory=lambda: [])
 
 @dataclass
+class DoccanoMetaSourceValue(MetaSourceValue):
+    TYPE_ = "DOCCANO"
+
+    project_id: int
+    doc_id: int
+    annotation_id: int
+
+@dataclass
 class MetaSource:
     values: Dict[str, MetaSourceValue]
     
