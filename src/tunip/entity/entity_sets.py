@@ -112,6 +112,12 @@ entity_set_schema = StructType([
                             StructField("categories", ArrayType(StringType(), True), True)
                         ]),
                         True
+                    ),
+                    StructField("DOCCANO",
+                        StructType([
+                            StructField("domain", StringType())
+                        ]),
+                        True
                     )
                 ])
             )
