@@ -29,9 +29,7 @@ class WikiMetaSourceValue(MetaSourceValue):
 class DoccanoMetaSourceValue(MetaSourceValue):
     TYPE_ = "DOCCANO"
 
-    project_id: int
-    doc_id: int
-    annotation_id: int
+    domain: str
 
 @dataclass
 class MetaSource:
