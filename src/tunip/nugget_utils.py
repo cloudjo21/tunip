@@ -38,6 +38,22 @@ def filter_overlapped(tokens):
             updated.append(token)
         beg, end = token[0], token[1]
     return updated
+    
+def strip_spaces(tokens):
+    """
+    :param tokens:   [begin, end, pos, surface] object for a sentence
+    :return:         updated
+    """
+    updated = []
+    for token in tokens:
+        if token[3][0]==' ':
+            token[3] = token[3].lstrip()
+            token[0] += 1
+        if token[3][-1]==' ':
+            token[3] = token[3].rstrip()
+            token[1] -= 1
+        updated.append(token)
+    return updated
 
 
 def get_tokens_and_spaces(sents_json):
