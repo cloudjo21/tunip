@@ -7,9 +7,6 @@ from tunip.config import Config
 
 class NuggetUtilsTest(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
     def test_strip_spaces(self):
         # 1. 육군인쇄창 부지 ꡒ 병풍아파트 ꡓ 의혹
         tokens = [[0, 1, 'SN', '1'], [1, 2, 'S', '.'], [3, 5, 'N', '육군'], [5, 6, 'VCP', '인'], 
@@ -22,6 +19,3 @@ class NuggetUtilsTest(unittest.TestCase):
         
         updated = nu.strip_spaces(tokens)
         assert updated == expect
-
-if __name__=="__main__":
-    unittest.main()
