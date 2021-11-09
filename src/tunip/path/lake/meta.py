@@ -47,3 +47,23 @@ class LakeMetaKwsDomainSnapshotPath(LakeMetaKwsDomainPath):
         return LakeMetaKwsDomainSnapshotPath(
             parent.user_name, parent.domain_name, snapshot_dt
         )
+
+
+class LakeMetaEntityStatPath(LakeMetaPath):
+    def __init__(self, user_name):
+        super(LakeMetaEntityStatPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/entity_stat"
+
+
+class LakeMetaEntityStatDomainPath(LakeMetaEntityStatPath):
+    def __init__(self, user_name, domain_name):
+        super(LakeMetaEntityStatDomainPath, self).__init__(user_name)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
