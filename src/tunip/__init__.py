@@ -18,4 +18,5 @@ from .path_utils import *
 from .singleton import *
 from .snapshot_utils import *
 from .spark_utils import *
+from .span_utils import *
 from .yaml_loader import *
