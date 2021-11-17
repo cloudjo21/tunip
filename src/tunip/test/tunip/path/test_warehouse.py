@@ -1,21 +1,34 @@
 import unittest
 
+from tunip.service_config import get_service_config
 from tunip.path.warehouse import (
     WarehouseEntitySetDomainPath,
-    WarehouseEntitySetDomainSnapshotPath
+    WarehouseEntitySetDomainSnapshotPath,
+    WarehouseSpanSetDomainPath,
+    WarehouseSpanSetDomainSnapshotPath
 )
 
-
-class MartTest(unittest.TestCase):
+class WarehouseTest(unittest.TestCase):
 
     def setUp(self):
         config = get_service_config()
         self.user = config.username
-        self.domain = "mybank"
+        self.source = "wiki"
+        self.domain = "all"
         self.snapshot = "19701231_000000_000000"
 
-    def test_init_meta_kws_domain_path(self):
-        entity_domain_path = WarehouseEntitySetDomainPath(self.user, self.domain)
+    def test_init_entity_domain_path(self):
+        entity_domain_path = WarehouseEntitySetDomainPath(self.user, self.source, self.domain)
         entity_snapshot_path = WarehouseEntitySetDomainSnapshotPath.from_parent(entity_domain_path, self.snapshot)
         assert entity_domain_path.has_snapshot() == True
         assert entity_snapshot_path.has_snapshot() == False 
+    
+    def test_init_span_domain_path(self):
+        span_domain_path = WarehouseSpanSetDomainPath(self.user, self.source, self.domain)
+        span_snapshot_path = WarehouseSpanSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
+        
+        assert span_domain_path.has_snapshot() == True
+        assert span_snapshot_path.has_snapshot() == False 
+        
+if __name__=="__main__":
+    unittest.main()
