@@ -5,7 +5,9 @@ from tunip.path.warehouse import (
     WarehouseEntitySetDomainPath,
     WarehouseEntitySetDomainSnapshotPath,
     WarehouseSpanSetDomainPath,
-    WarehouseSpanSetDomainSnapshotPath
+    WarehouseSpanSetDomainSnapshotPath,
+    WarehouseMentionSetDomainPath,
+    WarehouseMentionSetDomainSnapshotPath,
 )
 
 class WarehouseTest(unittest.TestCase):
@@ -26,6 +28,13 @@ class WarehouseTest(unittest.TestCase):
     def test_init_span_domain_path(self):
         span_domain_path = WarehouseSpanSetDomainPath(self.user, self.source, self.domain)
         span_snapshot_path = WarehouseSpanSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
+        
+        assert span_domain_path.has_snapshot() == True
+        assert span_snapshot_path.has_snapshot() == False 
+        
+    def test_init_mention_domain_path(self):
+        span_domain_path = WarehouseMentionSetDomainPath(self.user, self.source, self.domain)
+        span_snapshot_path = WarehouseMentionSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
         
         assert span_domain_path.has_snapshot() == True
         assert span_snapshot_path.has_snapshot() == False 
