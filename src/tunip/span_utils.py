@@ -54,3 +54,30 @@ class MentionRecord:
             title=entry["title"]
         )
         return record
+
+@dataclass
+class QuoteRecord:
+    quote: str
+    title: str
+    hash_value: int = -1
+
+    def __hash__(self):
+        return hash_func(self.quote[:50])
+
+    def to_json(self):
+        return {
+            'quote': self.quote,
+            'title': self.title
+        }
+
+    def update(self, other):
+        self.quote = other.quote
+        self.title = other.title
+    
+    @classmethod
+    def from_json_entry(self, entry):
+        record = MentionRecord(
+            quote=entry["quote"],
+            title=entry["title"]
+        )
+        return record

@@ -123,3 +123,41 @@ class WarehouseMentionSetDomainSnapshotPath(WarehouseMentionSetDomainPath):
         return WarehouseMentionSetDomainSnapshotPath(
             parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
         )
+        
+class WarehouseQuoteSetPath(WarehousePath):
+    def __init__(self, user_name, source_type):
+        super(WarehouseQuoteSetPath, self).__init__(user_name)
+        self.source_type = source_type
+        
+    def __repr__(self):
+        return f"{super().__repr__()}/mention_set/{self.source_type}"
+
+
+class WarehouseQuoteSetDomainPath(WarehouseQuoteSetPath):
+    def __init__(self, user_name, source_type, domain_name):
+        super(WarehouseQuoteSetDomainPath, self).__init__(user_name, source_type)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class WarehouseQuoteSetDomainSnapshotPath(WarehouseQuoteSetDomainPath):
+    def __init__(self, user_name, source_type, domain_name, snapshot_dt):
+        super(WarehouseQuoteSetDomainSnapshotPath, self).__init__(user_name, source_type, domain_name)
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+    
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: WarehouseQuoteSetDomainPath, snapshot_dt: str):
+        return WarehouseQuoteSetDomainSnapshotPath(
+            parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
+        )
