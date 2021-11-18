@@ -4,10 +4,15 @@ from tunip.service_config import get_service_config
 from tunip.path.warehouse import (
     WarehouseEntitySetDomainPath,
     WarehouseEntitySetDomainSnapshotPath,
+    
     WarehouseSpanSetDomainPath,
     WarehouseSpanSetDomainSnapshotPath,
+    
     WarehouseMentionSetDomainPath,
     WarehouseMentionSetDomainSnapshotPath,
+    
+    WarehouseQuoteSetDomainPath,
+    WarehouseQuoteSetDomainSnapshotPath,
 )
 
 class WarehouseTest(unittest.TestCase):
@@ -35,6 +40,13 @@ class WarehouseTest(unittest.TestCase):
     def test_init_mention_domain_path(self):
         span_domain_path = WarehouseMentionSetDomainPath(self.user, self.source, self.domain)
         span_snapshot_path = WarehouseMentionSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
+        
+        assert span_domain_path.has_snapshot() == True
+        assert span_snapshot_path.has_snapshot() == False 
+    
+    def test_init_quote_domain_path(self):
+        span_domain_path = WarehouseQuoteSetDomainPath(self.user, self.source, self.domain)
+        span_snapshot_path = WarehouseQuoteSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
         
         assert span_domain_path.has_snapshot() == True
         assert span_snapshot_path.has_snapshot() == False 
