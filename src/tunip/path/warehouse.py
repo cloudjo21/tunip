@@ -130,7 +130,7 @@ class WarehouseQuoteSetPath(WarehousePath):
         self.source_type = source_type
         
     def __repr__(self):
-        return f"{super().__repr__()}/mention_set/{self.source_type}"
+        return f"{super().__repr__()}/quote_set/{self.source_type}"
 
 
 class WarehouseQuoteSetDomainPath(WarehouseQuoteSetPath):
