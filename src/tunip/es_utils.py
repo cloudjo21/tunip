@@ -1,7 +1,7 @@
 
 from elasticsearch import NotFoundError
 
-def es_iterate_all_documents(es, index, logger, pagesize=250, scroll_timeout="1m", **kwargs):
+def iterate_all_documents(es, index, logger, pagesize=250, scroll_timeout="1m", **kwargs):
         """
         Helper to iterate ALL values from a single index
         Yields all the documents.
