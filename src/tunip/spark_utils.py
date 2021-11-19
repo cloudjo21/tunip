@@ -15,7 +15,7 @@ class SparkConnector(Singleton):
 
 
     def getOrCreate(self, local=False):
-        spark = SparkSession.builder.master("local") if not local else SparkSession.builder
+        spark = SparkSession.builder.master("local") if local else SparkSession.builder
         spark = spark.config("spark.driver.maxResultSize", "8g") \
             .config("spark.sql.broadcastTimeout", "720000") \
             .config("spark.rpc.lookupTimeout", "600s") \
@@ -28,6 +28,21 @@ class SparkConnector(Singleton):
             "hdfs://dev01.ascent.com:8020/user/nauts"  # TODO from config
         )
 
+        return spark
+    
+    def update(self, conf_dict):
+        """
+        update and reload spark session given configuration input
+        """
+
+        spark_conf = self.session.sparkContext.getConf()
+        if isinstance(conf_dict, dict):
+            conf_kvs = [(k, v) for k, v in conf_dict.items()]
+        else:
+            conf_kvs = conf_dict
+        spark_conf_updated = spark_conf.setAll(conf_kvs)
+        self.session.sparkContext.stop()
+        spark = SparkSession.builder.config(conf=spark_conf_updated).getOrCreate()
         return spark
 
 
