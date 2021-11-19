@@ -5,10 +5,6 @@ from tunip.hash_utils import hash_func
 class DocumentRecord:
     title: str
     text: str
-    hash_value: int = -1
-
-    def __hash__(self):
-        return hash_func(self.title[:50])
 
     def to_json(self):
         return {
