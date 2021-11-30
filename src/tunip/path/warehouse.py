@@ -199,3 +199,41 @@ class WarehouseAnchorSetDomainSnapshotPath(WarehouseAnchorSetDomainPath):
         return WarehouseAnchorSetDomainSnapshotPath(
             parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
         )
+        
+class WarehouseAnchorInstanceSetPath(WarehousePath):
+    def __init__(self, user_name, source_type):
+        super(WarehouseAnchorInstanceSetPath, self).__init__(user_name)
+        self.source_type = source_type
+        
+    def __repr__(self):
+        return f"{super().__repr__()}/anchor_set/{self.source_type}"
+
+
+class WarehouseAnchorInstanceSetDomainPath(WarehouseAnchorInstanceSetPath):
+    def __init__(self, user_name, source_type, domain_name):
+        super(WarehouseAnchorInstanceSetDomainPath, self).__init__(user_name, source_type)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class WarehouseAnchorInstanceSetDomainSnapshotPath(WarehouseAnchorInstanceSetDomainPath):
+    def __init__(self, user_name, source_type, domain_name, snapshot_dt):
+        super(WarehouseAnchorInstanceSetDomainSnapshotPath, self).__init__(user_name, source_type, domain_name)
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+    
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: WarehouseAnchorInstanceSetDomainPath, snapshot_dt: str):
+        return WarehouseAnchorInstanceSetDomainSnapshotPath(
+            parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
+        )
