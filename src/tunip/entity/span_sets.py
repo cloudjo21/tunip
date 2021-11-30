@@ -64,11 +64,7 @@ class SpanTitledSet:
 
 
 span_titled_set_schema = StructType([
-    StructField("span", 
-        StructType([
-            StructField("span", StringType()),
-            StructField("span_type", StringType()),
-            StructField("title", StringType())
-        ])
-    )
-])
+        StructField("span", StringType()),
+        StructField("span_type", StringType()),
+        StructField("title", StringType())
+    ])
