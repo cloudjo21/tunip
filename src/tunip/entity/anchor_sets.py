@@ -12,10 +12,6 @@ from .anchors import (
     Anchor
 )
 
-class AnchorSet(ABC):
-    pass
-
-
 class AnchorSet:
     def __init__(self, anchors: List[Anchor]):
         self.anchors = anchors

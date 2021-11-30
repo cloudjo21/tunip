@@ -10,7 +10,7 @@ class Span(ABC):
 
 
 @dataclass
-class SpanTitled:
+class SpanTitled(Span):
     span: str
     span_type: str
     title: str

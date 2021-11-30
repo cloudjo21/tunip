@@ -5,10 +5,6 @@ class NotEqualEntityLexcialException(Exception):
     pass
 
 
-class Anchor(ABC):
-    pass
-
-
 @dataclass
 class Anchor:
     anchor_text: str
