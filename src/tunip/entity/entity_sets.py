@@ -23,7 +23,7 @@ class EntitySet(ABC):
     pass
 
 
-class MetaSourcedEntitySet:
+class MetaSourcedEntitySet(EntitySet):
     def __init__(self, entities: List[MetaSourcedEntity]):
         self.entities = entities
         self.distinct()

@@ -14,7 +14,7 @@ class Entity(ABC):
 
 
 @dataclass
-class TaggedEntity:
+class TaggedEntity(Entity):
     lexical: str
     tag: str
     domain: str
@@ -24,7 +24,7 @@ class TaggedEntity:
 
 
 @dataclass
-class MetaSourcedEntity:
+class MetaSourcedEntity(Entity):
     entity: TaggedEntity
     source: MetaSource
 

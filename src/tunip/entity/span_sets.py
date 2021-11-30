@@ -16,7 +16,7 @@ class SpanSet(ABC):
     pass
 
 
-class SpanTitledSet:
+class SpanTitledSet(SpanSet):
     def __init__(self, spans: List[SpanTitled]):
         self.spans = spans
         self.distinct()
