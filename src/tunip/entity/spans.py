@@ -1,9 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from .meta_source import MetaSource
-from tunip.hash_utils import hash_func
-
 class NotEqualEntityLexcialException(Exception):
     pass
 
