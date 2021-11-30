@@ -13,6 +13,9 @@ from tunip.path.warehouse import (
     
     WarehouseQuoteSetDomainPath,
     WarehouseQuoteSetDomainSnapshotPath,
+    
+    WarehouseAnchorSetDomainPath,
+    WarehouseAnchorSetDomainSnapshotPath,
 )
 
 class WarehouseTest(unittest.TestCase):
@@ -47,6 +50,13 @@ class WarehouseTest(unittest.TestCase):
     def test_init_quote_domain_path(self):
         span_domain_path = WarehouseQuoteSetDomainPath(self.user, self.source, self.domain)
         span_snapshot_path = WarehouseQuoteSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
+        
+        assert span_domain_path.has_snapshot() == True
+        assert span_snapshot_path.has_snapshot() == False 
+
+    def test_init_anchor_domain_path(self):
+        span_domain_path = WarehouseAnchorSetDomainPath(self.user, self.source, self.domain)
+        span_snapshot_path = WarehouseAnchorSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
         
         assert span_domain_path.has_snapshot() == True
         assert span_snapshot_path.has_snapshot() == False 
