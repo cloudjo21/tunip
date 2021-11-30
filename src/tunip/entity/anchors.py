@@ -18,9 +18,9 @@ class Anchor:
 
 @dataclass
 class AnchorInstance:
-    id: int
+    anchor_title_id: int
     anchor_text: str
     context_token: str
 
     def __str__(self):
-        return f"{self.id}/{self.anchor_text}/{self.context_token}"
+        return f"{self.anchor_title_id}/{self.anchor_text}/{self.context_token}"

@@ -27,15 +27,15 @@ class AnchorSetsTest(unittest.TestCase):
         
     def test_init_anchor_instances_set(self):
         
-        id=0
+        anchor_title_id=0
         anchor_text="미국"
         context_token="['민주당', '출신', '[MASK]', '39', '대']"
         
-        anchor_instance = AnchorInstance(id, anchor_text, context_token)
+        anchor_instance = AnchorInstance(anchor_title_id, anchor_text, context_token)
         assert anchor_instance.anchor_text == "미국"
         
         anchor_instance_set = AnchorInstanceSet(instances=[anchor_instance])
 
-        assert anchor_instance_set.instances[0].id == 0
+        assert anchor_instance_set.instances[0].anchor_title_id == 0
         assert anchor_instance_set.instances[0].anchor_text == "미국"
         assert anchor_instance_set.instances[0].context_token == "['민주당', '출신', '[MASK]', '39', '대']"

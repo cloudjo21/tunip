@@ -85,7 +85,7 @@ anchor_set_schema = StructType([
 
 
 anchor_instance_set_schema = StructType([
-        StructField("id", IntegerType()),
+        StructField("anchor_title_id", IntegerType()),
         StructField("anchor_text", StringType()),
         StructField("context_token", StringType())
     ])
