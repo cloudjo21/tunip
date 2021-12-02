@@ -8,18 +8,17 @@ class VectorSetTaskPath(DomainPath):
         self.task_name = task_name
 
     def __repr__(self):
-        return f"{super().__repr__()}/model/{self.task_name}"
+        return f"{super().__repr__()}/vector_set/{self.task_name}"
 
 
-class VectorSetModelPath(DomainPath):
-    def __init__(self, user_name, domain_name, snapshot_dt, task_name, checkpoint):
+class VectorSetModelPath(VectorSetTaskPath):
+    def __init__(self, user_name, domain_name, snapshot_dt, task_name, index_type):
         super(VectorSetModelPath, self).__init__(
-            user_name, domain_name, snapshot_dt)
-        self.checkpoint = checkpoint
-        self.task_name = task_name
+            user_name, domain_name, snapshot_dt, task_name)
+        self.index_type = index_type
 
     def __repr__(self):
-        return f"{super().__repr__()}/model/{self.checkpoint}/{self.task_name}"
+        return f"{super().__repr__()}/{self.index_type}"
 
 
 class NotSupportNautsVecorSetPathException(Exception):
@@ -29,14 +28,10 @@ class NotSupportNautsVecorSetPathException(Exception):
 class NautsVecorSetPathFactory:
 
     @classmethod
-    def create_training_family(cls, user_name, domain_name, snapshot_dt, task_name=None, checkpoint=None):
-        if checkpoint:
-            return VectorSetModelPath(user_name, domain_name, snapshot_dt, task_name, checkpoint)
+    def create_vector_set_family(cls, user_name, domain_name, snapshot_dt, task_name=None, index_type=None):
+        if index_type:
+            return VectorSetModelPath(user_name, domain_name, snapshot_dt, task_name, index_type)
         elif task_name:
             return VectorSetTaskPath(user_name, domain_name, snapshot_dt, task_name)
         else:
             raise NotSupportNautsVecorSetPathException()
-
-    @classmethod
-    def create_evaluation_family(cls, user_name, domain_name, target_corpus_dt, snapshot_dt, checkpoint, task_name, condition_name):
-        pass
