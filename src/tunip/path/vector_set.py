@@ -22,7 +22,7 @@ class VectorSetModelPath(DomainPath):
         return f"{super().__repr__()}/model/{self.checkpoint}/{self.task_name}"
 
 
-class NotSupportNautsPathException(Exception):
+class NotSupportNautsVecorSetPathException(Exception):
     pass
 
 
@@ -35,7 +35,7 @@ class NautsVecorSetPathFactory:
         elif task_name:
             return VectorSetTaskPath(user_name, domain_name, snapshot_dt, task_name)
         else:
-            raise NotSupportNautsPathException()
+            raise NotSupportNautsVecorSetPathException()
 
     @classmethod
     def create_evaluation_family(cls, user_name, domain_name, target_corpus_dt, snapshot_dt, checkpoint, task_name, condition_name):
