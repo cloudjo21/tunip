@@ -25,7 +25,7 @@ def iterate_all_documents(es, index, logger, pagesize=250, scroll_timeout="1m", 
                 # NotFoundError: NotFoundError(404, 'search_phase_execution_exception',
                 #   'No search context found for id [262012]')
                 # NotFoundError: NotFoundError(404, '{"succeeded":true,"num_freed":0}')
-                logger.warn(f'{nfe.status_code}, {nfe.error}')
+                logger.warning(f'{nfe.status_code}, {nfe.error}')
                 if nfe.status_code == 404:
                     is_first = True
             finally:
