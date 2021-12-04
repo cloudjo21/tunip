@@ -206,7 +206,7 @@ class WarehouseAnchorInstanceSetPath(WarehousePath):
         self.source_type = source_type
         
     def __repr__(self):
-        return f"{super().__repr__()}/anchor_set/{self.source_type}"
+        return f"{super().__repr__()}/anchor_instance_set/{self.source_type}"
 
 
 class WarehouseAnchorInstanceSetDomainPath(WarehouseAnchorInstanceSetPath):
