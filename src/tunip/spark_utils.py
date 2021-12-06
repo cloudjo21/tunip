@@ -15,7 +15,11 @@ class SparkConnector(Singleton):
 
 
     def getOrCreate(self, local=False):
-        spark = SparkSession.builder.master("local") if local else SparkSession.builder
+        if not local:
+            spark = SparkSession.builder.master("yarn").config("spark.submit.deployMode", "client")
+        else:
+            spark = SparkSession.builder.master("local")
+
         spark = spark.config("spark.driver.maxResultSize", "8g") \
             .config("spark.sql.broadcastTimeout", "720000") \
             .config("spark.rpc.lookupTimeout", "600s") \
