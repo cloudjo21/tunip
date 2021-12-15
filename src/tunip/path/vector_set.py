@@ -48,7 +48,7 @@ class NautsVecorSetPathFactory:
     @classmethod
     def create_vector_set_family(cls, user_name, domain_name, snapshot_dt, task_name=None, index_type=None):
         if index_type:
-            return VectorSetModelPath(user_name, domain_name, snapshot_dt, task_name, index_type)
+            return VectorSetIndexPath(user_name, domain_name, snapshot_dt, task_name, index_type)
         elif task_name:
             return VectorSetTaskPath(user_name, domain_name, snapshot_dt, task_name)
         else:
