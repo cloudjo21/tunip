@@ -248,7 +248,7 @@ class WarehouseVectorsPath(WarehousePath):
 
 
 class WarehouseVectorsDocumentSourcePath(WarehouseVectorsPath):
-    def __init__(self, user_name, source_nmae):
+    def __init__(self, user_name, source_name):
         super(WarehouseVectorsDocumentSourcePath, self).__init__(user_name)
         self.source_name = source_name
     
