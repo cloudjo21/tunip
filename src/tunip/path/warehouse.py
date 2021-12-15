@@ -237,3 +237,73 @@ class WarehouseAnchorInstanceSetDomainSnapshotPath(WarehouseAnchorInstanceSetDom
         return WarehouseAnchorInstanceSetDomainSnapshotPath(
             parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
         )
+
+
+class WarehouseVectorsPath(WarehousePath):
+    def __init__(self, user_name):
+        super(WarehouseVectorsPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/vectors"
+
+
+class WarehouseVectorsDocumentSourcePath(WarehouseVectorsPath):
+    def __init__(self, user_name, source_nmae):
+        super(WarehouseVectorsDocumentSourcePath, self).__init__(user_name)
+        self.source_name = source_name
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/document/{self.source_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class WarehouseVectorsDocumentSourceSnapshotPath(WarehouseVectorsDocumentSourcePath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsDocumentSourceSnapshotPath, self).__init__(
+            user_name, source_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: WarehouseVectorsDocumentSourcePath, snapshot_dt: str):
+        return WarehouseVectorsDocumentSourceSnapshotPath(
+            parent.user_name, parent.source_name, snapshot_dt
+        )
+
+
+class WarehouseVectorsDocumentSourceSnapshotArrowPath(WarehouseVectorsDocumentSourceSnapshotPath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsDocumentSourceSnapshotArrowPath, self).__init__(
+            user_name, source_name, snapshot_dt
+        )
+
+    def __repr__(self):
+        return f"{super().__repr__()}/arrow"
+
+
+class WarehouseVectorsDocumentSourceSnapshotDid2vidPath(WarehouseVectorsDocumentSourceSnapshotPath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsDocumentSourceSnapshotDid2vidPath, self).__init__(
+            user_name, source_name, snapshot_dt
+        )
+
+    def __repr__(self):
+        return f"{super().__repr__()}/did2vid"
+
+
+class WarehouseVectorsDocumentSourceSnapshotVid2didPath(WarehouseVectorsDocumentSourceSnapshotPath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsDocumentSourceSnapshotVid2didPath, self).__init__(
+            user_name, source_name, snapshot_dt
+        )
+
+    def __repr__(self):
+        return f"{super().__repr__()}/vid2did"

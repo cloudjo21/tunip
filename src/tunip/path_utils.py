@@ -62,7 +62,15 @@ class UserPath(NautsPath):
         return f"/user/{self.user_name}"
 
 
-class DomainPath(UserPath):
+class DomainsPath(UserPath):
+    def __init__(self, user_name):
+        super(DomainsPath, self).__init__(user_name)
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/domains"
+
+
+class DomainPath(DomainsPath):
     def __init__(self, user_name, domain_name, snapshot_dt):
         super(DomainPath, self).__init__(user_name)
         self.domain_name = domain_name
