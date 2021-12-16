@@ -16,25 +16,29 @@ class ServiceConfigException(Exception):
     pass
 
 
-def get_service_config(servers_path=None):
-    hostname = socket.gethostname()
-    local_ip = socket.gethostbyname(hostname)
-    servers_config = (
-        toml.load(
-            Path(NAUTS_HOME)
-            / "resources"
-            / "servers.toml"
-            # Path(__file__).parent.parent.parent / "resources" / "servers.toml"
+def get_service_config(servers_path=None, force_service_level=None):
+    if not force_service_level:
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+        servers_config = (
+            toml.load(
+                Path(NAUTS_HOME)
+                / "resources"
+                / "servers.toml"
+                # Path(__file__).parent.parent.parent / "resources" / "servers.toml"
+            )
+            if servers_path is None
+            else servers_path
         )
-        if servers_path is None
-        else servers_path
-    )
-    my_server = next(
-        filter(
-            lambda server: server[1]["ip"] == local_ip,
-            servers_config["servers"].items(),
+        my_server = next(
+            filter(
+                lambda server: server[1]["ip"] == local_ip,
+                servers_config["servers"].items(),
+            )
         )
-    )
+    else:
+        my_server = [force_service_level]
+
     if my_server[0] == "dev":
         user = getpass.getuser()
         config_path = (
