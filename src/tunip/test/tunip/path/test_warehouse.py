@@ -14,6 +14,15 @@ from tunip.path.warehouse import (
     WarehouseQuoteSetDomainPath,
     WarehouseQuoteSetDomainSnapshotPath,
     
+    WarehouseCleanSpanSetDomainPath,
+    WarehouseCleanSpanSetDomainSnapshotPath,
+    
+    WarehouseCleanMentionSetDomainPath,
+    WarehouseCleanMentionSetDomainSnapshotPath,
+    
+    WarehouseCleanQuoteSetDomainPath,
+    WarehouseCleanQuoteSetDomainSnapshotPath,
+    
     WarehouseAnchorSetDomainPath,
     WarehouseAnchorSetDomainSnapshotPath,
 )
@@ -50,6 +59,27 @@ class WarehouseTest(unittest.TestCase):
     def test_init_quote_domain_path(self):
         span_domain_path = WarehouseQuoteSetDomainPath(self.user, self.source, self.domain)
         span_snapshot_path = WarehouseQuoteSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
+        
+        assert span_domain_path.has_snapshot() == True
+        assert span_snapshot_path.has_snapshot() == False 
+
+    def test_init_clean_span_domain_path(self):
+        span_domain_path = WarehouseCleanSpanSetDomainPath(self.user, self.source, self.domain)
+        span_snapshot_path = WarehouseCleanSpanSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
+        
+        assert span_domain_path.has_snapshot() == True
+        assert span_snapshot_path.has_snapshot() == False 
+        
+    def test_init_clean_mention_domain_path(self):
+        span_domain_path = WarehouseCleanMentionSetDomainPath(self.user, self.source, self.domain)
+        span_snapshot_path = WarehouseCleanMentionSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
+        
+        assert span_domain_path.has_snapshot() == True
+        assert span_snapshot_path.has_snapshot() == False 
+    
+    def test_init_clean_quote_domain_path(self):
+        span_domain_path = WarehouseCleanQuoteSetDomainPath(self.user, self.source, self.domain)
+        span_snapshot_path = WarehouseCleanQuoteSetDomainSnapshotPath.from_parent(span_domain_path, self.snapshot)
         
         assert span_domain_path.has_snapshot() == True
         assert span_snapshot_path.has_snapshot() == False 
