@@ -5,5 +5,3 @@ NAUTS_LOCAL_ROOT = os.environ['NAUTS_LOCAL_ROOT']
 
 JSONL_SUFFIX = ".jsonl"
 TAGGED_JSONL_SUFFIX = ".tjsonl"
-
-LOCAL_HDFS_DIR_NAME = "temp"

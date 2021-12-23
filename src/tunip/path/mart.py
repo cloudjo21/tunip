@@ -137,3 +137,19 @@ class MartPretrainedModelRuntimePath(MartPretrainedModelPath):
 
     def __repr__(self):
         return f"{super().__repr__()}/{self.runtime_type}"
+
+
+class MartTokenizersPath(MartPath):
+    def __init__(self, user_name):
+        super(MartTokenizersPath, self).__init__(user_name)
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/tokenizers"
+
+
+class MartTokenizerPath(MartTokenizersPath):
+    def __init__(self, user_name, tokenizer_name):
+        super(TokenizerPath, self).__init__(user_name)
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/{tokenizer_name}"
