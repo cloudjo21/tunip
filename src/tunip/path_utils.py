@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from glob import glob
 from typing import Optional, TypeVar
 
-from tunip.env import LOCAL_HDFS_DIR_NAME
 from tunip.config import Config
+from tunip.env import NAUTS_LOCAL_ROOT
 from tunip.object_factory import ObjectFactory
 
 
@@ -185,7 +185,7 @@ class LocalPathProvider(FileSystemPathProvider):
         self.local_username = config.get("local.username") or "nauts"
     
     def build(self, path):
-        file_path = f"/home/{self.local_username}/{LOCAL_HDFS_DIR_NAME}/{path}"
+        file_path = f"{NAUTS_LOCAL_ROOT}/{path}"
         return file_path
 
 
