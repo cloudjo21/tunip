@@ -3,8 +3,13 @@ import emoji
 
 emojis = ''.join(emoji.UNICODE_EMOJI.keys())
 
+
 def get_codes(b_code, e_code):
-    return [c for c in range(b_code, e_code)]
+    return [c for c in range(b_code, e_code+1)]
+
+
+def get_codes_from_ranges(block_ranges):
+    return [get_codes(block[0], block[1]) for block in block_ranges]
 
 
 latin_1_supplement = (0x0080, 0x00ff)
@@ -40,6 +45,11 @@ half_full_sized_char = (0xff00, 0xffef)
 
 target_block_range = [
     latin_1_supplement,
+    latin_extended_additional_block,
+    latin_extended_a_block,
+    latin_extended_b_block,
+    latin_extended_c_block,
+    latin_extended_d_block,
     punctuations,
     math_operators,
     cjk_symbols_and_puncs,
@@ -61,32 +71,36 @@ target_block_range = [
     half_full_sized_char
 ]
 
-code_blocks = [get_codes(block[0], block[1]) for block in target_block_range]
+code_blocks = get_codes_from_ranges(target_block_range)
 
 candi_char_codes = [c for block in code_blocks for c in block]
 
-prohibit_char_codes = [
-    range(0x0080, 0x00a0),
-    range(0x00ad, 0x00ad),
-    range(0x2000, 0x200f),
-    range(0x2028, 0x202f),
-    range(0x205f, 0x206f),
-    range(0x3000, 0x3000),
-    range(0x3002, 0x3002),
-    range(0x300c, 0x300d),
-    range(0x302a, 0x302f),
-    range(0xff00, 0xff0f),
-    range(0xff1a, 0xff1e),
-    range(0xff20, 0xff20),
-    range(0xff3b, 0xff40),
-    range(0xff5b, 0xff63),
-    range(0xff9e, 0xffef),
-]
+prohibit_char_codes = get_codes_from_ranges([
+    (0x0080, 0x00a0),
+    (0x00ad, 0x00ad),
+    (0x2000, 0x200f),
+    (0x2028, 0x202f),
+    (0x205f, 0x206f),
+    (0x3000, 0x3000),
+    (0x3002, 0x3002),
+    (0x300c, 0x300d),
+    (0x302a, 0x302f),
+    (0xff00, 0xff0f),
+    (0xff1a, 0xff1e),
+    (0xff20, 0xff20),
+    (0xff3b, 0xff40),
+    (0xff5b, 0xff63),
+    (0xff9e, 0xffef),
 
-valid_char_codes = [c for c in candi_char_codes if not any([c in p_codes for p_codes in prohibit_char_codes])]
+    # symbols in latin_1_supplement
+    (0x00a1, 0x00bf)
+])
 
-# pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}{valid_char_codes}]+')
-pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}]+')
+
+valid_char_codes = "".join([chr(c) for c in candi_char_codes if not any([c in p_codes for p_codes in prohibit_char_codes])])
+
+pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}{valid_char_codes}]+')
+# pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}]+')
 url_pattern = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)')
 
 
