@@ -150,6 +150,33 @@ class MartTokenizersPath(MartPath):
 class MartTokenizerPath(MartTokenizersPath):
     def __init__(self, user_name, tokenizer_name):
         super(TokenizerPath, self).__init__(user_name)
+        self.tokenizer_name = tokenizer_name
     
     def __repr__(self):
         return f"{super().__repr__()}/{tokenizer_name}"
+
+
+class MartModelsPath(MartPath):
+    def __init__(self, user_name):
+        super(MartModelsPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/models"
+
+
+class MartTaskPath(MartModelsPath):
+    def __init__(self, user_name, task_name):
+        super(MartTaskPath, self).__init__(user_name)
+        self.task_name = task_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{task_name}"
+
+
+class MartModelPath(MartTaskPath):
+    def __init__(self, user_name, task_name, model_name):
+        super(MartModelPath, self).__init__(user_name, task_name)
+        self.model_name = model_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{model_name}"
