@@ -110,6 +110,6 @@ def preprocess_korean(text):
     text = text.strip()
     return text
 
-text = 'Ç∀Twitch Plays Pokémon/시즌 1/2주차おぉ'
-preprocessed = preprocess_korean(text)
-print(preprocessed)
+# text = 'Ç∀Twitch Plays Pokémon/시즌 1/2주차おぉ'
+# preprocessed = preprocess_korean(text)
+# print(preprocessed)
