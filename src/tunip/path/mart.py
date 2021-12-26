@@ -153,7 +153,7 @@ class MartTokenizerPath(MartTokenizersPath):
         self.tokenizer_name = tokenizer_name
     
     def __repr__(self):
-        return f"{super().__repr__()}/{tokenizer_name}"
+        return f"{super().__repr__()}/{self.tokenizer_name}"
 
 
 class MartModelsPath(MartPath):
@@ -170,7 +170,7 @@ class MartTaskPath(MartModelsPath):
         self.task_name = task_name
 
     def __repr__(self):
-        return f"{super().__repr__()}/{task_name}"
+        return f"{super().__repr__()}/{self.task_name}"
 
 
 class MartModelPath(MartTaskPath):
@@ -179,4 +179,4 @@ class MartModelPath(MartTaskPath):
         self.model_name = model_name
 
     def __repr__(self):
-        return f"{super().__repr__()}/{model_name}"
+        return f"{super().__repr__()}/{self.model_name}"
