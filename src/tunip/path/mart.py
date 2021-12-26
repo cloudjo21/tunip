@@ -149,7 +149,7 @@ class MartTokenizersPath(MartPath):
 
 class MartTokenizerPath(MartTokenizersPath):
     def __init__(self, user_name, tokenizer_name):
-        super(TokenizerPath, self).__init__(user_name)
+        super(MartTokenizerPath, self).__init__(user_name)
         self.tokenizer_name = tokenizer_name
     
     def __repr__(self):
