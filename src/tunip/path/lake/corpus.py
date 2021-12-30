@@ -119,3 +119,37 @@ class LakeCorpusWikiDomainSnapshotPath(LakeCorpusWikiDomainPath):
         return LakeCorpusWikiDomainSnapshotPath(
             parent.user_name, parent.domain_name, snapshot_dt
         )
+
+
+class LakeCorpusWikiDomainNuggetPath(LakeCorpusWikiPath):
+    def __init__(self, user_name, domain_name):
+        super(LakeCorpusWikiDomainNuggetPath, self).__init__(
+            user_name
+        )
+        self.domain_name = domain_name
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}.nugget"
+    
+    def has_snapshot(self):
+        return True
+
+
+class LakeWikiCorpusDomainNuggetSnapshotPath(LakeCorpusWikiDomainNuggetPath):
+    def __init__(self, user_name, domain_name, snapshot_dt):
+        super(LakeWikiCorpusDomainNuggetSnapshotPath, self).__init__(
+            user_name, domain_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeCorpusWikiDomainNuggetPath, snapshot_dt: str):
+        return LakeWikiCorpusDomainNuggetSnapshotPath(
+            parent.user_name, parent.domain_name, snapshot_dt
+        )
