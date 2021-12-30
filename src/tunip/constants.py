@@ -63,4 +63,7 @@ entity_black_list = [
     "WORK_OF_ART",
 ]
 
+GROUP_SEPARATOR = u"\u241D"
+RECORD_SEPARATOR = u"\u241E"
 UNIT_SEPARATOR = u"\u241F"
+SPACE = u"\u2420"
