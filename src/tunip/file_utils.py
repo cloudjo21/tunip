@@ -4,6 +4,7 @@ import pickle
 
 from hdfs import InsecureClient
 from pathlib import Path
+from smart_open import open as sm_open
 from typing import TypeVar
 
 from tunip.object_factory import ObjectFactory
@@ -32,6 +33,10 @@ class HdfsFileHandler(FileHandler):
     def __init__(self, config):
         self.hdfs_url_builder = HdfsUrlProvider(config)
         self.client = InsecureClient(self.hdfs_url_builder.hdfs_host_root)
+
+        self.hdfs_hostname = config["hdfs.hostname"]
+        self.webhdfs_port = config.get("hdfs.namenode.http.port") or 50070
+        self.webhdfs_host_root = f"webhdfs://{self.hdfs_hostname}:{self.webhdfs_port}"
     
     def list_dir(self, path):
         return [f"{path}/{p}" for p in self.client.list(path, status=False)]
@@ -67,6 +72,10 @@ class HdfsFileHandler(FileHandler):
 
     def exist(self, path):
         return self.client.status(path, strict=False)
+
+    def open(self, path):
+        f = sm_open(f"{self.webhdfs_host_root}/{path}")
+        return f
     
 
 class LocalFileHandler(FileHandler):
