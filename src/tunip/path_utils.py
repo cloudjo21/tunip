@@ -34,6 +34,13 @@ def get_latest_path_for_prefix(dir_path, prefix):
     return paths[-1]
 
 
+def has_suffix_among(path, suffixes):
+    for suffix in suffixes:
+        if path[-len(suffix):] == suffix:
+            return True
+    return False
+
+
 def default_local_user_dir(config: Config) -> Optional[str]:
     local_username = config.get("local.username") or None
     if local_username is not None:

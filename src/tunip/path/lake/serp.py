@@ -131,37 +131,3 @@ class LakeSerpTextKeywordDomainSnapshotPath(LakeSerpTextKeywordDomainPath):
         return LakeSerpTextKeywordDomainSnapshotPath(
             parent.user_name, parent.domain_name, snapshot_dt
         )
-
-
-class LakeSerpTextKeywordDomainNuggetPath(LakeSerpTextKeywordPath):
-    def __init__(self, user_name, domain_name):
-        super(LakeSerpTextKeywordDomainNuggetPath, self).__init__(
-            user_name
-        )
-        self.domain_name = domain_name
-
-    def __repr__(self):
-        return f"{super().__repr__()}/{self.domain_name}.nugget"
-
-    def has_snapshot(self):
-        return True
-
-
-class LakeSerpTextKeywordDomainNuggetSnapshotPath(LakeSerpTextKeywordDomainNuggetPath):
-    def __init__(self, user_name, domain_name, snapshot_dt):
-        super(LakeSerpTextKeywordDomainNuggetSnapshotPath, self).__init__(
-            user_name, domain_name
-        )
-        self.snapshot_dt = snapshot_dt
-
-    def __repr__(self):
-        return f"{super().__repr__()}/{self.snapshot_dt}"
-
-    def has_snapshot(self):
-        return False
-
-    @classmethod
-    def from_parent(cls, parent: LakeSerpTextKeywordDomainNuggetPath, snapshot_dt: str):
-        return LakeSerpTextKeywordDomainNuggetSnapshotPath(
-            parent.user_name, parent.domain_name, snapshot_dt
-        )
