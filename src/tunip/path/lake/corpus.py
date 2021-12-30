@@ -49,7 +49,7 @@ class LakeCorpusSerpDomainSnapshotPath(LakeCorpusSerpDomainPath):
         )
 
 
-class LakeCorpusSerpDomainNuggetPath(LakeCorpusSerpDomainPath):
+class LakeCorpusSerpDomainNuggetPath(LakeCorpusSerpPath):
     def __init__(self, user_name, domain_name):
         super(LakeCorpusSerpDomainNuggetPath, self).__init__(
             user_name
