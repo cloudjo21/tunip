@@ -1,6 +1,7 @@
 import mmap
 import os
 import pickle
+import urllib
 
 from hdfs import InsecureClient
 from pathlib import Path
@@ -39,7 +40,8 @@ class HdfsFileHandler(FileHandler):
         self.webhdfs_host_root = f"webhdfs://{self.hdfs_hostname}:{self.webhdfs_port}"
     
     def list_dir(self, path):
-        return [f"{path}/{p}" for p in self.client.list(path, status=False)]
+        path_url = urllib.parse.quote(path)
+        return [f"{path}/{p}" for p in self.client.list(path_url, status=False)]
     
     def load(self, path, encoding="utf-8"):
         with self.client.read(path, encoding=encoding) as f:
