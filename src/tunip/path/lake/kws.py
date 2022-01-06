@@ -25,7 +25,7 @@ class LakeKwsDomainPath(LakeKwsPath):
 
 class LakeKwsDomainSnapshotPath(LakeKwsDomainPath):
     def __init__(self, user_name, domain_name, snapshot_dt):
-        super(LakeKwsDomainPath, self).__init__(user_name, domain_name)
+        super(LakeKwsDomainSnapshotPath, self).__init__(user_name, domain_name)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
