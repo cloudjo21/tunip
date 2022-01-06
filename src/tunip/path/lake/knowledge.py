@@ -25,7 +25,7 @@ class LakeKnowledgeDomainPath(LakeKnowledgePath):
 
 class LakeKnowledgeDomainSnapshotPath(LakeKnowledgeDomainPath):
     def __init__(self, user_name, domain_name, snapshot_dt):
-        super(LakeKnowledgeDomainPath, self).__init__(user_name, domain_name)
+        super(LakeKnowledgeDomainSnapshotPath, self).__init__(user_name, domain_name)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
