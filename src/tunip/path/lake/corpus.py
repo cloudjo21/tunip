@@ -135,9 +135,9 @@ class LakeCorpusWikiDomainNuggetPath(LakeCorpusWikiPath):
         return True
 
 
-class LakeWikiCorpusDomainNuggetSnapshotPath(LakeCorpusWikiDomainNuggetPath):
+class LakeCorpusWikiDomainNuggetSnapshotPath(LakeCorpusWikiDomainNuggetPath):
     def __init__(self, user_name, domain_name, snapshot_dt):
-        super(LakeWikiCorpusDomainNuggetSnapshotPath, self).__init__(
+        super(LakeCorpusWikiDomainNuggetSnapshotPath, self).__init__(
             user_name, domain_name
         )
         self.snapshot_dt = snapshot_dt
@@ -150,6 +150,78 @@ class LakeWikiCorpusDomainNuggetSnapshotPath(LakeCorpusWikiDomainNuggetPath):
 
     @classmethod
     def from_parent(cls, parent: LakeCorpusWikiDomainNuggetPath, snapshot_dt: str):
-        return LakeWikiCorpusDomainNuggetSnapshotPath(
+        return LakeCorpusWikiDomainNuggetSnapshotPath(
+            parent.user_name, parent.domain_name, snapshot_dt
+        )
+
+
+class LakeCorpusKnowledgePath(LakeCorpusPath):
+    def __init__(self, user_name):
+        super(LakeCorpusKnowledgePath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/knowledge"
+
+
+class LakeCorpusKnowledgeDomainPath(LakeCorpusKnowledgePath):
+    def __init__(self, user_name, domain_name):
+        super(LakeCorpusKnowledgeDomainPath, self).__init__(user_name)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class LakeCorpusKnowledgeDomainSnapshotPath(LakeCorpusKnowledgeDomainPath):
+    def __init__(self, user_name, domain_name, snapshot_dt):
+        super(LakeCorpusKnowledgeDomainSnapshotPath, self).__init__(user_name, domain_name)
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeCorpusKnowledgeDomainPath, snapshot_dt: str):
+        return LakeCorpusKnowledgeDomainSnapshotPath(
+            parent.user_name, parent.domain_name, snapshot_dt
+        )
+
+
+class LakeCorpusKnowledgeDomainNuggetPath(LakeCorpusKnowledgePath):
+    def __init__(self, user_name, domain_name):
+        super(LakeCorpusKnowledgeDomainNuggetPath, self).__init__(
+            user_name
+        )
+        self.domain_name = domain_name
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}.nugget"
+    
+    def has_snapshot(self):
+        return True
+
+
+class LakeCorpusKnowledgeDomainNuggetSnapshotPath(LakeCorpusKnowledgeDomainNuggetPath):
+    def __init__(self, user_name, domain_name, snapshot_dt):
+        super(LakeCorpusKnowledgeDomainNuggetSnapshotPath, self).__init__(
+            user_name, domain_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeCorpusKnowledgeDomainNuggetPath, snapshot_dt: str):
+        return LakeCorpusKnowledgeDomainNuggetSnapshotPath(
             parent.user_name, parent.domain_name, snapshot_dt
         )
