@@ -46,6 +46,8 @@ def strip_spaces(tokens):
     """
     updated = []
     for token in tokens:
+        if token[3].isspace():
+            continue
         if token[3][0]==' ':
             token[3] = token[3].lstrip()
             token[0] += 1

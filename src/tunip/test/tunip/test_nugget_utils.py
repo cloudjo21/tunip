@@ -3,6 +3,7 @@ from pathlib import Path
 
 import tunip.nugget_utils as nu
 from tunip.config import Config
+from tunip.nugget_api import Nugget
 
 
 class NuggetUtilsTest(unittest.TestCase):
@@ -19,3 +20,22 @@ class NuggetUtilsTest(unittest.TestCase):
         
         updated = nu.strip_spaces(tokens)
         assert updated == expect
+
+        # 2. 연속 공백 토큰 탈락 확인
+        text = "머스크는 2013 년 소더비 경매에서 촬영한 웨트 넬리 (Wet Nellie)를 샀다.  머스크는 발표 날짜에 대한 질문에 대해 7 월 말에 발표했다."
+        expect = [[0, 3, 'N', '머스크'], [3, 4, 'J', '는'], [5, 9, 'SN', '2013'], [10, 11, 'N', '년'], [12, 15, 'N', '소더비'], 
+                  [16, 18, 'N', '경매'], [18, 20, 'J', '에서'], [21, 23, 'N', '촬영'], [23, 24, 'XS', '한'], [25, 27, 'N', '웨트'], 
+                  [28, 30, 'N', '넬리'], [31, 32, 'S', '('], [32, 35, 'SL', 'Wet'], [36, 42, 'SL', 'Nellie'], [42, 43, 'S', ')'], 
+                  [43, 44, 'J', '를'], [45, 46, 'V', '샀'], [46, 47, 'E', '다'], [47, 48, 'S', '.'], [50, 53, 'N', '머스크'], 
+                  [53, 54, 'J', '는'], [55, 57, 'N', '발표'], [58, 60, 'N', '날짜'], [60, 61, 'J', '에'], [62, 64, 'V', '대한'], 
+                  [65, 67, 'N', '질문'], [67, 68, 'J', '에'], [69, 71, 'V', '대해'], [72, 73, 'SN', '7'], [74, 75, 'N', '월'], 
+                  [76, 77, 'N', '말'], [77, 78, 'J', '에'], [79, 81, 'N', '발표'], [81, 82, 'XS', '했'], [82, 83, 'E', '다'], 
+                  [83, 84, 'S', '.']]
+        
+        nugget = Nugget()
+        entries = nugget([text])
+        for entry in entries:
+            assert nu.strip_spaces(entry["tokens"]) == expect
+            
+if __name__=="__main__":
+    unittest.main()
