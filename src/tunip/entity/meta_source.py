@@ -32,6 +32,13 @@ class DoccanoMetaSourceValue(MetaSourceValue):
     domain: str
 
 @dataclass
+class KnowledgeMetaSourceValue(MetaSourceValue):
+    TYPE_ = "KNOWLEDGE"
+
+    domain: str
+    type: list = field(default_factory=lambda: [])
+
+@dataclass
 class MetaSource:
     values: Dict[str, MetaSourceValue]
     
