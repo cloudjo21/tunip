@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 
 from tunip.gold import is_overlapped_token_on_label
@@ -19,8 +19,8 @@ class CorpusToken(BaseModel):
 
 class CorpusInput(BaseModel):
     text: str
-    labels: List[CorpusSeqLabel] = None
-    tokens: List[CorpusToken] = None
+    labels: Optional[List[CorpusSeqLabel]] = None
+    tokens: Optional[List[CorpusToken]] = None
 
 
 class CorpusRecord(BaseModel):
@@ -56,11 +56,11 @@ class CorpusRecord(BaseModel):
         return len(text[start:end].replace(' ', ''))
 
 
-print(
-    CorpusRecord(
-        text='aa',
-        labels=[CorpusSeqLabel(start=0, end=1, label='d')],
-        tokens=[
-            CorpusToken(start=0, end=1,pos='b', surface='c')]
-    )
-)
+# print(
+#     CorpusRecord(
+#         text='aa',
+#         labels=[CorpusSeqLabel(start=0, end=1, label='d')],
+#         tokens=[
+#             CorpusToken(start=0, end=1,pos='b', surface='c')]
+#     )
+# )
