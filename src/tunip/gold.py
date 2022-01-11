@@ -83,7 +83,7 @@ def iob_from_tokens_and_labels(
     return labels_on_tokens
 
 
-def _is_overlapped_token_on_label(token_start, token_end, label_start, label_end):
+def is_overlapped_token_on_label(token_start, token_end, label_start, label_end):
     return ((label_start <= token_start) and (token_end <= label_end)) or (
         (token_start <= label_start) and (label_start < token_end)
     )
@@ -151,7 +151,7 @@ def iob_from_tokens_and_labels_v2(
                 if has_next_token:
                     token_start, token_end = token_offset
 
-            while has_next_token is True and _is_overlapped_token_on_label(
+            while has_next_token is True and is_overlapped_token_on_label(
                 token_start, token_end, label_start, label_end
             ):
                 ib_tag = get_i_or_b_tag(current_label_count)
