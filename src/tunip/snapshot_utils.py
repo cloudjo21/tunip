@@ -2,6 +2,7 @@ from abc import ABC
 from datetime import datetime
 from typing import Optional
 
+from tunip.env import NAUTS_LOCAL_ROOT
 from tunip.path_utils import NautsPath
 from tunip.service_config import ServiceLevelConfig
 
@@ -41,19 +42,23 @@ class SnapshotPathProvider:
     def __init__(self, service_config: ServiceLevelConfig):
         self.config = service_config
 
-    def provide(self, nauts_path: NautsPath) -> Optional[list]:
+    def provide(self, nauts_path: NautsPath, force_fs: Optional[str]=None) -> Optional[list]:
         snapshot_paths = None
+        filesystem_type = self.config.filesystem.upper() if not force_fs else force_fs
         file_handler = file_utils.services.get(
-            self.config.filesystem.upper(), config=self.config.config
+            filesystem_type, config=self.config.config
         )
         if isinstance(nauts_path, Snapshot) and nauts_path.has_snapshot():
-            snapshot_paths = file_handler.list_dir(repr(nauts_path))
+            real_path = repr(nauts_path)
+            if filesystem_type == 'LOCAL':
+                real_path = f"{NAUTS_LOCAL_ROOT}{real_path}"
+            snapshot_paths = file_handler.list_dir(real_path)
         else:
             raise NotSupportSnapshotException()
         return snapshot_paths
 
-    def latest(self, nauts_path: NautsPath) -> Optional[str]:
-        paths = self.provide(nauts_path)
+    def latest(self, nauts_path: NautsPath, force_fs: Optional[str]=None) -> Optional[str]:
+        paths = self.provide(nauts_path, force_fs)
         if paths:
             return paths[-1]
         else:
