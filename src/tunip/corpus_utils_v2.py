@@ -1,8 +1,16 @@
 from typing import List, Optional
 from pydantic import BaseModel
+from pyspark.sql.types import Row
 
 from tunip.gold import is_overlapped_token_on_label
 
+
+def row_to_corpus_input(row: Row):
+    return CorpusInput(
+        text=row.text,
+        tokens=[r row.tokens
+    )
+    
 
 class CorpusSeqLabel(BaseModel):
     start: int
