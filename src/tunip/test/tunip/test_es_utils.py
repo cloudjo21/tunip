@@ -13,20 +13,55 @@ class EsUtilsTest(unittest.TestCase):
 
     def setUp(self):
         self.service_config = get_service_config()
-        self.elastic_host= "192.168.10.215:9200"
+        self.elastic_host = "192.168.10.215:9200"
         self.index = "kowiki_fulltext"
         self.logger = init_logging_handler_for_klass(klass=self.__class__)
-        self.es_client = Elasticsearch(self.elastic_host)
-        
-        
+        self.es = Elasticsearch(self.elastic_host)
+
     def test_iter_all_documents(self):
-        
-        for cnt, entry in enumerate(iterate_all_documents(self.es_client, self.index, self.logger)):
-            
+
+        for cnt, entry in enumerate(iterate_all_documents(self.es, self.index, self.logger)):
+
             assert entry is not None
-            
-            if cnt>10:
+
+            if cnt > 10:
                 break
 
-if __name__=="__main__":
+    def test_iter_all_documents_input_body(self):
+        body = {
+            "size": 250,
+            "query": {
+                "match": {
+                    "title_origin": "드래곤"
+                }
+            }
+        }
+
+        for cnt, entry in enumerate(iterate_all_documents(self.es, self.index, self.logger, body=body)):
+
+            assert entry is not None
+
+            if cnt > 10:
+                break
+
+    def test_iter_all_documents_input_hit_value(self):
+
+        for cnt, entry in enumerate(iterate_all_documents(self.es, self.index, self.logger, hit_value='_id')):
+
+            assert entry is not None
+
+            if cnt > 10:
+                break
+
+    def test_iter_all_documents_input_hit_value_all(self):
+
+        for cnt, entry in enumerate(iterate_all_documents(self.es, self.index, self.logger, hit_value='all')):
+
+            assert entry is not None
+
+            if cnt > 10:
+                break
+
+
+if __name__ == "__main__":
     unittest.main()
