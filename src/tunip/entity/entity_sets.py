@@ -124,3 +124,38 @@ entity_set_schema = StructType([
         ])
     )
 ])
+
+entity_schema = StructType([
+    StructField('lexical', StringType()),
+    StructField('tag', StringType()),
+    StructField('domain', StringType())
+])
+
+source_schema = StructType([
+    StructField("values",
+        StructType([
+            StructField("KWD",
+                StructType([
+                    StructField("domain", StringType()),
+                    StructField("column_name", StringType())
+                ]),
+                True
+            ),
+            StructField("WIKI",
+                StructType([
+                    StructField("head_entity", StringType()),
+                    StructField("alias", BooleanType()),
+                    StructField("has_es_wiki_search_result", BooleanType()),
+                    StructField("categories", ArrayType(StringType(), True), True)
+                ]),
+                True
+            ),
+            StructField("DOCCANO",
+                StructType([
+                    StructField("domain", StringType())
+                ]),
+                True
+            )
+        ])
+    )
+])
