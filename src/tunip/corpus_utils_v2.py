@@ -3,7 +3,15 @@ from pydantic import BaseModel
 from pyspark.sql.types import Row
 
 from tunip.gold import is_overlapped_token_on_label
-    
+
+
+def old_nugget_return_to_v2(old_ret):
+    tokens = []
+    for t in old_ret['tokens']:
+        token = CorpusToken(start=t[0], end=t[1], pos=t[2], surface=t[3])
+        tokens.append(token)
+    return CorpusInput(text=old_ret['text'], tokens=tokens)
+
 
 class CorpusSeqLabel(BaseModel):
     start: int
