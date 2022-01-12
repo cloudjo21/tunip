@@ -3,13 +3,6 @@ from pydantic import BaseModel
 from pyspark.sql.types import Row
 
 from tunip.gold import is_overlapped_token_on_label
-
-
-def row_to_corpus_input(row: Row):
-    return CorpusInput(
-        text=row.text,
-        tokens=[r row.tokens
-    )
     
 
 class CorpusSeqLabel(BaseModel):
@@ -35,33 +28,6 @@ class CorpusRecord(BaseModel):
     text: str
     labels: List[CorpusSeqLabel]
     tokens: List[CorpusToken]
-
-    def add_or_not(self, other_label: CorpusSeqLabel):
-        prev_label = None
-        new_labels = []
-        append_new_or_not = -1  #0: new 1: old
-        label_replaced = False
-        if self.labels:
-            for i, label in enumerate(self.labels):
-                if (other_label.start < label.start and label.start < other_label.end) and (not prev_label or prev_label.end <= other_label.start):
-                    prev_label = other_label
-                    self.labels[i] = other_label
-                    label_replaced = True
-                elif (other_label.start == label.start and label.end < other_label.end):
-                    prev_label = other_label
-                    self.labels[i] = other_label
-                    label_replaced = True
-                # elif label.end <= other_label.start:
-                #     self.labels.insert(i+1, other_label)
-                else:
-                    prev_label = label
-                    self.labels[i] = label
-                    label_replaced = False
-        else:
-            self.labels = [other_label]
-    
-    def _len_of_label_surface(start, end):
-        return len(text[start:end].replace(' ', ''))
 
 
 # print(
