@@ -48,6 +48,46 @@ class WarehouseEntitySetDomainSnapshotPath(WarehouseEntitySetDomainPath):
             parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
         )
 
+
+class WarehouseEntityTriePath(WarehousePath):
+    def __init__(self, user_name, source_type):
+        super(WarehouseEntityTriePath, self).__init__(user_name)
+        self.source_type = source_type
+
+    def __repr__(self):
+        return f"{super().__repr__()}/entity_trie/{self.source_type}"
+
+
+class WarehouseEntityTrieDomainPath(WarehouseEntityTriePath):
+    def __init__(self, user_name, source_type, domain_name):
+        super(WarehouseEntityTrieDomainPath, self).__init__(user_name, source_type)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class WarehouseEntityTrieDomainSnapshotPath(WarehouseEntityTrieDomainPath):
+    def __init__(self, user_name, source_type, domain_name, snapshot_dt):
+        super(WarehouseEntityTrieDomainSnapshotPath, self).__init__(user_name, source_type, domain_name)
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+    
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: WarehouseEntityTrieDomainPath, snapshot_dt: str):
+        return WarehouseEntityTrieDomainSnapshotPath(
+            parent.user_name, parent.source_type, parent.domain_name, snapshot_dt
+        )
+
+
 class WarehouseSpanSetPath(WarehousePath):
     def __init__(self, user_name, source_type):
         super(WarehouseSpanSetPath, self).__init__(user_name)

@@ -4,6 +4,9 @@ from tunip.service_config import get_service_config
 from tunip.path.warehouse import (
     WarehouseEntitySetDomainPath,
     WarehouseEntitySetDomainSnapshotPath,
+
+    WarehouseEntityTrieDomainPath,
+    WarehouseEntityTrieDomainSnapshotPath,
     
     WarehouseSpanSetDomainPath,
     WarehouseSpanSetDomainSnapshotPath,
@@ -41,6 +44,12 @@ class WarehouseTest(unittest.TestCase):
         entity_snapshot_path = WarehouseEntitySetDomainSnapshotPath.from_parent(entity_domain_path, self.snapshot)
         assert entity_domain_path.has_snapshot() == True
         assert entity_snapshot_path.has_snapshot() == False 
+    
+    def test_init_entity_trie_domain_path(self):
+        trie_domain_path = WarehouseEntityTrieDomainPath(self.user, self.source, self.domain)
+        trie_snapshot_path = WarehouseEntityTrieDomainSnapshotPath.from_parent(trie_domain_path, self.snapshot)
+        assert trie_domain_path.has_snapshot() == True
+        assert trie_snapshot_path.has_snapshot() == False
     
     def test_init_span_domain_path(self):
         span_domain_path = WarehouseSpanSetDomainPath(self.user, self.source, self.domain)
