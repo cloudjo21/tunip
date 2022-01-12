@@ -162,6 +162,13 @@ source_schema = StructType([
                     StructField("domain", StringType())
                 ]),
                 True
+            ),
+            StructField("KNOWLEDGE",
+                StructType([
+                    StructField("domain", StringType()),
+                    StructField("type", ArrayType(StringType(), True), True)
+                ]),
+                True
             )
         ])
     )
