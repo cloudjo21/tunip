@@ -1,3 +1,6 @@
+import pathlib
+import re
+
 from abc import ABC
 from datetime import datetime
 from typing import Optional
@@ -41,6 +44,7 @@ class NoSnapshotPathException(Exception):
 class SnapshotPathProvider:
     def __init__(self, service_config: ServiceLevelConfig):
         self.config = service_config
+        self.regex_snapshot_dt = re.compile(r'[0-9]{8,}_[0-9]{6}_[0-9]{6}')
 
     def provide(self, nauts_path: NautsPath, force_fs: Optional[str]=None) -> Optional[list]:
         snapshot_paths = None
@@ -61,5 +65,12 @@ class SnapshotPathProvider:
         paths = self.provide(nauts_path, force_fs)
         if paths:
             return paths[-1]
+        else:
+            raise NoSnapshotPathException()
+
+    def latest_snapshot_dt(self, nauts_path, force_fs):
+        latest_path = pathlib.Path(self.latest(nauts_path, force_fs))
+        if self.regex_snapshot_dt.match(latest_path.parts[-1]):
+            return latest_path.parts[-1]
         else:
             raise NoSnapshotPathException()
