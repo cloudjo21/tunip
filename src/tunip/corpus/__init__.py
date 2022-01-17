@@ -7,7 +7,7 @@ token_schema = StructType(
     [
         StructField('start', IntegerType()),
         StructField('end', IntegerType()),
-        StructField('tag', StringType()),
+        StructField('pos', StringType()),
         StructField('surface', StringType())
     ]
 )
@@ -16,7 +16,7 @@ label_schema = StructType(
     [
         StructField("start", IntegerType()),
         StructField("end", IntegerType()),
-        StructField("tag", StringType()),
+        StructField("label", StringType()),
     ]
 )
 
