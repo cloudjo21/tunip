@@ -33,7 +33,8 @@ class LakeCorpusSerpDomainPath(LakeCorpusSerpPath):
 
 class LakeCorpusSerpDomainSnapshotPath(LakeCorpusSerpDomainPath):
     def __init__(self, user_name, domain_name, snapshot_dt):
-        super(LakeCorpusSerpDomainSnapshotPath, self).__init__(user_name, domain_name)
+        super(LakeCorpusSerpDomainSnapshotPath,
+              self).__init__(user_name, domain_name)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
@@ -105,7 +106,8 @@ class LakeCorpusWikiDomainPath(LakeCorpusWikiPath):
 
 class LakeCorpusWikiDomainSnapshotPath(LakeCorpusWikiDomainPath):
     def __init__(self, user_name, domain_name, snapshot_dt):
-        super(LakeCorpusWikiDomainSnapshotPath, self).__init__(user_name, domain_name)
+        super(LakeCorpusWikiDomainSnapshotPath,
+              self).__init__(user_name, domain_name)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
@@ -127,10 +129,10 @@ class LakeCorpusWikiDomainNuggetPath(LakeCorpusWikiPath):
             user_name
         )
         self.domain_name = domain_name
-    
+
     def __repr__(self):
         return f"{super().__repr__()}/{self.domain_name}.nugget"
-    
+
     def has_snapshot(self):
         return True
 
@@ -151,6 +153,79 @@ class LakeCorpusWikiDomainNuggetSnapshotPath(LakeCorpusWikiDomainNuggetPath):
     @classmethod
     def from_parent(cls, parent: LakeCorpusWikiDomainNuggetPath, snapshot_dt: str):
         return LakeCorpusWikiDomainNuggetSnapshotPath(
+            parent.user_name, parent.domain_name, snapshot_dt
+        )
+
+
+class LakeCorpusDoccanoPath(LakeCorpusPath):
+    def __init__(self, user_name):
+        super(LakeCorpusDoccanoPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/doccano"
+
+
+class LakeCorpusDoccanoDomainPath(LakeCorpusDoccanoPath):
+    def __init__(self, user_name, domain_name):
+        super(LakeCorpusDoccanoDomainPath, self).__init__(user_name)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class LakeCorpusDoccanoDomainSnapshotPath(LakeCorpusDoccanoDomainPath):
+    def __init__(self, user_name, domain_name, snapshot_dt):
+        super(LakeCorpusDoccanoDomainSnapshotPath,
+              self).__init__(user_name, domain_name)
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeCorpusDoccanoDomainPath, snapshot_dt: str):
+        return LakeCorpusDoccanoDomainSnapshotPath(
+            parent.user_name, parent.domain_name, snapshot_dt
+        )
+
+
+class LakeCorpusDoccanoDomainNuggetPath(LakeCorpusDoccanoPath):
+    def __init__(self, user_name, domain_name):
+        super(LakeCorpusDoccanoDomainNuggetPath, self).__init__(
+            user_name
+        )
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}.nugget"
+
+    def has_snapshot(self):
+        return True
+
+
+class LakeCorpusDoccanoDomainNuggetSnapshotPath(LakeCorpusDoccanoDomainNuggetPath):
+    def __init__(self, user_name, domain_name, snapshot_dt):
+        super(LakeCorpusDoccanoDomainNuggetSnapshotPath, self).__init__(
+            user_name, domain_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeCorpusDoccanoDomainNuggetPath, snapshot_dt: str):
+        return LakeCorpusDoccanoDomainNuggetSnapshotPath(
             parent.user_name, parent.domain_name, snapshot_dt
         )
 
@@ -177,7 +252,8 @@ class LakeCorpusKnowledgeDomainPath(LakeCorpusKnowledgePath):
 
 class LakeCorpusKnowledgeDomainSnapshotPath(LakeCorpusKnowledgeDomainPath):
     def __init__(self, user_name, domain_name, snapshot_dt):
-        super(LakeCorpusKnowledgeDomainSnapshotPath, self).__init__(user_name, domain_name)
+        super(LakeCorpusKnowledgeDomainSnapshotPath,
+              self).__init__(user_name, domain_name)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
@@ -199,10 +275,10 @@ class LakeCorpusKnowledgeDomainNuggetPath(LakeCorpusKnowledgePath):
             user_name
         )
         self.domain_name = domain_name
-    
+
     def __repr__(self):
         return f"{super().__repr__()}/{self.domain_name}.nugget"
-    
+
     def has_snapshot(self):
         return True
 
