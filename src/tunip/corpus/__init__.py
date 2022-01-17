@@ -7,14 +7,23 @@ token_schema = StructType(
     [
         StructField('start', IntegerType()),
         StructField('end', IntegerType()),
-        StructField('tag', StringType()),
+        StructField('pos', StringType()),
         StructField('surface', StringType())
+    ]
+)
+
+label_schema = StructType(
+    [
+        StructField("start", IntegerType()),
+        StructField("end", IntegerType()),
+        StructField("label", StringType()),
     ]
 )
 
 corpus_input_schema = StructType(
     [
         StructField('text', StringType()),
-        StructField('tokens', ArrayType(token_schema))
+        StructField('tokens', ArrayType(token_schema)),
+        StructField("labels", ArrayType(label_schema))
     ]
 )
