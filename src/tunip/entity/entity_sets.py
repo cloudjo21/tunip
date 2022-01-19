@@ -173,3 +173,11 @@ source_schema = StructType([
         ])
     )
 ])
+
+tagged_entity_schema = StructType(
+    [
+        StructField('lexical', StringType()),
+        StructField('tag', StringType()),
+        StructField('domain', StringType())
+    ]
+)
