@@ -106,20 +106,19 @@ class ModelPath(DomainPath):
         return f"{super().__repr__()}/model/{self.checkpoint}/{self.task_name}"
 
 
-class EvalCorpusDomainPath(UserPath):
-    def __init__(self, user_name, domain_name, target_corpus_dt, snapshot_dt):
+class EvalCorpusDomainPath(DomainsPath):
+    def __init__(self, user_name, domain_name, snapshot_dt):
         super(EvalCorpusDomainPath, self).__init__(user_name)
         self.domain_name = domain_name
-        self.target_corpus_dt = target_corpus_dt
         self.snapshot_dt = snapshot_dt
     
     def __repr__(self):
-        return f"{super().__repr__()}/{self.domain_name}/{self.target_corpus_dt}/eval/{self.snapshot_dt}"
+        return f"{super().__repr__()}/{self.domain_name}/{self.snapshot_dt}/eval"
 
 
 class EvalCorpusTaskPath(EvalCorpusDomainPath):
-    def __init__(self, user_name, domain_name, target_corpus_dt, snapshot_dt, checkpoint, task_name):
-        super(EvalCorpusTaskPath, self).__init__(user_name, domain_name, target_corpus_dt, snapshot_dt)
+    def __init__(self, user_name, domain_name, snapshot_dt, checkpoint, task_name):
+        super(EvalCorpusTaskPath, self).__init__(user_name, domain_name, snapshot_dt)
         self.checkpoint = checkpoint
         self.task_name = task_name
 
@@ -128,12 +127,13 @@ class EvalCorpusTaskPath(EvalCorpusDomainPath):
         
 
 class EvalCorpusConditionalPath(EvalCorpusTaskPath):
-    def __init__(self, user_name, domain_name, target_corpus_dt, snapshot_dt, checkpoint, task_name, condition_name):
-        super(EvalCorpusConditionalPath, self).__init__(user_name, domain_name, target_corpus_dt, snapshot_dt, checkpoint, task_name)
+    def __init__(self, user_name, domain_name, snapshot_dt, checkpoint, task_name, condition_name, target_corpus_dt):
+        super(EvalCorpusConditionalPath, self).__init__(user_name, domain_name, snapshot_dt, checkpoint, task_name)
         self.condition_name = condition_name
+        self.target_corpus_dt = target_corpus_dt
 
     def __repr__(self):
-        return f"{super().__repr__()}/{self.condition_name}"
+        return f"{super().__repr__()}/{self.condition_name}/{self.target_corpus_dt}"
 
 
 class NautsPathFactory:
