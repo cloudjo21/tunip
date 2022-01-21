@@ -58,19 +58,30 @@ class HdfsFileHandler(FileHandler):
             contents = f.read()
         return contents
     
-    def load_pickle(self, path, encoding="utf-8"):
-        # TODO test
+    def load_pickle(self, path):
         file_path = self.hdfs_url_builder.build(path)
-        with self.client.read(file_path, encoding=encoding) as reader:
+        with self.client.read(file_path) as reader:
             bt_contents = reader.read()
             contents = pickle.load(bt_contents)
         return contents
+
+    def loads_pickle(self, path):
+        file_path = self.hdfs_url_builder.build(path)
+        with self.client.read(file_path) as f:
+            contents = f.read()
+        pkl_obj = pickle.loads(contents)
+        return pkl_obj
+
+    def dumps_pickle(self, path, obj):
+        file_path = self.hdfs_url_builder.build(path)
+        contents = pickle.dumps(obj)
+        self.client.write(path, data=contents)
     
     def mkdirs(self, path):
         self.client.makedirs(path)
 
-    def write(self, path, contents):
-        self.client.write(path, data=contents, encoding="utf-8")
+    def write(self, path, contents, encoding='utf-8'):
+        self.client.write(path, data=contents, encoding=encoding)
 
     def exist(self, path):
         return self.client.status(path, strict=False)
@@ -93,11 +104,24 @@ class LocalFileHandler(FileHandler):
             contents = f.read()
         return contents
     
-    def load_pickle(self, path, encoding="utf-8"):
+    def load_pickle(self, path):
         file_path = self.local_path_builder.build(path)
         with open(file_path, mode="rb") as f:
             contents = pickle.load(f)
         return contents
+
+    def loads_pickle(self, path):
+        file_path = self.local_path_builder.build(path)
+        with open(file_path, mode='rb') as f:
+            contents = f.read()
+        pkl_contents = pickle.loads(contents)
+        return pkl_contents
+
+    def dumps_pickle(self, path, obj):
+        file_path = self.local_url_builder.build(path)
+        contents = pickle.dumps(obj)
+        with open(file_path, mode="w") as f:
+            f.write(contents)
 
     def mkdirs(self, path):
         dir_path = self.local_path_builder.build(path)
