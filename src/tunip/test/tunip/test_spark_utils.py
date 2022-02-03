@@ -61,6 +61,40 @@ class SparkUtilsTest(unittest.TestCase):
         df.show()
         
         assert df.count()==3
+
+    def test_spark_action_on_client_mode(self):
+        
+        spark = spark_conn.update({"spark.app.name": "test_spark_action_on_client_mode", "spark.master": "yarn", "spark.executor.instances": "1", "spark.submit.deployMode": "client"})
+        
+        hdfs_save_path = "/user/nauts/abc"
+        
+        df_schema = StructType(
+            [
+                StructField("language", StringType(), True),
+                StructField("users_count", StringType(), True)
+            ]
+        )
+        
+        columns = ["language","users_count"]
+        lang_list = ["Java", "Python", "Scala"]
+        count_list = ["20000", "10000", "30000"]
+        
+        df = pd.DataFrame(
+            zip(lang_list, count_list), 
+            columns = columns
+        )
+
+        spark_df = spark.createDataFrame(df, df_schema).coalesce(1)
+        
+        spark_df.write.format('json').mode("overwrite").option(
+            "header", "true").save(hdfs_save_path)
+        
+        df = spark.read.json(hdfs_save_path)
+        
+        df.show()
+        
+        assert df.count()==3
+
         
 if __name__=="__main__":
     unittest.main()
