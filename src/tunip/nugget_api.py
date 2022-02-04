@@ -8,6 +8,7 @@ from urllib.parse import urlparse, urlencode
 from tunip.corpus_utils import get_text_generator_from_file, get_corpus_records
 from tunip.logger import init_logging_handler_for_klass
 
+from tunip.nugget_utils import strip_spaces
 
 class Nugget:
     """
@@ -75,7 +76,7 @@ class Nugget:
                         entry = {}
                         entry["labels"] = entities
                         entry["text"] = txt
-                        entry["tokens"] = tokens
+                        entry["tokens"] = strip_spaces(tokens)
 
                         yield entry
 
@@ -99,7 +100,7 @@ class Nugget:
                 entry = {}
                 entry["labels"] = entities
                 entry["text"] = txt
-                entry["tokens"] = tokens
+                entry["tokens"] = strip_spaces(tokens)
 
                 # sents.append(entry)
                 yield entry
@@ -150,7 +151,7 @@ class Nugget:
                         entry = {}
                         entry["labels"] = record.labels
                         entry["text"] = txt
-                        entry["tokens"] = tokens
+                        entry["tokens"] = strip_spaces(tokens)
 
                         yield entry
 
@@ -174,7 +175,7 @@ class Nugget:
                 entry = {}
                 entry["labels"] = record.labels
                 entry["text"] = txt
-                entry["tokens"] = tokens
+                entry["tokens"] = strip_spaces(tokens)
 
                 # sents.append(entry)
                 yield entry
@@ -207,7 +208,7 @@ class Nugget:
                 entry = {}
                 entry["labels"] = entities
                 entry["text"] = txt
-                entry["tokens"] = tokens
+                entry["tokens"] = strip_spaces(tokens)
 
                 # sents.append(entry)
                 yield entry
@@ -245,7 +246,7 @@ class Nugget:
             entry = {}
             entry["labels"] = entities
             entry["text"] = text
-            entry["tokens"] = tokens
+            entry["tokens"] = strip_spaces(tokens)
 
             return entry
         else:
@@ -320,6 +321,11 @@ if __name__ == "__main__":
     response = list(ap.record([text]))
     # ap.test_post_call_to_etri(text)
     # ap.test_post_call_to_nugget(text, "seunjeon")
+    response = list(ap.record([text]))
+    print("#### response:")
+    print(response)
+    
+    text = "1. 육군인쇄창 부지 ꡒ 병풍아파트 ꡓ 의혹"
     response = list(ap.record([text]))
     print("#### response:")
     print(response)

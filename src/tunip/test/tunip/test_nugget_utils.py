@@ -1,15 +1,17 @@
 import unittest
-from pathlib import Path
-
-import tunip.nugget_utils as nu
-from tunip.config import Config
 from tunip.nugget_api import Nugget
+from tunip.nugget_utils import strip_spaces
 
 
-class NuggetUtilsTest(unittest.TestCase):
+class NuggetApiTest(unittest.TestCase):
+    
+    def setUp(self):
+        self.nugget = Nugget()
 
     def test_strip_spaces(self):
-        # 1. 육군인쇄창 부지 ꡒ 병풍아파트 ꡓ 의혹
+        
+        # 1. 유니코드 앞뒤 공백 제거 확인
+        text = "1. 육군인쇄창 부지 ꡒ 병풍아파트 ꡓ 의혹"
         tokens = [[0, 1, 'SN', '1'], [1, 2, 'S', '.'], [3, 5, 'N', '육군'], [5, 6, 'VCP', '인'], 
                   [6, 8, 'N', '쇄창'], [9, 11, 'N', '부지'], [11, 14, 'S', ' ꡒ '], [14, 16, 'N', '병풍'], 
                   [16, 19, 'N', '아파트'], [19, 22, 'S', ' ꡓ '], [22, 24, 'N', '의혹']]
@@ -18,8 +20,12 @@ class NuggetUtilsTest(unittest.TestCase):
                   [6, 8, 'N', '쇄창'], [9, 11, 'N', '부지'], [12, 13, 'S', 'ꡒ'], [14, 16, 'N', '병풍'],
                   [16, 19, 'N', '아파트'], [20, 21, 'S', 'ꡓ'], [22, 24, 'N', '의혹']]
         
-        updated = nu.strip_spaces(tokens)
+        updated = strip_spaces(tokens)
         assert updated == expect
+        
+        entries = self.nugget([text])
+        for entry in entries:
+            assert entry["tokens"] == expect
 
         # 2. 연속 공백 토큰 탈락 확인
         text = "머스크는 2013 년 소더비 경매에서 촬영한 웨트 넬리 (Wet Nellie)를 샀다.  머스크는 발표 날짜에 대한 질문에 대해 7 월 말에 발표했다."
@@ -32,10 +38,9 @@ class NuggetUtilsTest(unittest.TestCase):
                   [76, 77, 'N', '말'], [77, 78, 'J', '에'], [79, 81, 'N', '발표'], [81, 82, 'XS', '했'], [82, 83, 'E', '다'], 
                   [83, 84, 'S', '.']]
         
-        nugget = Nugget()
-        entries = nugget([text])
+        entries = self.nugget([text])
         for entry in entries:
-            assert nu.strip_spaces(entry["tokens"]) == expect
+            assert strip_spaces(entry["tokens"]) == expect
             
 if __name__=="__main__":
     unittest.main()
