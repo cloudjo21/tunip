@@ -8,6 +8,7 @@ from urllib.parse import urlparse, urlencode
 from tunip.corpus_utils import get_text_generator_from_file, get_corpus_records
 from tunip.logger import init_logging_handler_for_klass
 
+from tunip.nugget_utils import strip_spaces
 
 class Nugget:
     """
@@ -75,7 +76,7 @@ class Nugget:
                         entry = {}
                         entry["labels"] = entities
                         entry["text"] = txt
-                        entry["tokens"] = tokens
+                        entry["tokens"] = strip_spaces(tokens)
 
                         yield entry
 
@@ -99,7 +100,7 @@ class Nugget:
                 entry = {}
                 entry["labels"] = entities
                 entry["text"] = txt
-                entry["tokens"] = tokens
+                entry["tokens"] = strip_spaces(tokens)
 
                 # sents.append(entry)
                 yield entry
@@ -150,7 +151,7 @@ class Nugget:
                         entry = {}
                         entry["labels"] = record.labels
                         entry["text"] = txt
-                        entry["tokens"] = tokens
+                        entry["tokens"] = strip_spaces(tokens)
 
                         yield entry
 
@@ -174,7 +175,7 @@ class Nugget:
                 entry = {}
                 entry["labels"] = record.labels
                 entry["text"] = txt
-                entry["tokens"] = tokens
+                entry["tokens"] = strip_spaces(tokens)
 
                 # sents.append(entry)
                 yield entry
@@ -207,7 +208,7 @@ class Nugget:
                 entry = {}
                 entry["labels"] = entities
                 entry["text"] = txt
-                entry["tokens"] = self.strip_spaces(tokens)
+                entry["tokens"] = strip_spaces(tokens)
 
                 # sents.append(entry)
                 yield entry
@@ -245,7 +246,7 @@ class Nugget:
             entry = {}
             entry["labels"] = entities
             entry["text"] = text
-            entry["tokens"] = tokens
+            entry["tokens"] = strip_spaces(tokens)
 
             return entry
         else:
@@ -307,24 +308,6 @@ class Nugget:
             url="http://ascentkorea.iptime.org:31019/tagging/bulk", json=body
         )
         print(json.dumps(res.json(), indent=4, ensure_ascii=False))
-        
-    def strip_spaces(self, tokens):
-        """
-        :param tokens:   [begin, end, pos, surface] object for a sentence
-        :return:         updated
-        """
-        updated = []
-        for token in tokens:
-            if token[3].isspace():
-                continue
-            if token[3][0]==' ':
-                token[3] = token[3].lstrip()
-                token[0] += 1
-            if token[3][-1]==' ':
-                token[3] = token[3].rstrip()
-                token[1] -= 1
-            updated.append(token)
-        return updated
 
 
 if __name__ == "__main__":

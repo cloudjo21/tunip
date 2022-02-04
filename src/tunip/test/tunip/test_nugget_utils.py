@@ -1,5 +1,6 @@
 import unittest
 from tunip.nugget_api import Nugget
+from tunip.nugget_utils import strip_spaces
 
 
 class NuggetApiTest(unittest.TestCase):
@@ -19,7 +20,7 @@ class NuggetApiTest(unittest.TestCase):
                   [6, 8, 'N', '쇄창'], [9, 11, 'N', '부지'], [12, 13, 'S', 'ꡒ'], [14, 16, 'N', '병풍'],
                   [16, 19, 'N', '아파트'], [20, 21, 'S', 'ꡓ'], [22, 24, 'N', '의혹']]
         
-        updated = self.nugget.strip_spaces(tokens)
+        updated = strip_spaces(tokens)
         assert updated == expect
         
         entries = self.nugget([text])
@@ -39,7 +40,7 @@ class NuggetApiTest(unittest.TestCase):
         
         entries = self.nugget([text])
         for entry in entries:
-            assert self.nugget.strip_spaces(entry["tokens"]) == expect
+            assert strip_spaces(entry["tokens"]) == expect
             
 if __name__=="__main__":
     unittest.main()
