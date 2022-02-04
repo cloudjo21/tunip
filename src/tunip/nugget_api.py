@@ -207,7 +207,7 @@ class Nugget:
                 entry = {}
                 entry["labels"] = entities
                 entry["text"] = txt
-                entry["tokens"] = tokens
+                entry["tokens"] = self.strip_spaces(tokens)
 
                 # sents.append(entry)
                 yield entry
@@ -307,6 +307,24 @@ class Nugget:
             url="http://ascentkorea.iptime.org:31019/tagging/bulk", json=body
         )
         print(json.dumps(res.json(), indent=4, ensure_ascii=False))
+        
+    def strip_spaces(self, tokens):
+        """
+        :param tokens:   [begin, end, pos, surface] object for a sentence
+        :return:         updated
+        """
+        updated = []
+        for token in tokens:
+            if token[3].isspace():
+                continue
+            if token[3][0]==' ':
+                token[3] = token[3].lstrip()
+                token[0] += 1
+            if token[3][-1]==' ':
+                token[3] = token[3].rstrip()
+                token[1] -= 1
+            updated.append(token)
+        return updated
 
 
 if __name__ == "__main__":
@@ -320,6 +338,11 @@ if __name__ == "__main__":
     response = list(ap.record([text]))
     # ap.test_post_call_to_etri(text)
     # ap.test_post_call_to_nugget(text, "seunjeon")
+    response = list(ap.record([text]))
+    print("#### response:")
+    print(response)
+    
+    text = "1. 육군인쇄창 부지 ꡒ 병풍아파트 ꡓ 의혹"
     response = list(ap.record([text]))
     print("#### response:")
     print(response)
