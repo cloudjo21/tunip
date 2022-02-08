@@ -352,6 +352,7 @@ def concat_agglunated_tokens(tokens):
     except NotHangulException as nhe:
         print(f"ERROR tokens: {tokens}")
         print(nhe)
+        is_agglunated_tokens = [False for i in range(len(bi_tokens))]
         # exit(0)
 
     bi_tokens = list(starmap(lambda a, b: (a, b), list(zip(tokens, tokens[1:]))))
