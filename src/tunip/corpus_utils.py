@@ -133,6 +133,15 @@ class CorpusRecord:
     def update_labels(self, other):
         self.labels = other.labels
 
+    @classmethod
+    def from_json_entry(self, entry):
+        record = CorpusRecord(
+            text=entry["text"],
+            # labels for entiy
+            labels=[CorpusSeqLabel.from_tuple_entry(e) for e in entry["labels"]],
+            tokens=[CorpusToken.from_tuple_entry(e) for e in entry["tokens"]]
+        )
+        return record
 
 class CorpusRecordMaker:
     def __init__(self, input_columns, output_columns, out_json=True):
@@ -140,7 +149,7 @@ class CorpusRecordMaker:
         self.output_columns = output_columns
         self.out_json = out_json
 
-    def __call__(self, index, row):
+    def __call__(self, row):
         record = CorpusRecord(
             text=row[self.input_columns[0]],
             tokens=row[self.input_columns[1]] if len(self.input_columns) > 1 else [],
@@ -154,8 +163,8 @@ class CorpusRecordMaker:
 
 
 class CorpusBuildColumnOperation(Enum):
-    add = 0
-    update = 1
+    ADD = 0
+    UPDATE = 1
 
 
 @dataclass
@@ -163,8 +172,8 @@ class CorpusBuildRequest:
     entry: CorpusInput
     column_ops: List[CorpusBuildColumnOperation] = field(
         default_factory=lambda: [
-            CorpusBuildColumnOperation.add,
-            CorpusBuildColumnOperation.add
+            CorpusBuildColumnOperation.ADD,
+            CorpusBuildColumnOperation.ADD
         ]
     )
 
