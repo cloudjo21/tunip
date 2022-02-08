@@ -55,6 +55,7 @@ class CorpusToken:
 
         # 때문 이 ㄴ지 => 때문 인지
         surfaces_updated, token_indices = concat_agglunated_tokens(surfaces)
+            
         head_token_indices = [t[0] for t in token_indices]
         tokens_updated: list = [
             tokens[token_index] for token_index in head_token_indices
@@ -131,7 +132,7 @@ class CorpusRecord:
 
     def update_labels(self, other):
         self.labels = other.labels
-    
+
     @classmethod
     def from_json_entry(self, entry):
         record = CorpusRecord(
@@ -141,7 +142,6 @@ class CorpusRecord:
             tokens=[CorpusToken.from_tuple_entry(e) for e in entry["tokens"]]
         )
         return record
-
 
 class CorpusRecordMaker:
     def __init__(self, input_columns, output_columns, out_json=True):
@@ -155,6 +155,7 @@ class CorpusRecordMaker:
             tokens=row[self.input_columns[1]] if len(self.input_columns) > 1 else [],
             labels=row[self.output_columns[0]]
         )
+        # print(record)
         if self.out_json:
             return record.to_json()
         else:
