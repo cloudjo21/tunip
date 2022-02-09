@@ -461,3 +461,65 @@ class WarehouseVectorsDocumentSourceSnapshotVid2didPath(WarehouseVectorsDocument
 
     def __repr__(self):
         return f"{super().__repr__()}/vid2did"
+
+
+class WarehouseVectorsEntitySourcePath(WarehouseVectorsPath):
+    def __init__(self, user_name, source_name):
+        super(WarehouseVectorsEntitySourcePath, self).__init__(user_name)
+        self.source_name = source_name
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/entity/{self.source_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class WarehouseVectorsEntitySourceSnapshotPath(WarehouseVectorsEntitySourcePath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsEntitySourceSnapshotPath, self).__init__(
+            user_name, source_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: WarehouseVectorsEntitySourcePath, snapshot_dt: str):
+        return WarehouseVectorsEntitySourceSnapshotPath(
+            parent.user_name, parent.source_name, snapshot_dt
+        )
+
+
+class WarehouseVectorsEntitySourceSnapshotArrowPath(WarehouseVectorsEntitySourceSnapshotPath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsEntitySourceSnapshotArrowPath, self).__init__(
+            user_name, source_name, snapshot_dt
+        )
+
+    def __repr__(self):
+        return f"{super().__repr__()}/arrow"
+
+
+class WarehouseVectorsEntitySourceSnapshotEid2vidPath(WarehouseVectorsEntitySourceSnapshotPath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsEntitySourceSnapshotEid2vidPath, self).__init__(
+            user_name, source_name, snapshot_dt
+        )
+
+    def __repr__(self):
+        return f"{super().__repr__()}/eid2vid"
+
+
+class WarehouseVectorsEntitySourceSnapshotVid2eidPath(WarehouseVectorsEntitySourceSnapshotPath):
+    def __init__(self, user_name, source_name, snapshot_dt):
+        super(WarehouseVectorsEntitySourceSnapshotVid2eidPath, self).__init__(
+            user_name, source_name, snapshot_dt
+        )
+
+    def __repr__(self):
+        return f"{super().__repr__()}/vid2eid"
