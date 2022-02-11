@@ -121,6 +121,53 @@ class MartVectorIndexDocumentSourceIndexTypeSnapshotPath(MartVectorIndexDocument
         )
 
 
+class MartVectorIndexEntityPath(MartVectorIndexTaskNamePath):
+    def __init__(self, user_name):
+        super(MartVectorIndexEntityPath, self).__init__(user_name, 'entity')
+    
+    def __repr__(self):
+        return f"{super().__repr__()}"
+
+
+class MartVectorIndexEntitySourcePath(MartVectorIndexEntityPath):
+    def __init__(self, user_name, source_name):
+        super(MartVectorIndexEntitySourcePath, self).__init__(user_name)
+        self.source_name = source_name
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.source_name}"
+
+
+class MartVectorIndexEntitySourceIndexTypePath(MartVectorIndexEntitySourcePath):
+    def __init__(self, user_name, source_name, index_type):
+        super(MartVectorIndexEntitySourceIndexTypePath, self).__init__(user_name, source_name)
+        self.index_type = index_type
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.index_type}"
+
+    def has_snapshot(self):
+        return True
+
+
+class MartVectorIndexEntitySourceIndexTypeSnapshotPath(MartVectorIndexEntitySourceIndexTypePath):
+    def __init__(self, user_name, source_name, index_type, snapshot_dt):
+        super(MartVectorIndexEntitySourceIndexTypeSnapshotPath, self).__init__(user_name, source_name, index_type)
+        self.snapshot_dt = snapshot_dt
+    
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+    
+    @classmethod
+    def from_parent(cls, parent: MartVectorIndexEntitySourceIndexTypePath, snapshot_dt: str):
+        return MartVectorIndexEntitySourceIndexTypeSnapshotPath(
+            parent.user_name, parent.source_name, parent.index_type, snapshot_dt
+        )
+
+
 class MartPretrainedModelPath(MartPath):
     def __init__(self, user_name, model_name):
         super(MartPretrainedModelPath, self).__init__(user_name)
