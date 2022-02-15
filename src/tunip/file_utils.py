@@ -99,7 +99,7 @@ class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
         super(HttpBasedWebHdfsFileHandler, self).__init__(service_config.config)
         self.webhdfs_http_host_root = f"http://{self.hdfs_hostname}:{self.webhdfs_port}/webhdfs/v1"
         self.service_config = service_config
-        self.local_fh = LocalFileHandler(self.service_config.config)
+        self.local_fh = services.get("LOCAL", config=service_config.config)
 
     def open(self, path, mode='r'):
         path_parts = Path(f"{self.webhdfs_http_host_root}/{path}").parts
