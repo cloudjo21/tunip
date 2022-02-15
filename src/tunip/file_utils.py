@@ -94,22 +94,35 @@ class HdfsFileHandler(FileHandler):
 
 class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
     
-    def __init__(self, config):
-        super(HttpBasedWebHdfsFileHandler, self).__init__(config)
+    def __init__(self, service_config):
+        super(HttpBasedWebHdfsFileHandler, self).__init__(service_config.config)
         self.webhdfs_http_host_root = f"http://{self.hdfs_hostname}:{self.webhdfs_port}/webhdfs/v1"
+        self.service_config = service_config
 
     def open(self, path, mode='r'):
         path_parts = Path(f"{self.webhdfs_http_host_root}/{path}").parts
         http_path = 'http://' + '/'.join(path_parts[1:]) + '?op=OPEN&noredirect=True'
-        f = sm_open(http_path, mode=mode)
+        f = sm_open(http_path, mode='rb')
+        res_json = json.loads(f.response.text)
         if f.response.text:
-            res_json = json.loads(f.response.text)
             # replace slash to url-encoded slash ('/' '%2F' '%252F' '%25252F')
             redirected_path = res_json["Location"].replace('%25', '%2525')
-            redirected_file = sm_open(redirected_path, mode)
+            redirected_file = sm_open(redirected_path, 'rb')
             return redirected_file
         else:
             return f
+
+    def download(self, hdfs_path, local_path, overwrite=False, read_mode='r', write_mode='w') -> str:
+        f = self.open(hdfs_path, mode=read_mode)
+        local_fh = LocalFileHandler(self.service_config.config)
+        if 'b' in write_mode:
+            local_fh.write_binary(local_path, f.response.content)
+        else:
+            local_fh.write(local_path, f.response.text)
+        return local_path
+        # NOT WORKING for slash path encoded %2F
+        # downloaded_path = self.client.download(hdfs_path=hdfs_path, local_path=local_path, overwrite=overwrite)
+        # return downloaded_path
 
 
 class LocalFileHandler(FileHandler):
@@ -148,9 +161,14 @@ class LocalFileHandler(FileHandler):
         dir_path = self.local_path_builder.build(path)
         Path(dir_path).mkdir(parents=True, exist_ok=True)
     
-    def write(self, path, contents):
+    def write(self, path, contents, encoding="utf-8"):
         file_path = self.local_path_builder.build(path)
-        with open(file_path, mode="w", encoding="utf-8") as f:
+        with open(file_path, mode='w', encoding=encoding) as f:
+            f.write(contents)
+    
+    def write_binary(self, path, contents):
+        file_path = self.local_path_builder.build(path)
+        with open(file_path, mode='wb') as f:
             f.write(contents)
     
     def save_pickle(self, path: str, contents: object):
