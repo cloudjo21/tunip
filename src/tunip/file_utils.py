@@ -114,13 +114,23 @@ class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
             return f
 
     def download(self, hdfs_path, overwrite=False, read_mode='r', write_mode='w'):
-        walked = next(
-            self.client.walk(
+        status = self.client.status(urllib.parse.quote_plus(hdfs_path, SAFE_SYMBOLS_FOR_HTTP))
+        if status['type'] == 'FILE':
+            self.download_file(
+                hdfs_path,
+                hdfs_path,
+                overwrite,
+                read_mode,
+                write_mode
+            )
+            return
+
+        trails = self.client.walk(
                 # FROM '/user/nauts/mart/plm/models/monologg%2Fkoelectra-small-v3-discriminator'
                 # TO '/user/nauts/mart/plm/models/monologg%252Fkoelectra-small-v3-discriminator'
                 urllib.parse.quote_plus(hdfs_path, SAFE_SYMBOLS_FOR_HTTP)
             )
-        ) or None
+        walked = next(trails, None)
         if not walked:
             raise Exception(f'INVALID hdfs path: {hdfs_path}')
         current_path, child_dirs, child_files = walked

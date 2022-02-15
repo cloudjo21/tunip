@@ -66,7 +66,7 @@ class FileUtilsTest(unittest.TestCase):
         f = webhdfs_handle.open(config_path, mode='rb')
         assert f.content_length > 0
 
-    def test_download_of_http_webhdfs(self):
+    def test_download_file_config_of_http_webhdfs(self):
         service_config = get_service_config(force_service_level='dev')
         model_name = 'monologg/koelectra-small-v3-discriminator'
         config_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(model_name)}/config.json"
@@ -136,3 +136,17 @@ class FileUtilsTest(unittest.TestCase):
         except Exception:
             self.fail("webhdfs_handle.download() raised ExceptionType unexpectedly!")
         
+    def test_download_config_of_http_webhdfs(self):
+        service_config = get_service_config(force_service_level='dev')
+        model_name = 'monologg/koelectra-small-v3-discriminator'
+        config_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(model_name)}/config.json"
+
+        webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
+        # f = webhdfs_handle.open(config_path, mode='rb')
+        webhdfs_handle.download(
+            config_path,
+            # f"/user/{service_config.username}/test_config.json",
+            overwrite=True,
+            read_mode='r',
+            write_mode='w'
+        )
