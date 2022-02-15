@@ -1,3 +1,4 @@
+import json
 import mmap
 import os
 import pickle
@@ -75,7 +76,7 @@ class HdfsFileHandler(FileHandler):
     def dumps_pickle(self, path, obj):
         file_path = self.hdfs_url_builder.build(path)
         contents = pickle.dumps(obj)
-        self.client.write(path, data=contents)
+        self.client.write(file_path, data=contents)
     
     def mkdirs(self, path):
         self.client.makedirs(path)
@@ -86,10 +87,30 @@ class HdfsFileHandler(FileHandler):
     def exist(self, path):
         return self.client.status(path, strict=False)
 
-    def open(self, path):
-        f = sm_open(f"{self.webhdfs_host_root}/{path}")
+    def open(self, path, mode='r'):
+        f = sm_open(f"{self.webhdfs_host_root}/{path}", mode=mode)
         return f
     
+
+class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
+    
+    def __init__(self, config):
+        super(HttpBasedWebHdfsFileHandler, self).__init__(config)
+        self.webhdfs_http_host_root = f"http://{self.hdfs_hostname}:{self.webhdfs_port}/webhdfs/v1"
+
+    def open(self, path, mode='r'):
+        path_parts = Path(f"{self.webhdfs_http_host_root}/{path}").parts
+        http_path = 'http://' + '/'.join(path_parts[1:]) + '?op=OPEN&noredirect=True'
+        f = sm_open(http_path, mode=mode)
+        if f.response.text:
+            res_json = json.loads(f.response.text)
+            # replace slash to url-encoded slash ('/' '%2F' '%252F' '%25252F')
+            redirected_path = res_json["Location"].replace('%25', '%2525')
+            redirected_file = sm_open(redirected_path, mode)
+            return redirected_file
+        else:
+            return f
+
 
 class LocalFileHandler(FileHandler):
     def __init__(self, config):
@@ -140,6 +161,9 @@ class LocalFileHandler(FileHandler):
     def exist(self, path):
         return os.path.exists(path)
 
+    def open(self, path, mode='r'):
+        f = open(path, mode=mode)
+        return f
 
 
 T = TypeVar("T", LocalFileHandler, HdfsFileHandler)
