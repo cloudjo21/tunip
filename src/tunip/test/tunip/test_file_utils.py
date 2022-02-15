@@ -62,6 +62,39 @@ class FileUtilsTest(unittest.TestCase):
         model_name = urllib.parse.quote_plus('monologg/koelectra-small-v3-discriminator')
         config_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(urllib.parse.quote_plus(model_name))}/config.json"
 
-        webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config.config)
+        webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
         f = webhdfs_handle.open(config_path, mode='rb')
         assert f.content_length > 0
+
+    def test_download_of_http_webhdfs(self):
+        service_config = get_service_config(force_service_level='dev')
+        model_name = urllib.parse.quote_plus('monologg/koelectra-small-v3-discriminator')
+        config_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(urllib.parse.quote_plus(model_name))}/config.json"
+
+        webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
+        # f = webhdfs_handle.open(config_path, mode='rb')
+        webhdfs_handle.download(
+            config_path,
+            f"/user/{service_config.username}/test_config.json",
+            overwrite=True,
+            read_mode='r',
+            write_mode='w'
+        )
+
+    def test_download_binary_of_http_webhdfs(self):
+        service_config = get_service_config(force_service_level='dev')
+        model_name = urllib.parse.quote_plus('monologg/koelectra-small-v3-discriminator')
+        model_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(urllib.parse.quote_plus(model_name))}/torchscript/model.pt"
+
+        webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
+        try:
+            webhdfs_handle.download(
+                model_path,
+                f"/user/{service_config.username}/mymodel.pt",
+                overwrite=True,
+                read_mode='rb',
+                write_mode='wb'
+            )
+        except Exception:
+            self.fail("webhdfs_handle.download() raised ExceptionType unexpectedly!")
+        
