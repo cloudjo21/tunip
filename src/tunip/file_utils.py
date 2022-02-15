@@ -9,6 +9,7 @@ from pathlib import Path
 from smart_open import open as sm_open
 from typing import TypeVar
 
+from tunip.constants import SAFE_SYMBOLS_FOR_HTTP
 from tunip.object_factory import ObjectFactory
 from tunip.path_utils import HdfsUrlProvider, LocalPathProvider
 
@@ -93,32 +94,69 @@ class HdfsFileHandler(FileHandler):
     
 
 class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
-    
+
     def __init__(self, service_config):
         super(HttpBasedWebHdfsFileHandler, self).__init__(service_config.config)
         self.webhdfs_http_host_root = f"http://{self.hdfs_hostname}:{self.webhdfs_port}/webhdfs/v1"
         self.service_config = service_config
+        self.local_fh = LocalFileHandler(self.service_config.config)
 
     def open(self, path, mode='r'):
         path_parts = Path(f"{self.webhdfs_http_host_root}/{path}").parts
         http_path = 'http://' + '/'.join(path_parts[1:]) + '?op=OPEN&noredirect=True'
-        f = sm_open(http_path, mode='rb')
+        f = sm_open(urllib.parse.quote_plus(http_path, SAFE_SYMBOLS_FOR_HTTP), mode='rb')
         res_json = json.loads(f.response.text)
         if f.response.text:
-            # replace slash to url-encoded slash ('/' '%2F' '%252F' '%25252F')
-            redirected_path = res_json["Location"].replace('%25', '%2525')
+            redirected_path = urllib.parse.quote_plus(res_json["Location"], SAFE_SYMBOLS_FOR_HTTP)
             redirected_file = sm_open(redirected_path, 'rb')
             return redirected_file
         else:
             return f
 
-    def download(self, hdfs_path, local_path, overwrite=False, read_mode='r', write_mode='w') -> str:
-        f = self.open(hdfs_path, mode=read_mode)
-        local_fh = LocalFileHandler(self.service_config.config)
-        if 'b' in write_mode:
-            local_fh.write_binary(local_path, f.response.content)
+    def download(self, hdfs_path, overwrite=False, read_mode='r', write_mode='w'):
+        walked = next(
+            self.client.walk(
+                # FROM '/user/nauts/mart/plm/models/monologg%2Fkoelectra-small-v3-discriminator'
+                # TO '/user/nauts/mart/plm/models/monologg%252Fkoelectra-small-v3-discriminator'
+                urllib.parse.quote_plus(hdfs_path, SAFE_SYMBOLS_FOR_HTTP)
+            )
+        ) or None
+        if not walked:
+            raise Exception(f'INVALID hdfs path: {hdfs_path}')
+        current_path, child_dirs, child_files = walked
+        current_path = urllib.parse.unquote(current_path)
+
+        for child_f in child_files:
+            self.download_file(
+                f"{current_path}/{child_f}",
+                f"{current_path}/{child_f}",
+                overwrite,
+                read_mode,
+                write_mode
+            )
+        for child_d in child_dirs:
+            self.local_fh.mkdirs(f"{current_path}/{child_d}")
+
+            self.download(
+                f"{current_path}/{child_d}",
+                overwrite,
+                read_mode,
+                write_mode
+            )
+
+    def download_file(self, hdfs_path, local_path, overwrite=False, read_mode='r', write_mode='w') -> str:
+        f = self.open(urllib.parse.quote_plus(hdfs_path, SAFE_SYMBOLS_FOR_HTTP), mode=read_mode)
+
+        local_path = Path(local_path)
+        if local_path.is_dir() and local_path.exists():
+            self.local_fh.mkdirs(local_path)
         else:
-            local_fh.write(local_path, f.response.text)
+            self.local_fh.mkdirs(local_path.parent)
+
+        if 'b' in write_mode:
+            self.local_fh.write_binary(local_path, f.response.content)
+        else:
+            self.local_fh.write(local_path, f.response.text)
         return local_path
         # NOT WORKING for slash path encoded %2F
         # downloaded_path = self.client.download(hdfs_path=hdfs_path, local_path=local_path, overwrite=overwrite)
