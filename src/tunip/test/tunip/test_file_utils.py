@@ -59,7 +59,7 @@ class FileUtilsTest(unittest.TestCase):
 
     def test_http_webhdfs(self):
         service_config = get_service_config(force_service_level='dev')
-        model_name = urllib.parse.quote_plus('monologg/koelectra-small-v3-discriminator')
+        model_name = 'monologg/koelectra-small-v3-discriminator'
         config_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(urllib.parse.quote_plus(model_name))}/config.json"
 
         webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
@@ -68,12 +68,12 @@ class FileUtilsTest(unittest.TestCase):
 
     def test_download_of_http_webhdfs(self):
         service_config = get_service_config(force_service_level='dev')
-        model_name = urllib.parse.quote_plus('monologg/koelectra-small-v3-discriminator')
-        config_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(urllib.parse.quote_plus(model_name))}/config.json"
+        model_name = 'monologg/koelectra-small-v3-discriminator'
+        config_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(model_name)}/config.json"
 
         webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
         # f = webhdfs_handle.open(config_path, mode='rb')
-        webhdfs_handle.download(
+        webhdfs_handle.download_file(
             config_path,
             f"/user/{service_config.username}/test_config.json",
             overwrite=True,
@@ -83,14 +83,52 @@ class FileUtilsTest(unittest.TestCase):
 
     def test_download_binary_of_http_webhdfs(self):
         service_config = get_service_config(force_service_level='dev')
-        model_name = urllib.parse.quote_plus('monologg/koelectra-small-v3-discriminator')
-        model_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(urllib.parse.quote_plus(model_name))}/torchscript/model.pt"
+        model_name = 'monologg/koelectra-small-v3-discriminator'
+        model_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(model_name)}/torchscript/model.pt"
 
         webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
         try:
-            webhdfs_handle.download(
+            webhdfs_handle.download_file(
                 model_path,
                 f"/user/{service_config.username}/mymodel.pt",
+                overwrite=True,
+                read_mode='rb',
+                write_mode='wb'
+            )
+        except Exception:
+            self.fail("webhdfs_handle.download() raised ExceptionType unexpectedly!")
+        
+    def test_download_directory_of_http_webhdfs(self):
+        service_config = get_service_config(force_service_level='dev')
+        model_name = 'monologg/koelectra-small-v3-discriminator'
+        dir_path = f"/user/nauts/mart/plm/models/{urllib.parse.quote_plus(model_name)}"
+
+        webhdfs_handle = HttpBasedWebHdfsFileHandler(service_config)
+        # paths = webhdfs_handle.client.walk(dir_path)
+        # print(next(paths))
+
+        # NOT WORKING with the same path
+        # paths = webhdfs_handle.client.download(dir_path, 'test_out')
+        # hdfs.util.HdfsError: File does not exist: /user/nauts/mart/plm/models/monologg/koelectra-small-v3-discriminator/config.json
+        # at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:86)
+        # at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:76)
+        # at org.apache.hadoop.hdfs.server.namenode.FSDirStatAndListingOp.getBlockLocations(FSDirStatAndListingOp.java:158)
+        # at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1931)
+        # at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:738)
+        # at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:426)
+        # at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+        # at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:524)
+        # at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1025)
+        # at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:876)
+        # at org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:822)
+        # at java.security.AccessController.doPrivileged(Native Method)
+        # at javax.security.auth.Subject.doAs(Subject.java:422)
+        # at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+        # at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2682)
+
+        try:
+            webhdfs_handle.download(
+                hdfs_path=dir_path,
                 overwrite=True,
                 read_mode='rb',
                 write_mode='wb'
