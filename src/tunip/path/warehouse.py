@@ -402,21 +402,21 @@ class WarehouseVectorsPath(WarehousePath):
 
 
 class WarehouseVectorsDocumentSourcePath(WarehouseVectorsPath):
-    def __init__(self, user_name, source_name):
+    def __init__(self, user_name, source_type):
         super(WarehouseVectorsDocumentSourcePath, self).__init__(user_name)
-        self.source_name = source_name
+        self.source_type = source_type
     
     def __repr__(self):
-        return f"{super().__repr__()}/document/{self.source_name}"
+        return f"{super().__repr__()}/document/{self.source_type}"
 
     def has_snapshot(self):
         return True
 
 
 class WarehouseVectorsDocumentSourceSnapshotPath(WarehouseVectorsDocumentSourcePath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsDocumentSourceSnapshotPath, self).__init__(
-            user_name, source_name
+            user_name, source_type
         )
         self.snapshot_dt = snapshot_dt
 
@@ -429,14 +429,14 @@ class WarehouseVectorsDocumentSourceSnapshotPath(WarehouseVectorsDocumentSourceP
     @classmethod
     def from_parent(cls, parent: WarehouseVectorsDocumentSourcePath, snapshot_dt: str):
         return WarehouseVectorsDocumentSourceSnapshotPath(
-            parent.user_name, parent.source_name, snapshot_dt
+            parent.user_name, parent.source_type, snapshot_dt
         )
 
 
 class WarehouseVectorsDocumentSourceSnapshotArrowPath(WarehouseVectorsDocumentSourceSnapshotPath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsDocumentSourceSnapshotArrowPath, self).__init__(
-            user_name, source_name, snapshot_dt
+            user_name, source_type, snapshot_dt
         )
 
     def __repr__(self):
@@ -444,9 +444,9 @@ class WarehouseVectorsDocumentSourceSnapshotArrowPath(WarehouseVectorsDocumentSo
 
 
 class WarehouseVectorsDocumentSourceSnapshotDid2vidPath(WarehouseVectorsDocumentSourceSnapshotPath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsDocumentSourceSnapshotDid2vidPath, self).__init__(
-            user_name, source_name, snapshot_dt
+            user_name, source_type, snapshot_dt
         )
 
     def __repr__(self):
@@ -454,9 +454,9 @@ class WarehouseVectorsDocumentSourceSnapshotDid2vidPath(WarehouseVectorsDocument
 
 
 class WarehouseVectorsDocumentSourceSnapshotVid2didPath(WarehouseVectorsDocumentSourceSnapshotPath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsDocumentSourceSnapshotVid2didPath, self).__init__(
-            user_name, source_name, snapshot_dt
+            user_name, source_type, snapshot_dt
         )
 
     def __repr__(self):
@@ -464,21 +464,21 @@ class WarehouseVectorsDocumentSourceSnapshotVid2didPath(WarehouseVectorsDocument
 
 
 class WarehouseVectorsEntitySourcePath(WarehouseVectorsPath):
-    def __init__(self, user_name, source_name):
+    def __init__(self, user_name, source_type):
         super(WarehouseVectorsEntitySourcePath, self).__init__(user_name)
-        self.source_name = source_name
+        self.source_type = source_type
     
     def __repr__(self):
-        return f"{super().__repr__()}/entity/{self.source_name}"
+        return f"{super().__repr__()}/entity/{self.source_type}"
 
     def has_snapshot(self):
         return True
 
 
 class WarehouseVectorsEntitySourceSnapshotPath(WarehouseVectorsEntitySourcePath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsEntitySourceSnapshotPath, self).__init__(
-            user_name, source_name
+            user_name, source_type
         )
         self.snapshot_dt = snapshot_dt
 
@@ -491,14 +491,14 @@ class WarehouseVectorsEntitySourceSnapshotPath(WarehouseVectorsEntitySourcePath)
     @classmethod
     def from_parent(cls, parent: WarehouseVectorsEntitySourcePath, snapshot_dt: str):
         return WarehouseVectorsEntitySourceSnapshotPath(
-            parent.user_name, parent.source_name, snapshot_dt
+            parent.user_name, parent.source_type, snapshot_dt
         )
 
 
 class WarehouseVectorsEntitySourceSnapshotArrowPath(WarehouseVectorsEntitySourceSnapshotPath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsEntitySourceSnapshotArrowPath, self).__init__(
-            user_name, source_name, snapshot_dt
+            user_name, source_type, snapshot_dt
         )
 
     def __repr__(self):
@@ -506,9 +506,9 @@ class WarehouseVectorsEntitySourceSnapshotArrowPath(WarehouseVectorsEntitySource
 
 
 class WarehouseVectorsEntitySourceSnapshotEid2vidPath(WarehouseVectorsEntitySourceSnapshotPath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsEntitySourceSnapshotEid2vidPath, self).__init__(
-            user_name, source_name, snapshot_dt
+            user_name, source_type, snapshot_dt
         )
 
     def __repr__(self):
@@ -516,9 +516,9 @@ class WarehouseVectorsEntitySourceSnapshotEid2vidPath(WarehouseVectorsEntitySour
 
 
 class WarehouseVectorsEntitySourceSnapshotVid2eidPath(WarehouseVectorsEntitySourceSnapshotPath):
-    def __init__(self, user_name, source_name, snapshot_dt):
+    def __init__(self, user_name, source_type, snapshot_dt):
         super(WarehouseVectorsEntitySourceSnapshotVid2eidPath, self).__init__(
-            user_name, source_name, snapshot_dt
+            user_name, source_type, snapshot_dt
         )
 
     def __repr__(self):
