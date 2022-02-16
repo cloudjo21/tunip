@@ -13,20 +13,20 @@ class LakeDocumentPath(LakePath, Snapshot):
 
 
 class LakeDocumentSourcePath(LakeDocumentPath):
-    def __init__(self, user_name, schema_type, source_name):
+    def __init__(self, user_name, schema_type, source_type):
         super(LakeDocumentSourcePath, self).__init__(user_name, schema_type)
-        self.source_name = source_name
+        self.source_type = source_type
 
     def __repr__(self):
-        return f"{super().__repr__()}/{self.source_name}"
+        return f"{super().__repr__()}/{self.source_type}"
 
     def has_snapshot(self):
         return True
 
 
 class LakeDocumentSnapshotPath(LakeDocumentSourcePath):
-    def __init__(self, user_name, schema_type, source_name, snapshot_dt):
-        super(LakeDocumentSnapshotPath, self).__init__(user_name, schema_type, source_name)
+    def __init__(self, user_name, schema_type, source_type, snapshot_dt):
+        super(LakeDocumentSnapshotPath, self).__init__(user_name, schema_type, source_type)
         self.snapshot_dt = snapshot_dt
 
     def __repr__(self):
@@ -38,5 +38,5 @@ class LakeDocumentSnapshotPath(LakeDocumentSourcePath):
     @classmethod
     def from_parent(cls, parent: LakeDocumentSourcePath, snapshot_dt: str):
         return LakeDocumentSnapshotPath(
-            parent.user_name, parent.schema_type, parent.source_name, snapshot_dt
+            parent.user_name, parent.schema_type, parent.source_type, snapshot_dt
         )

@@ -83,17 +83,17 @@ class MartVectorIndexDocumentPath(MartVectorIndexTaskNamePath):
 
 
 class MartVectorIndexDocumentSourcePath(MartVectorIndexDocumentPath):
-    def __init__(self, user_name, source_name):
+    def __init__(self, user_name, source_type):
         super(MartVectorIndexDocumentSourcePath, self).__init__(user_name)
-        self.source_name = source_name
+        self.source_type = source_type
     
     def __repr__(self):
-        return f"{super().__repr__()}/{self.source_name}"
+        return f"{super().__repr__()}/{self.source_type}"
 
 
 class MartVectorIndexDocumentSourceIndexTypePath(MartVectorIndexDocumentSourcePath):
-    def __init__(self, user_name, source_name, index_type):
-        super(MartVectorIndexDocumentSourceIndexTypePath, self).__init__(user_name, source_name)
+    def __init__(self, user_name, source_type, index_type):
+        super(MartVectorIndexDocumentSourceIndexTypePath, self).__init__(user_name, source_type)
         self.index_type = index_type
     
     def __repr__(self):
@@ -104,8 +104,8 @@ class MartVectorIndexDocumentSourceIndexTypePath(MartVectorIndexDocumentSourcePa
 
 
 class MartVectorIndexDocumentSourceIndexTypeSnapshotPath(MartVectorIndexDocumentSourceIndexTypePath):
-    def __init__(self, user_name, source_name, index_type, snapshot_dt):
-        super(MartVectorIndexDocumentSourceIndexTypeSnapshotPath, self).__init__(user_name, source_name, index_type)
+    def __init__(self, user_name, source_type, index_type, snapshot_dt):
+        super(MartVectorIndexDocumentSourceIndexTypeSnapshotPath, self).__init__(user_name, source_type, index_type)
         self.snapshot_dt = snapshot_dt
     
     def __repr__(self):
@@ -117,7 +117,7 @@ class MartVectorIndexDocumentSourceIndexTypeSnapshotPath(MartVectorIndexDocument
     @classmethod
     def from_parent(cls, parent: MartVectorIndexDocumentSourceIndexTypePath, snapshot_dt: str):
         return MartVectorIndexDocumentSourceIndexTypeSnapshotPath(
-            parent.user_name, parent.source_name, parent.index_type, snapshot_dt
+            parent.user_name, parent.source_type, parent.index_type, snapshot_dt
         )
 
 
@@ -130,17 +130,17 @@ class MartVectorIndexEntityPath(MartVectorIndexTaskNamePath):
 
 
 class MartVectorIndexEntitySourcePath(MartVectorIndexEntityPath):
-    def __init__(self, user_name, source_name):
+    def __init__(self, user_name, source_type):
         super(MartVectorIndexEntitySourcePath, self).__init__(user_name)
-        self.source_name = source_name
+        self.source_type = source_type
     
     def __repr__(self):
-        return f"{super().__repr__()}/{self.source_name}"
+        return f"{super().__repr__()}/{self.source_type}"
 
 
 class MartVectorIndexEntitySourceIndexTypePath(MartVectorIndexEntitySourcePath):
-    def __init__(self, user_name, source_name, index_type):
-        super(MartVectorIndexEntitySourceIndexTypePath, self).__init__(user_name, source_name)
+    def __init__(self, user_name, source_type, index_type):
+        super(MartVectorIndexEntitySourceIndexTypePath, self).__init__(user_name, source_type)
         self.index_type = index_type
     
     def __repr__(self):
@@ -151,8 +151,8 @@ class MartVectorIndexEntitySourceIndexTypePath(MartVectorIndexEntitySourcePath):
 
 
 class MartVectorIndexEntitySourceIndexTypeSnapshotPath(MartVectorIndexEntitySourceIndexTypePath):
-    def __init__(self, user_name, source_name, index_type, snapshot_dt):
-        super(MartVectorIndexEntitySourceIndexTypeSnapshotPath, self).__init__(user_name, source_name, index_type)
+    def __init__(self, user_name, source_type, index_type, snapshot_dt):
+        super(MartVectorIndexEntitySourceIndexTypeSnapshotPath, self).__init__(user_name, source_type, index_type)
         self.snapshot_dt = snapshot_dt
     
     def __repr__(self):
@@ -164,7 +164,7 @@ class MartVectorIndexEntitySourceIndexTypeSnapshotPath(MartVectorIndexEntitySour
     @classmethod
     def from_parent(cls, parent: MartVectorIndexEntitySourceIndexTypePath, snapshot_dt: str):
         return MartVectorIndexEntitySourceIndexTypeSnapshotPath(
-            parent.user_name, parent.source_name, parent.index_type, snapshot_dt
+            parent.user_name, parent.source_type, parent.index_type, snapshot_dt
         )
 
 
