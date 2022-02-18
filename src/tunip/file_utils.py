@@ -200,7 +200,7 @@ class LocalFileHandler(FileHandler):
         return pkl_contents
 
     def dumps_pickle(self, path, obj):
-        file_path = self.local_url_builder.build(path)
+        file_path = self.local_path_builder.build(path)
         contents = pickle.dumps(obj)
         with open(file_path, mode="w") as f:
             f.write(contents)
@@ -228,7 +228,7 @@ class LocalFileHandler(FileHandler):
         return os.path.exists(path)
 
     def open(self, path, mode='r'):
-        f = open(path, mode=mode)
+        f = sm_open(path, mode=mode)
         return f
 
 
