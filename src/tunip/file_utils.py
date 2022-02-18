@@ -202,7 +202,7 @@ class LocalFileHandler(FileHandler):
     def dumps_pickle(self, path, obj):
         file_path = self.local_path_builder.build(path)
         contents = pickle.dumps(obj)
-        with open(file_path, mode="w") as f:
+        with open(file_path, mode="wb") as f:
             f.write(contents)
 
     def mkdirs(self, path):
