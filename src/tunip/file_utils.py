@@ -2,10 +2,12 @@ import json
 import mmap
 import os
 import pickle
+import shutil
 import urllib
 
 from hdfs import InsecureClient
 from pathlib import Path
+from pyarrow import fs as arrow_fs
 from smart_open import open as sm_open
 from typing import TypeVar
 
@@ -40,6 +42,14 @@ class HdfsFileHandler(FileHandler):
         self.hdfs_hostname = config["hdfs.hostname"]
         self.webhdfs_port = config.get("hdfs.namenode.http.port") or 50070
         self.webhdfs_host_root = f"webhdfs://{self.hdfs_hostname}:{self.webhdfs_port}"
+
+        self.pa_fs = arrow_fs.HadoopFileSystem(
+            host=config["hdfs.hostname"],
+            port=config["hdfs.port"]
+        )
+
+    def copy_file(self, source, target):
+        self.pa_fs.copy_file(source, target)
     
     def list_dir(self, path):
         path_url = urllib.parse.quote(path)
@@ -176,6 +186,9 @@ class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
 class LocalFileHandler(FileHandler):
     def __init__(self, config):
         self.local_path_builder = LocalPathProvider(config)
+
+    def copy_file(self, source, target):
+        shutil.copyfile(source, target)
     
     def list_dir(self, path):
         return [str(p.absolute()) for p in Path(path).glob("*")]
