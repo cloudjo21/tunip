@@ -61,6 +61,14 @@ class ServiceLevelConfig:
         return self.config.get("fs") or "hdfs"
 
     @property
+    def has_local_fs(self):
+        return self.filesystem.upper() == 'LOCAL'
+
+    @property
+    def has_hdfs_fs(self):
+        return self.filesystem.upper() == 'HDFS'
+
+    @property
     def username(self):
         fs_type = self.filesystem
         if fs_type == "hdfs":
