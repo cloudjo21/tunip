@@ -5,6 +5,7 @@ class DocumentRecord(BaseModel):
     text: str
     
 class AnchorDocumentRecord(BaseModel):
+    doc_id: int 
     parent_title: str
     parent_text: str
     anchor_title: str
