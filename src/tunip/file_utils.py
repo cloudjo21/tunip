@@ -45,7 +45,7 @@ class HdfsFileHandler(FileHandler):
 
         self.pa_fs = arrow_fs.HadoopFileSystem(
             host=config["hdfs.hostname"],
-            port=config["hdfs.port"]
+            port=int(config["hdfs.port"])
         )
 
     def copy_file(self, source, target):
