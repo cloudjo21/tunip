@@ -105,7 +105,7 @@ url_pattern = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-
 
 
 def preprocess_korean(text):
-    text = pattern4korean.sub(' ', text)
+    text = pattern4korean.sub('', text)
     text = url_pattern.sub('', text)
     text = text.strip()
     return text

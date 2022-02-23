@@ -4,10 +4,11 @@ import time
 from typing import Union
 
 from urllib.parse import urlparse, urlencode
+from urllib.request import urlopen
 
 from tunip.corpus_utils import get_text_generator_from_file, get_corpus_records
 from tunip.logger import init_logging_handler_for_klass
-
+from tunip.preprocess import preprocess_korean
 from tunip.nugget_utils import strip_spaces
 
 class Nugget:
@@ -182,6 +183,7 @@ class Nugget:
 
 
     def record(self, texts):
+        texts = [preprocess_korean(text) for text in texts]
         res = self.call_fn(texts)
         if res.status_code == 200:
             res_json = res.json()
@@ -330,3 +332,13 @@ if __name__ == "__main__":
     print("#### response:")
     print(response)
 
+    text = "무하지룬(Muhajirun, المهاجرون‎)은 헤지라 때"
+    response = list(ap.record([text]))
+    print("#### response:")
+    print(response)
+    
+
+    text = "Bork는 러시아의 가전 ​​제품 제조 회사이자"
+    response = list(ap.record([text]))
+    print("#### response:")
+    print(response)
