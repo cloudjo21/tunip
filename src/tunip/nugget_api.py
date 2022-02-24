@@ -48,7 +48,7 @@ class Nugget:
             # if self.row_count == 11:
             #     break
 
-            chunks.append(text)
+            chunks.append(preprocess_korean(text))
 
             if self.row_count % self.chunk_size == 0:
                 res = self.call_fn(chunks)
@@ -122,7 +122,7 @@ class Nugget:
             # if self.row_count == 11:
             #     break
 
-            chunks.append(record.text)
+            chunks.append(preprocess_korean(record.text))
             # chunks.append(text)
 
             if self.row_count % self.chunk_size == 0:
