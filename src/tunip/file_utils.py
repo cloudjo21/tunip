@@ -80,8 +80,8 @@ class HdfsFileHandler(FileHandler):
     def mkdirs(self, path):
         self.client.makedirs(path)
 
-    def write(self, path, contents, encoding='utf-8'):
-        self.client.write(path, data=contents, encoding=encoding)
+    def write(self, path, contents, encoding='utf-8', append=False):
+        self.client.write(path, data=contents, encoding=encoding, append=append)
 
     def exist(self, path):
         return self.client.status(path, strict=False)
@@ -127,9 +127,10 @@ class LocalFileHandler(FileHandler):
         dir_path = self.local_path_builder.build(path)
         Path(dir_path).mkdir(parents=True, exist_ok=True)
     
-    def write(self, path, contents):
+    def write(self, path, contents, append=False):
         file_path = self.local_path_builder.build(path)
-        with open(file_path, mode="w", encoding="utf-8") as f:
+        mode="w+" if append else "w"
+        with open(file_path, mode=mode, encoding="utf-8") as f:
             f.write(contents)
     
     def save_pickle(self, path: str, contents: object):
