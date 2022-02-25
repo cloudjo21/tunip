@@ -51,3 +51,20 @@ class FileUtilsTest(unittest.TestCase):
             assert '히로시마 고속 교통'.replace(' ', SPACE) in new_trie
 
             self.hdfs_handler.client.delete('/user/nauts/test/warehouse/entity_trie/knowledge-entity/finance/20220121_114321_612360', recursive=True, skip_trash=True)
+            
+    def test_hdfs_handler_write(self):
+        output_path = "/user/nauts/test1.txt"
+        append = True if self.hdfs_handler.exist(output_path) else False
+        self.hdfs_handler.write(output_path, "test", append=append)
+
+        assert self.hdfs_handler.exist(output_path)
+        
+        self.hdfs_handler.client.delete(output_path)
+        
+    def test_local_handler_write(self):
+        output_path = "test1.txt"
+        
+        append = True if self.local_handler.exist(Path(self.local_handler.local_path_builder.build(output_path))) else False
+        self.local_handler.write(Path(output_path), "test\n", append=append)
+
+        assert self.local_handler.exist(Path(self.local_handler.local_path_builder.build(output_path)))

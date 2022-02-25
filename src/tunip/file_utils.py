@@ -129,7 +129,7 @@ class LocalFileHandler(FileHandler):
     
     def write(self, path, contents, append=False):
         file_path = self.local_path_builder.build(path)
-        mode="w+" if append else "w"
+        mode="a+" if append else "w"
         with open(file_path, mode=mode, encoding="utf-8") as f:
             f.write(contents)
     
