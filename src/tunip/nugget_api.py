@@ -333,12 +333,21 @@ if __name__ == "__main__":
     print(response)
 
     text = "무하지룬(Muhajirun, المهاجرون‎)은 헤지라 때"
+    expect = "무하지룬(Muhajirun, )은 헤지라 때"
     response = list(ap.record([text]))
     print("#### response:")
     print(response)
+    assert response[0]['text'] == expect
+    surfaces = [t[3] for t in response[0]['tokens']]
+    assert 'المهاجرون' not in surfaces
+    assert '\u200e' not in surfaces
     
 
     text = "Bork는 러시아의 가전 ​​제품 제조 회사이자"
+    expect = "Bork는 러시아의 가전 제품 제조 회사이자"
     response = list(ap.record([text]))
     print("#### response:")
     print(response)
+    assert response[0]['text'] == expect
+    surfaces = [t[3] for t in response[0]['tokens']]
+    assert '\u200b\u200b' not in surfaces
