@@ -227,6 +227,11 @@ class LocalFileHandler(FileHandler):
         mode="a+" if append else "w"
         with open(file_path, mode=mode, encoding=encoding) as f:
             f.write(contents)
+            
+    def write_binary(self, path, contents):
+        file_path = self.local_path_builder.build(path)
+        with open(file_path, mode='wb') as f:
+            f.write(contents)
     
     def save_pickle(self, path: str, contents: object):
         file_path = self.local_path_builder.build(path)
