@@ -1,12 +1,17 @@
-from pathlib import Path
+import requests
 import unittest
 
-from tunip.yaml_loader import YamlLoader
-from tunip.service_config import get_service_config
-from tunip.logger import init_logging_handler_for_klass
-from tunip.es_utils import iterate_all_documents
-
 from elasticsearch import Elasticsearch
+from pathlib import Path
+
+from tunip.es_utils import (
+    iterate_all_documents,
+    search_query_ids,
+    search_query_match
+)
+from tunip.logger import init_logging_handler_for_klass
+from tunip.service_config import get_service_config
+from tunip.yaml_loader import YamlLoader
 
 
 class EsUtilsTest(unittest.TestCase):
@@ -62,6 +67,30 @@ class EsUtilsTest(unittest.TestCase):
             if cnt > 10:
                 break
 
+    def test_search_by_fields(self):
+        with requests.Session() as req_session:
+            response = search_query_match(
+                req_session,
+                host=self.elastic_host.split(":")[0],
+                port=self.elastic_host.split(":")[1],
+                index="kowiki_fulltext_anchor",
+                items={"_id": "936559"}
+            )
+            assert response["hits"]["hits"][0]['_source']
+
+    def test_search_query_ids(self):
+        with requests.Session() as req_session:
+            response = search_query_ids(
+                req_session,
+                host=self.elastic_host.split(":")[0],
+                port=self.elastic_host.split(":")[1],
+                index="kowiki_fulltext_anchor",
+                ids=["936559"]
+            )
+            assert len(response["hits"]["hits"]) > 0
+
+    def tearDown(self):
+        self.es.close()
 
 if __name__ == "__main__":
     unittest.main()
