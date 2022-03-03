@@ -4,10 +4,11 @@ import time
 from typing import Union
 
 from urllib.parse import urlparse, urlencode
+from urllib.request import urlopen
 
 from tunip.corpus_utils import get_text_generator_from_file, get_corpus_records
 from tunip.logger import init_logging_handler_for_klass
-
+from tunip.preprocess import preprocess_korean
 from tunip.nugget_utils import strip_spaces
 
 class Nugget:
@@ -50,7 +51,7 @@ class Nugget:
             # if self.row_count == 11:
             #     break
 
-            chunks.append(text)
+            chunks.append(preprocess_korean(text))
 
             if self.row_count % self.chunk_size == 0:
                 res = self.call_fn(chunks)
@@ -124,7 +125,7 @@ class Nugget:
             # if self.row_count == 11:
             #     break
 
-            chunks.append(record.text)
+            chunks.append(preprocess_korean(record.text))
             # chunks.append(text)
 
             if self.row_count % self.chunk_size == 0:
@@ -185,6 +186,7 @@ class Nugget:
 
 
     def record(self, texts):
+        texts = [preprocess_korean(text) for text in texts]
         res = self.call_fn(texts)
         if res.status_code == 200:
             res_json = res.json()
@@ -333,3 +335,22 @@ if __name__ == "__main__":
     print("#### response:")
     print(response)
 
+    text = "무하지룬(Muhajirun, المهاجرون‎)은 헤지라 때"
+    expect = "무하지룬(Muhajirun, )은 헤지라 때"
+    response = list(ap.record([text]))
+    print("#### response:")
+    print(response)
+    assert response[0]['text'] == expect
+    surfaces = [t[3] for t in response[0]['tokens']]
+    assert 'المهاجرون' not in surfaces
+    assert '\u200e' not in surfaces
+    
+
+    text = "Bork는 러시아의 가전 ​​제품 제조 회사이자"
+    expect = "Bork는 러시아의 가전 제품 제조 회사이자"
+    response = list(ap.record([text]))
+    print("#### response:")
+    print(response)
+    assert response[0]['text'] == expect
+    surfaces = [t[3] for t in response[0]['tokens']]
+    assert '\u200b\u200b' not in surfaces
