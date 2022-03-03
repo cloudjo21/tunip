@@ -45,3 +45,37 @@ def iterate_all_documents(es, index, logger, pagesize=250, scroll_timeout="1m", 
             yield from (hit for hit in hits)
         else:
             yield from (hit[hit_value] for hit in hits)
+
+
+import json
+def search_query_match(req_session, host, port, index, items, timeout=3):
+    
+    headers = {'Content-Type': 'application/json; charset=utf-8'}
+    body = {
+        "query": {
+            "match": {
+                None
+            }
+        }
+    }
+    body["query"]["match"] = items
+    response = req_session.post(
+        f"http://{host}:{port}/{index}/_search",
+        data=json.dumps(body),
+        headers=headers,
+        timeout=timeout
+    )
+    text = response.text
+    return json.loads(text)
+
+
+def search_query_ids(req_session, host, port, index, ids, timeout=3):
+    headers = {'Content-Type': 'application/json; charset=utf-8'}
+    body = {"query": {"ids": {"values": ids}}}
+    response = req_session.post(
+        f"http://{host}:{port}/{index}/_search",
+        data=json.dumps(body),
+        headers=headers,
+        timeout=timeout
+    )
+    return json.loads(response.text)

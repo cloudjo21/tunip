@@ -27,6 +27,9 @@ class Nugget:
         self.row_count = 0
         self.use_inflect = use_inflect
 
+    def __del__(self):
+        self.req_session.close()
+
     def __call__(self, texts: Union[list, str]):
         if isinstance(texts, str):
             texts = [texts]
