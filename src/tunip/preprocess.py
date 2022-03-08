@@ -100,15 +100,40 @@ prohibit_char_codes = get_codes_from_ranges([
 valid_char_codes = "".join([chr(c) for c in candi_char_codes if not any([c in p_codes for p_codes in prohibit_char_codes])])
 
 pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}{valid_char_codes}]+')
+strict_pattern4korean = re.compile(f'[\x00-\x7Fㄱ-ㅣ가-힣]+')
 # pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}]+')
 url_pattern = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)')
 
 
-def preprocess_korean(text):
-    text = pattern4korean.sub('', text)
+def preprocess_korean(text, strict=False):
+    if strict is False:
+        text = pattern4korean.sub('', text)
+    else:
+        text = strict_pattern4korean.sub('', text)
     text = url_pattern.sub('', text)
     text = text.strip()
     return text
+
+
+def preprocess_tokens(nugget_entries, white_tags=[]):
+
+    token_entries_updated = []
+    for ent in nugget_entries:
+        b_offset = 0
+        l_offset = 0
+        tokens = []
+        for e in ent['tokens']:
+            if e[2] not in white_tags:
+                b_offset = e[0]
+            else:
+                e[0] = e[0] - b_offset + l_offset
+                e[1] = e[1] - b_offset + l_offset
+                l_offset = e[1]-1
+                tokens.append(e)
+        token_entries_updated.append(tokens)
+
+    return token_entries_updated
+
 
 # text = 'Ç∀Twitch Plays Pokémon/시즌 1/2주차おぉ'
 # preprocessed = preprocess_korean(text)
