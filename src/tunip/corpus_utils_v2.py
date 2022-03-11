@@ -28,6 +28,12 @@ class CorpusToken(BaseModel):
     surface: str
 
 
+class CorpusTokenOnly(BaseModel):
+    start: int
+    end: int
+    surface: str
+
+
 class CorpusInput(BaseModel):
     text: str
     labels: Optional[List[CorpusSeqLabel]] = None

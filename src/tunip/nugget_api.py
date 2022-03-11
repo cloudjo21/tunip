@@ -1,15 +1,50 @@
 import json
 import requests
 import time
+
+from enum import Enum
 from typing import Union
 
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen
 
 from tunip.corpus_utils import get_text_generator_from_file, get_corpus_records
+from tunip.corpus_utils_v2 import CorpusToken, CorpusTokenOnly
 from tunip.logger import init_logging_handler_for_klass
-from tunip.preprocess import preprocess_korean
 from tunip.nugget_utils import strip_spaces
+from tunip.preprocess import preprocess_korean, preprocess_tokens
+
+
+class NuggetFilterResultFormat(Enum):
+    ALL = 0
+    LEX = 1
+    B_E_LEX = 2
+    NUGGET = 3
+    NUGGET_B_E_LEX = 4
+
+
+class NotSupportNuggetFilterResultFormat(Exception):
+    pass
+
+
+class NuggetFilterToolsFactory:
+
+    @classmethod
+    def create(cls, result_format, nugget_api_obj):
+        if result_format == NuggetFilterResultFormat.NUGGET:
+            nugget_cls = CorpusToken
+            return_nugget_func = nugget_api_obj._return_nugget
+        elif result_format == NuggetFilterResultFormat.B_E_LEX:
+            nugget_cls = None
+            return_nugget_func = nugget_api_obj._return_b_e_lex
+        elif result_format == NuggetFilterResultFormat.NUGGET_B_E_LEX:
+            nugget_cls = CorpusTokenOnly
+            return_nugget_func = nugget_api_obj._return_b_e_lex
+        else:
+            raise NotSupportNuggetFilterResultFormat(result_format)
+
+        return nugget_cls, return_nugget_func
+
 
 class Nugget:
     """
@@ -256,6 +291,24 @@ class Nugget:
             return entry
         else:
             return None
+    
+    def filter(self, nuggets, white_tags=[], result_format=NuggetFilterResultFormat.ALL):
+        nugget_cls, return_nugget_func = NuggetFilterToolsFactory.create(result_format, self)
+
+        nugget_tokens = []
+        for tokens in preprocess_tokens(list(nuggets), white_tags=white_tags):
+            nugget_tokens.append([return_nugget_func(n, nugget_cls) for n in tokens])
+
+        return nugget_tokens
+
+    def _return_nugget(self, nugget, nugget_cls):
+        return nugget_cls(**{key: nugget[i] for i, key in enumerate(nugget_cls.__fields__.keys())})
+
+    def _return_nugget_b_e_lex(self, nugget, nugget_cls):
+        return CorpusTokenOnly(start=nugget[0],end=nugget[1], surface=nugget[3])
+
+    def _return_b_e_lex(self, nugget, nugget_cls):
+        return [nugget[0], nugget[1], nugget[3]]
 
     def test_call_seunjeon(self):
         params = urlencode(
