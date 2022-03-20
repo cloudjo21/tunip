@@ -1,10 +1,10 @@
-from datasets import load_metric
+#from datasets import load_metric
 
 from tunip.env import NAUTS_HOME
 
 
-TOKEN_CLASSIFICATION_METRIC = load_metric(f"{NAUTS_HOME}/ner/metrics/iob_seq_scores.py")
-SEQUENCE_CLASSIFICATION_METRIC = load_metric(f"{NAUTS_HOME}/ner/metrics/label_only_scores.py")
+# TOKEN_CLASSIFICATION_METRIC = load_metric(f"{NAUTS_HOME}/ner/metrics/iob_seq_scores.py")
+# SEQUENCE_CLASSIFICATION_METRIC = load_metric(f"{NAUTS_HOME}/ner/metrics/label_only_scores.py")
 # TODO
 # QUESTION_ANSWERING_METRIC = load_metric("")
 
