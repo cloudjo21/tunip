@@ -10,7 +10,7 @@ pandas
 pyarrow
 pydantic
 pyspark==2.3.2
-python-Levenshetein
+python-Levenshtein
 pyyaml
 seqeval
 sklearn
