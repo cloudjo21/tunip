@@ -131,3 +131,43 @@ class LakeSerpTextKeywordDomainSnapshotPath(LakeSerpTextKeywordDomainPath):
         return LakeSerpTextKeywordDomainSnapshotPath(
             parent.user_name, parent.domain_name, snapshot_dt
         )
+
+
+class LakeSerpQueryStatPath(LakeSerpPath):
+    def __init__(self, user_name):
+        super(LakeSerpQueryStatPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/query/stat"
+
+
+class LakeSerpQueryStatDomainPath(LakeSerpQueryStatPath):
+    def __init__(self, user_name, domain_name):
+        super(LakeSerpQueryStatDomainPath, self).__init__(user_name)
+        self.domain_name = domain_name
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class LakeSerpQueryStatDomainSnapshotPath(LakeSerpQueryStatDomainPath):
+    def __init__(self, user_name, domain_name, snapshot_dt):
+        super(LakeSerpQueryStatDomainSnapshotPath, self).__init__(
+            user_name, domain_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeSerpQueryStatDomainPath, snapshot_dt: str):
+        return LakeSerpQueryStatDomainSnapshotPath(
+            parent.user_name, parent.domain_name, snapshot_dt
+        )
