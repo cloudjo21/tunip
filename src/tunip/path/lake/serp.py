@@ -142,21 +142,22 @@ class LakeSerpQueryStatPath(LakeSerpPath):
 
 
 class LakeSerpQueryStatDomainPath(LakeSerpQueryStatPath):
-    def __init__(self, user_name, domain_name):
+    def __init__(self, user_name, entity_type, domain_name):
         super(LakeSerpQueryStatDomainPath, self).__init__(user_name)
         self.domain_name = domain_name
+        self.entity_type = entity_type
 
     def __repr__(self):
-        return f"{super().__repr__()}/{self.domain_name}"
+        return f"{super().__repr__()}/{self.entity_type}/{self.domain_name}"
 
     def has_snapshot(self):
         return True
 
 
 class LakeSerpQueryStatDomainSnapshotPath(LakeSerpQueryStatDomainPath):
-    def __init__(self, user_name, domain_name, snapshot_dt):
+    def __init__(self, user_name, entity_type, domain_name, snapshot_dt):
         super(LakeSerpQueryStatDomainSnapshotPath, self).__init__(
-            user_name, domain_name
+            user_name, entity_type, domain_name
         )
         self.snapshot_dt = snapshot_dt
 
@@ -169,5 +170,5 @@ class LakeSerpQueryStatDomainSnapshotPath(LakeSerpQueryStatDomainPath):
     @classmethod
     def from_parent(cls, parent: LakeSerpQueryStatDomainPath, snapshot_dt: str):
         return LakeSerpQueryStatDomainSnapshotPath(
-            parent.user_name, parent.domain_name, snapshot_dt
+            parent.user_name, parent.entity_type, parent.domain_name, snapshot_dt
         )
