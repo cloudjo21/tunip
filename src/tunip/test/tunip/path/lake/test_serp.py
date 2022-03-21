@@ -6,8 +6,7 @@ from tunip.path.lake.serp import (
     LakeSerpQueryEntityDomainSnapshotPath,
     LakeSerpQueryKeywordDomainPath,
     LakeSerpQueryKeywordDomainSnapshotPath,
-    LakeSerpQueryStatDomainPath,
-    LakeSerpQueryStatDomainSnapshotPath,
+    LakeSerpQueryStatDomainPath
 )
 from tunip.service_config import get_service_config
 from tunip.snapshot_utils import SnapshotPathProvider
@@ -33,6 +32,7 @@ class SerpTest(unittest.TestCase):
         # stat_path = f'/user/nauts/lake/serp/query/stat/{domain_name}'
         stat_path = LakeSerpQueryStatDomainPath(
             user_name='nauts',
+            entity_type='entity',
             domain_name=domain_name
         )
 
@@ -40,5 +40,5 @@ class SerpTest(unittest.TestCase):
         try:
             stat_snapshot_path = snapshot_path.latest(stat_path, force_fs='HDFS')
             assert stat_snapshot_path
-        except hdsf.util.HdfsError as he:
+        except hdfs.util.HdfsError as he:
             pass
