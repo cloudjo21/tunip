@@ -172,3 +172,126 @@ class LakeSerpQueryStatDomainSnapshotPath(LakeSerpQueryStatDomainPath):
         return LakeSerpQueryStatDomainSnapshotPath(
             parent.user_name, parent.entity_type, parent.domain_name, snapshot_dt
         )
+
+
+class LakeSerpContentsPath(LakeSerpPath):
+    def __init__(self, user_name):
+        super(LakeSerpContentsPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/contents"
+
+
+class LakeSerpContentsDomainPath(LakeSerpContentsPath):
+    def __init__(self, user_name, entity_type, domain_name):
+        super(LakeSerpContentsDomainPath, self).__init__(user_name)
+        self.domain_name = domain_name
+        self.entity_type = entity_type
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.entity_type}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class LakeSerpContentsDomainSnapshotPath(LakeSerpContentsDomainPath):
+    def __init__(self, user_name, entity_type, domain_name, snapshot_dt):
+        super(LakeSerpContentsDomainSnapshotPath, self).__init__(
+            user_name, entity_type, domain_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeSerpContentsDomainPath, snapshot_dt: str):
+        return LakeSerpContentsDomainSnapshotPath(
+            parent.user_name, parent.entity_type, parent.domain_name, snapshot_dt
+        )
+
+
+class LakeSerpContentsDetailsPath(LakeSerpPath):
+    def __init__(self, user_name):
+        super(LakeSerpContentsDetailsPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/contents_details"
+
+
+class LakeSerpContentsDetailsDomainPath(LakeSerpContentsDetailsPath):
+    def __init__(self, user_name, entity_type, domain_name):
+        super(LakeSerpContentsDetailsDomainPath, self).__init__(user_name)
+        self.domain_name = domain_name
+        self.entity_type = entity_type
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.entity_type}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class LakeSerpContentsDetailsDomainSnapshotPath(LakeSerpContentsDetailsDomainPath):
+    def __init__(self, user_name, entity_type, domain_name, snapshot_dt):
+        super(LakeSerpContentsDetailsDomainSnapshotPath, self).__init__(
+            user_name, entity_type, domain_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeSerpContentsDetailsDomainPath, snapshot_dt: str):
+        return LakeSerpContentsDetailsDomainSnapshotPath(
+            parent.user_name, parent.entity_type, parent.domain_name, snapshot_dt
+        )
+
+
+class LakeSerpContentsFormatPath(LakeSerpPath):
+    def __init__(self, user_name):
+        super(LakeSerpContentsFormatPath, self).__init__(user_name)
+
+    def __repr__(self):
+        return f"{super().__repr__()}/contents_format"
+
+
+class LakeSerpContentsFormatDomainPath(LakeSerpContentsFormatPath):
+    def __init__(self, user_name, entity_type, domain_name):
+        super(LakeSerpContentsFormatDomainPath, self).__init__(user_name)
+        self.domain_name = domain_name
+        self.entity_type = entity_type
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.entity_type}/{self.domain_name}"
+
+    def has_snapshot(self):
+        return True
+
+
+class LakeSerpContentsFormatDomainSnapshotPath(LakeSerpContentsFormatDomainPath):
+    def __init__(self, user_name, entity_type, domain_name, snapshot_dt):
+        super(LakeSerpContentsFormatDomainSnapshotPath, self).__init__(
+            user_name, entity_type, domain_name
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: LakeSerpContentsFormatDomainPath, snapshot_dt: str):
+        return LakeSerpContentsFormatDomainSnapshotPath(
+            parent.user_name, parent.entity_type, parent.domain_name, snapshot_dt
+        )
