@@ -21,6 +21,7 @@ class SerpTest(unittest.TestCase):
         self.config = get_service_config()
         self.user = self.config.username
         self.domain = "mybank"
+        self.entity_type = "entity"
         self.snapshot = "19701231_000000_000000"
 
     def test_init_serp_query_entity_domain_path(self):
@@ -50,15 +51,15 @@ class SerpTest(unittest.TestCase):
             pass
 
     def test_init_serp_contents_path(self):
-        # serp_contents_domain_path = f'/user/nauts/lake/serp/contents/{domain_name}'
+        # serp_contents_domain_path = f'/user/nauts/lake/serp/contents/{entity_type}/{domain_name}'
         serp_contents_domain_path = LakeSerpContentsDomainPath(
-            self.user, self.domain)
-        # serp_contents_details_domain_path = f'/user/nauts/lake/serp/contents_details/{domain_name}'
+            self.user, self.entity_type, self.domain)
+        # serp_contents_details_domain_path = f'/user/nauts/lake/serp/contents_details/{entity_type}/{domain_name}'
         serp_contents_details_domain_path = LakeSerpContentsDetailsDomainPath(
-            self.user, self.domain)
-        # serp_contents_format_domain_path = f'/user/nauts/lake/serp/contents_format/{domain_name}'
+            self.user, self.entity_type, self.domain)
+        # serp_contents_format_domain_path = f'/user/nauts/lake/serp/contents_format/{entity_type}/{domain_name}'
         serp_contents_format_domain_path = LakeSerpContentsFormatDomainPath(
-            self.user, self.domain)
+            self.user, self.entity_type, self.domain)
 
         assert serp_contents_domain_path.has_snapshot() == True
         assert serp_contents_details_domain_path.has_snapshot() == True
