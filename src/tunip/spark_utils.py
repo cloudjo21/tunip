@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 
+from tunip.service_config import get_service_config
 from tunip.singleton import Singleton
 
 
@@ -16,7 +17,9 @@ class SparkConnector(Singleton):
         return self.getOrCreate()
 
 
-    def getOrCreate(self, local=False):
+    def getOrCreate(self, local=False, servers_path=None, force_service_level=None):
+        service_config = get_service_config(servers_path, force_service_level)
+
         if not local:
             spark = SparkSession.builder.master("yarn").config("spark.submit.deployMode", "client")
         else:
@@ -31,7 +34,7 @@ class SparkConnector(Singleton):
 
         spark.sparkContext._jsc.hadoopConfiguration().set(
             "fs.defaultFS",
-            "hdfs://dev01.ascent.com:8020/user/nauts"  # TODO from config
+            f"{service_config.hdfs_prefix}/user/{service_config.username}"
         )
 
         return spark
