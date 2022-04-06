@@ -7,6 +7,8 @@ from tunip.path.lake.serp import (
     LakeSerpQueryKeywordDomainPath,
     LakeSerpQueryKeywordDomainSnapshotPath,
     LakeSerpQueryStatDomainPath,
+    LakeSerpTextPairDomainPath,
+    LakeSerpTextPairDomainSnapshotPath,
     LakeSerpContentsDomainPath,
     LakeSerpContentsDetailsDomainPath,
     LakeSerpContentsFormatDomainPath
@@ -47,6 +49,22 @@ class SerpTest(unittest.TestCase):
             stat_snapshot_path = snapshot_path.latest(
                 stat_path, force_fs='HDFS')
             assert stat_snapshot_path
+        except hdfs.util.HdfsError as he:
+            pass
+        
+    def test_init_serp_text_pair_path(self):
+        snapshot_path = SnapshotPathProvider(self.config)
+        domain_name = 'cosmetic'
+        # pair_path = f'/user/nauts/lake/serp/text/pair/{domain_name}'
+        pair_path = LakeSerpTextPairDomainPath(
+            user_name='nauts',
+            domain_name=domain_name
+        )
+
+        # with self.assertRaises(hdfs.util.HdfsError):
+        try:
+            pair_snapshot_path = snapshot_path.latest(pair_path, force_fs='HDFS')
+            assert pair_snapshot_path
         except hdfs.util.HdfsError as he:
             pass
 
