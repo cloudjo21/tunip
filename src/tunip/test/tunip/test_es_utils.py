@@ -19,10 +19,16 @@ class EsUtilsTest(unittest.TestCase):
 
     def setUp(self):
         self.service_config = get_service_config()
-        self.elastic_host = "192.168.10.215:9200"
+        self.elastic_host = self.service_config.elastic_host
         self.index = "kowiki_fulltext"
         self.logger = init_logging_handler_for_klass(klass=self.__class__)
-        self.es = Elasticsearch(self.elastic_host)
+        self.es = Elasticsearch(
+            hosts=self.elastic_host,
+            http_auth=(
+                self.service_config.elastic_username,
+                self.service_config.elastic_password
+            )
+        )
 
     def test_init_elastic_client(self):
         es = Elasticsearch(
