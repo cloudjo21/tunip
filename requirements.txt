@@ -2,7 +2,7 @@ bs4
 click==8.0.3
 dataclasses==0.6
 datasets==1.11.0
-elasticsearch
+elasticsearch==7.14.0
 fuzzywuzzy==0.18.0
 hdfs
 numpy
