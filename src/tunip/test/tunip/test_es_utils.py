@@ -18,17 +18,18 @@ from tunip.yaml_loader import YamlLoader
 class EsUtilsTest(unittest.TestCase):
 
     def setUp(self):
-        self.service_config = get_service_config()
-        self.elastic_host = self.service_config.elastic_host
-        self.index = "kowiki_fulltext"
         self.logger = init_logging_handler_for_klass(klass=self.__class__)
+
+        self.service_config = get_service_config()
+        self.index = "kowiki_fulltext"
         self.es = Elasticsearch(
-            hosts=self.elastic_host,
+            hosts=self.service_config.elastic_host,
             http_auth=(
                 self.service_config.elastic_username,
                 self.service_config.elastic_password
             )
         )
+        self.elastic_host = self.service_config.elastic_host.replace("https://", "")
 
     def test_init_elastic_client(self):
         es = Elasticsearch(
