@@ -105,12 +105,12 @@ class ServiceLevelConfig:
 
     @property
     def elastic_host(self):
-        return self.config.get('elastic.host', None)
+        return self.config.get('elastic.host')
 
     @property
     def elastic_username(self):
-        return self.config.get('elastic.username', None)
+        return self.config.get('elastic.username')
 
     @property
     def elastic_password(self):
-        return self.config.get('elastic.password', None)
+        return self.config.get('elastic.password')
