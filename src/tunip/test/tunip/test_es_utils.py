@@ -35,7 +35,7 @@ class EsUtilsTest(unittest.TestCase):
             )
             self.es = Elasticsearch(
                 hosts=self.service_config.elastic_host,
-                http_auth=http_auth
+                http_auth=self.http_auth
             )
             self.user = self.service_config.elastic_username
             self.passwd = self.service_config.elastic_password
