@@ -24,7 +24,7 @@ class EsUtilsTest(unittest.TestCase):
         self.index = "kowiki_fulltext"
         
         try:
-            self.use_https = self.service_config.elastic_host.index('https://')
+            self.use_https = self.service_config.elastic_host.index('https://') > -1
         except ValueError as ve:
             self.use_https = False
 
