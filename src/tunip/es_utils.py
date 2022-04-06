@@ -1,3 +1,4 @@
+import json
 
 from elasticsearch import NotFoundError
 
@@ -47,8 +48,7 @@ def iterate_all_documents(es, index, logger, pagesize=250, scroll_timeout="1m", 
             yield from (hit[hit_value] for hit in hits)
 
 
-import json
-def search_query_match(req_session, host, port, index, items, timeout=3):
+def search_query_match(req_session, host, port, index, items, use_https=True, timeout=3):
     
     headers = {'Content-Type': 'application/json; charset=utf-8'}
     body = {
@@ -59,8 +59,9 @@ def search_query_match(req_session, host, port, index, items, timeout=3):
         }
     }
     body["query"]["match"] = items
+    protocol = 'https://' if use_https else 'http://'
     response = req_session.post(
-        f"http://{host}:{port}/{index}/_search",
+        f"{protocol}{host}:{port}/{index}/_search",
         data=json.dumps(body),
         headers=headers,
         timeout=timeout
@@ -69,11 +70,12 @@ def search_query_match(req_session, host, port, index, items, timeout=3):
     return json.loads(text)
 
 
-def search_query_ids(req_session, host, port, index, ids, timeout=3):
+def search_query_ids(req_session, host, port, index, ids, use_https=True, timeout=3):
     headers = {'Content-Type': 'application/json; charset=utf-8'}
     body = {"query": {"ids": {"values": ids}}}
+    protocol = 'https://' if use_https else 'http://'
     response = req_session.post(
-        f"http://{host}:{port}/{index}/_search",
+        f"{protocol}{host}:{port}/{index}/_search",
         data=json.dumps(body),
         headers=headers,
         timeout=timeout
