@@ -114,3 +114,7 @@ class ServiceLevelConfig:
     @property
     def elastic_password(self):
         return self.config.get('elastic.password')
+
+    @property
+    def has_elastic_http_auth(self):
+        return self.config.get('elastic.username') is not None and self.config.get('elastic.password') is not None

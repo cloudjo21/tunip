@@ -22,21 +22,35 @@ class EsUtilsTest(unittest.TestCase):
 
         self.service_config = get_service_config()
         self.index = "kowiki_fulltext"
-        self.es = Elasticsearch(
-            hosts=self.service_config.elastic_host,
-            http_auth=(
+        
+        try:
+            self.use_https = self.service_config.elastic_host.index('https://')
+        except ValueError as ve:
+            self.use_https = False
+
+        if self.service_config.has_elastic_http_auth:
+            self.http_auth = (
                 self.service_config.elastic_username,
                 self.service_config.elastic_password
             )
-        )
-        self.elastic_host = self.service_config.elastic_host.replace("https://", "")
+            self.es = Elasticsearch(
+                hosts=self.service_config.elastic_host,
+                http_auth=http_auth
+            )
+            self.user = self.service_config.elastic_username
+            self.passwd = self.service_config.elastic_password
+        else:
+            self.es = Elasticsearch(
+                hosts=self.service_config.elastic_host
+            )
+            self.user, self.passwd = None, None
+
+        self.elastic_host = self.service_config.elastic_host.replace("https://", "").replace("http://", "")
 
     def test_init_elastic_client(self):
         es = Elasticsearch(
             hosts=self.service_config.elastic_host,
-            http_auth=(
-                self.service_config.elastic_username, self.service_config.elastic_password
-            )
+            http_auth= self.http_auth if self.service_config.has_elastic_http_auth else None
         )
         assert es is not None
         assert es.indices.exists('kowiki_fulltext')
@@ -92,7 +106,10 @@ class EsUtilsTest(unittest.TestCase):
                 host=self.elastic_host.split(":")[0],
                 port=self.elastic_host.split(":")[1],
                 index="kowiki_fulltext_anchor",
-                items={"_id": "936559"}
+                items={"_id": "936559"},
+                use_https=self.use_https,
+                user=self.user,
+                passwd=self.passwd
             )
             assert response["hits"]["hits"][0]['_source']
 
@@ -103,7 +120,10 @@ class EsUtilsTest(unittest.TestCase):
                 host=self.elastic_host.split(":")[0],
                 port=self.elastic_host.split(":")[1],
                 index="kowiki_fulltext_anchor",
-                ids=["936559"]
+                ids=["936559"],
+                use_https=self.use_https,
+                user=self.user,
+                passwd=self.passwd
             )
             assert len(response["hits"]["hits"]) > 0
 
