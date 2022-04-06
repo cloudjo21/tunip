@@ -8,7 +8,10 @@ from tunip.path.lake.serp import (
     LakeSerpQueryKeywordDomainSnapshotPath,
     LakeSerpQueryStatDomainPath,
     LakeSerpTextPairDomainPath,
-    LakeSerpTextPairDomainSnapshotPath
+    LakeSerpTextPairDomainSnapshotPath,
+    LakeSerpContentsDomainPath,
+    LakeSerpContentsDetailsDomainPath,
+    LakeSerpContentsFormatDomainPath
 )
 from tunip.service_config import get_service_config
 from tunip.snapshot_utils import SnapshotPathProvider
@@ -20,19 +23,16 @@ class SerpTest(unittest.TestCase):
         self.config = get_service_config()
         self.user = self.config.username
         self.domain = "mybank"
+        self.entity_type = "entity"
         self.snapshot = "19701231_000000_000000"
 
     def test_init_serp_query_entity_domain_path(self):
-        serp_query_entity_domain_path = LakeSerpQueryEntityDomainPath(self.user, self.domain)
-        serp_query_entity_snapshot_path = LakeSerpQueryEntityDomainSnapshotPath.from_parent(serp_query_entity_domain_path, self.snapshot)
+        serp_query_entity_domain_path = LakeSerpQueryEntityDomainPath(
+            self.user, self.domain)
+        serp_query_entity_snapshot_path = LakeSerpQueryEntityDomainSnapshotPath.from_parent(
+            serp_query_entity_domain_path, self.snapshot)
         assert serp_query_entity_domain_path.has_snapshot() == True
-        assert serp_query_entity_snapshot_path.has_snapshot() == False 
-        
-    def test_init_serp_text_pair_path_1(self):
-        serp_query_entity_domain_path = LakeSerpQueryEntityDomainPath(self.user, self.domain)
-        serp_query_entity_snapshot_path = LakeSerpQueryEntityDomainSnapshotPath.from_parent(serp_query_entity_domain_path, self.snapshot)
-        assert serp_query_entity_domain_path.has_snapshot() == True
-        assert serp_query_entity_snapshot_path.has_snapshot() == False 
+        assert serp_query_entity_snapshot_path.has_snapshot() == False
 
     def test_init_serp_query_stat_path(self):
         snapshot_path = SnapshotPathProvider(self.config)
@@ -46,7 +46,8 @@ class SerpTest(unittest.TestCase):
 
         # with self.assertRaises(hdfs.util.HdfsError):
         try:
-            stat_snapshot_path = snapshot_path.latest(stat_path, force_fs='HDFS')
+            stat_snapshot_path = snapshot_path.latest(
+                stat_path, force_fs='HDFS')
             assert stat_snapshot_path
         except hdfs.util.HdfsError as he:
             pass
@@ -66,3 +67,18 @@ class SerpTest(unittest.TestCase):
             assert pair_snapshot_path
         except hdfs.util.HdfsError as he:
             pass
+
+    def test_init_serp_contents_path(self):
+        # serp_contents_domain_path = f'/user/nauts/lake/serp/contents/{entity_type}/{domain_name}'
+        serp_contents_domain_path = LakeSerpContentsDomainPath(
+            self.user, self.entity_type, self.domain)
+        # serp_contents_details_domain_path = f'/user/nauts/lake/serp/contents_details/{entity_type}/{domain_name}'
+        serp_contents_details_domain_path = LakeSerpContentsDetailsDomainPath(
+            self.user, self.entity_type, self.domain)
+        # serp_contents_format_domain_path = f'/user/nauts/lake/serp/contents_format/{entity_type}/{domain_name}'
+        serp_contents_format_domain_path = LakeSerpContentsFormatDomainPath(
+            self.user, self.entity_type, self.domain)
+
+        assert serp_contents_domain_path.has_snapshot() == True
+        assert serp_contents_details_domain_path.has_snapshot() == True
+        assert serp_contents_format_domain_path.has_snapshot() == True
