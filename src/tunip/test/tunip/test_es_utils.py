@@ -4,6 +4,7 @@ import unittest
 from elasticsearch import Elasticsearch
 from pathlib import Path
 
+from tunip.config import Config
 from tunip.es_utils import (
     iterate_all_documents,
     search_query_ids,
@@ -22,6 +23,16 @@ class EsUtilsTest(unittest.TestCase):
         self.index = "kowiki_fulltext"
         self.logger = init_logging_handler_for_klass(klass=self.__class__)
         self.es = Elasticsearch(self.elastic_host)
+
+    def test_init_elastic_client(self):
+        es = Elasticsearch(
+            hosts=self.service_config.elastic_host,
+            http_auth=(
+                self.service_config.elastic_username, self.service_config.elastic_password
+            )
+        )
+        assert es is not None
+        assert es.indices.exists('kowiki_fulltext')
 
     def test_iter_all_documents(self):
 
