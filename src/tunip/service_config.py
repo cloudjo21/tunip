@@ -102,3 +102,15 @@ class ServiceLevelConfig:
                 "NO MATCHED FILE SYSTEM: fs of application.json"
             )
         return fs_prefix
+
+    @property
+    def elastic_host(self):
+        return self.config.get('elastic.host', None)
+
+    @property
+    def elastic_username(self):
+        return self.config.get('elastic.username', None)
+
+    @property
+    def elastic_password(self):
+        return self.config.get('elastic.password', None)
