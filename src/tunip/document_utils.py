@@ -13,3 +13,9 @@ class AnchorDocumentRecord(BaseModel):
     parent_text: str
     anchor_title: str
     anchor_text: str
+
+
+class ClannDocumentRecord(BaseModel): 
+    doc_id: int
+    feature: str
+    label: str
