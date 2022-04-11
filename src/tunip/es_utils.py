@@ -1,7 +1,25 @@
 import json
 
+from elasticsearch import Elasticsearch
 from elasticsearch import NotFoundError
 from requests.auth import HTTPBasicAuth 
+
+
+def init_elastic_client(service_config):
+    if service_config.has_elastic_http_auth:
+        http_auth = (
+            service_config.elastic_username,
+            service_config.elastic_password
+        )
+        es = Elasticsearch(
+            hosts=service_config.elastic_host,
+            http_auth=http_auth
+        )
+    else:
+        es = Elasticsearch(
+            hosts=service_config.elastic_host
+        )
+    return es
 
 
 def iterate_all_documents(es, index, logger, pagesize=250, scroll_timeout="1m", hit_value="_source", **kwargs):
