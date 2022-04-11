@@ -6,6 +6,7 @@ from pathlib import Path
 
 from tunip.config import Config
 from tunip.es_utils import (
+    init_elastic_client,
     iterate_all_documents,
     search_query_ids,
     search_query_match
@@ -48,10 +49,7 @@ class EsUtilsTest(unittest.TestCase):
         self.elastic_host = self.service_config.elastic_host.replace("https://", "").replace("http://", "")
 
     def test_init_elastic_client(self):
-        es = Elasticsearch(
-            hosts=self.service_config.elastic_host,
-            http_auth= self.http_auth if self.service_config.has_elastic_http_auth else None
-        )
+        es = init_elastic_client(self.service_config)
         assert es is not None
         assert es.indices.exists('kowiki_fulltext')
 
