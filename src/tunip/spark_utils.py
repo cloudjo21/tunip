@@ -29,7 +29,6 @@ class SparkConnector(Singleton):
             .config("spark.sql.broadcastTimeout", "720000") \
             .config("spark.rpc.lookupTimeout", "600s") \
             .config("spark.network.timeout", "600s") \
-            .config("mapred.output.compress", "false") \
             .getOrCreate()
 
         spark.sparkContext._jsc.hadoopConfiguration().set(
