@@ -100,7 +100,7 @@ prohibit_char_codes = get_codes_from_ranges([
 valid_char_codes = "".join([chr(c) for c in candi_char_codes if not any([c in p_codes for p_codes in prohibit_char_codes])])
 
 pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}{valid_char_codes}]+')
-strict_pattern4korean = re.compile(f'[\x00-\x7Fㄱ-ㅣ가-힣]+')
+strict_pattern4korean = re.compile(f'[^\x00-\x7Fㄱ-ㅣ가-힣]+')
 # pattern4korean = re.compile(f'[^ .,?!/@$%~％·∼()\x00-\x7Fㄱ-ㅣ가-힣{emojis}]+')
 url_pattern = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)')
 
