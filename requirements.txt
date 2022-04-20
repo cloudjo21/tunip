@@ -1,8 +1,9 @@
 bs4
 click==8.0.3
 dataclasses==0.6
-datasets==1.11.0
+datasets
 elasticsearch==7.14.0
+emoji
 fuzzywuzzy==0.18.0
 hdfs
 numpy
@@ -14,6 +15,7 @@ python-Levenshtein
 pyyaml
 seqeval
 sklearn
+smart_open
 spacy==3.2.2
 spacy-conll==3.0.2
 spacy-legacy==3.0.8
