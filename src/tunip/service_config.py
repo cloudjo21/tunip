@@ -1,4 +1,5 @@
 import getpass
+import os
 import socket
 import toml
 
@@ -131,3 +132,13 @@ class ServiceLevelConfig:
             self.config.get("elastic.username") is not None
             and self.config.get("elastic.password") is not None
         )
+
+    @property
+    def deploy_root_path(self):
+        # return self.username
+        my_hostname = os.environ.get('CONTAINER_NAME') or socket.gethostname()
+        if 'CONTAINER_NAME' not in os.environ:
+            deploy_root_path = f"{NAUTS_LOCAL_ROOT}/user/{self.username}/{my_hostname}"
+        else:
+            deploy_root_path = f"/user/{self.username}/{my_hostname}"
+        return deploy_root_path
