@@ -42,7 +42,7 @@ def get_service_config(servers_path=None, force_service_level=None):
             my_server = next(
                 filter(
                     lambda s: "server_type" in s[1] and s[1]["server_type"] == "docker",
-                    a["servers"].items(),
+                    servers_config["servers"].items(),
                 ),
                 ["dev", None],
             )
