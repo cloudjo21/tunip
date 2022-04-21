@@ -43,10 +43,14 @@ class HdfsFileHandler(FileHandler):
         self.webhdfs_port = config.get("hdfs.namenode.http.port") or 50070
         self.webhdfs_host_root = f"webhdfs://{self.hdfs_hostname}:{self.webhdfs_port}"
 
-        self.pa_fs = arrow_fs.HadoopFileSystem(
-            host=config["hdfs.hostname"],
-            port=int(config["hdfs.port"])
-        )
+        try:
+            self.pa_fs = arrow_fs.HadoopFileSystem(
+                host=config["hdfs.hostname"],
+                port=int(config["hdfs.port"])
+            )
+        except OSError:
+            print(f"service_config.filesystem: {config["fs"]}")
+            self.pa_fs = None
 
     def copy_file(self, source, target):
         self.pa_fs.copy_file(source, target)
