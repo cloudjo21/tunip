@@ -34,8 +34,18 @@ def get_service_config(servers_path=None, force_service_level=None):
             filter(
                 lambda server: server[1]["ip"] == local_ip,
                 servers_config["servers"].items(),
-            )
+            ),
+            None,
         )
+        if not my_server:
+            # get service level including server_type=docker or else dev
+            my_server = next(
+                filter(
+                    lambda s: "server_type" in s[1] and s[1]["server_type"] == "docker",
+                    a["servers"].items(),
+                ),
+                ["dev", None],
+            )
     else:
         my_server = [force_service_level]
 
@@ -62,11 +72,11 @@ class ServiceLevelConfig:
 
     @property
     def has_local_fs(self):
-        return self.filesystem.upper() == 'LOCAL'
+        return self.filesystem.upper() == "LOCAL"
 
     @property
     def has_hdfs_fs(self):
-        return self.filesystem.upper() == 'HDFS'
+        return self.filesystem.upper() == "HDFS"
 
     @property
     def username(self):
@@ -105,16 +115,19 @@ class ServiceLevelConfig:
 
     @property
     def elastic_host(self):
-        return self.config.get('elastic.host')
+        return self.config.get("elastic.host")
 
     @property
     def elastic_username(self):
-        return self.config.get('elastic.username')
+        return self.config.get("elastic.username")
 
     @property
     def elastic_password(self):
-        return self.config.get('elastic.password')
+        return self.config.get("elastic.password")
 
     @property
     def has_elastic_http_auth(self):
-        return self.config.get('elastic.username') is not None and self.config.get('elastic.password') is not None
+        return (
+            self.config.get("elastic.username") is not None
+            and self.config.get("elastic.password") is not None
+        )
