@@ -4,7 +4,7 @@
 
 ### Installation for python 3.8
 ```shell
-git clone https://github.com/ascentkorea/tunip.git
+git clone https://bitbucket.org/peterleecodiit/tunip.git
 pip install .
 # or python setup.py install
 ```
