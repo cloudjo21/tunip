@@ -2,7 +2,8 @@ import requests
 
 
 def use_serp_api(word, timeout_time=20):
-    url = "http://ascentkorea.iptime.org:30080/serpapi/search"
+    # TODO use your config
+    url = "http://0.0.0.0:30000/serpapi/search"
     data = {'q': word, 'gl': 'kr',
             'hl': 'ko', 'location': 'South Korea'}
 
