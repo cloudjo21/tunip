@@ -132,6 +132,10 @@ class ServiceLevelConfig:
             self.config.get("elastic.username") is not None
             and self.config.get("elastic.password") is not None
         )
+    
+    @property
+    def elastic_product(self):
+        return self.config.get("elastic.product") or "opensearch"
 
     @property
     def deploy_root_path(self):

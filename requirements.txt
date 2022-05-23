@@ -8,6 +8,8 @@ fuzzywuzzy==0.18.0
 hdfs
 huggingface-hub>=0.1.0,<1.0
 numpy
+opensearch-py
+orjson
 pandas
 pyarrow
 pydantic
@@ -15,7 +17,7 @@ pyspark
 python-Levenshtein
 pyyaml
 seqeval
-sklearn
+# sklearn # install by conda install for M1 Mac
 smart_open
 spacy==3.2.2
 spacy-conll==3.0.2

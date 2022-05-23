@@ -2,7 +2,17 @@ import json
 
 from elasticsearch import Elasticsearch
 from elasticsearch import NotFoundError
+from opensearchpy import OpenSearch
 from requests.auth import HTTPBasicAuth 
+
+from tunip.constants import ELASTICSEARCH_AWS, ELASTICSEARCH_ORIGIN
+
+
+class NotSupportedHttpAuthForElasticsearchProductType(Exception):
+    pass
+
+class NotSupportedElasticsearchProductType(Exception):
+    pass
 
 
 def init_elastic_client(service_config):
@@ -11,14 +21,24 @@ def init_elastic_client(service_config):
             service_config.elastic_username,
             service_config.elastic_password
         )
-        es = Elasticsearch(
-            hosts=service_config.elastic_host,
-            http_auth=http_auth
-        )
+        if service_config.elastic_product == ELASTICSEARCH_ORIGIN:
+            es = Elasticsearch(
+                hosts=service_config.elastic_host,
+                http_auth=http_auth
+            )
+        elif service_config.elastic_product == ELASTICSEARCH_AWS:
+            raise NotSupportedHttpAuthForElasticsearchProductType(f"ElasticsearchProduct: {service_config.elastic_product} doesn't support http auth. yet.")
+        else:
+            raise NotSupportedElasticsearchProductType()
     else:
-        es = Elasticsearch(
-            hosts=service_config.elastic_host
-        )
+        if service_config.elastic_product == ELASTICSEARCH_ORIGIN:
+            es = Elasticsearch(
+                hosts=service_config.elastic_host
+            )
+        elif service_config.elastic_product == ELASTICSEARCH_AWS:
+            es = OpenSearch(
+                hosts=[{'host': service_config.elastic_host}]
+            )
     return es
 
 

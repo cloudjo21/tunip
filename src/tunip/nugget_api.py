@@ -13,6 +13,7 @@ from tunip.corpus_utils_v2 import CorpusToken, CorpusTokenOnly
 from tunip.logger import init_logging_handler_for_klass
 from tunip.nugget_utils import strip_spaces
 from tunip.preprocess import preprocess_korean, preprocess_tokens
+from tunip.service_config import get_service_config
 
 
 class NuggetFilterResultFormat(Enum):
@@ -62,6 +63,7 @@ class Nugget:
         self.call_fn = self.get if self.method.lower() == "get" else self.post
         self.row_count = 0
         self.use_inflect = use_inflect
+        self.nugget_host = get_service_config().config['nugget.host']
 
     def __del__(self):
         self.req_session.close()
@@ -262,14 +264,14 @@ class Nugget:
             # "splitSentence": False
         }
         res = self.req_session.post(
-            url="http://ascentkorea.iptime.org:31019/tagging/bulk", json=body
+            url=f"{self.nugget_host}/tagging/bulk", json=body
         )
         return res
 
     def get(self, text):
         params = urlencode({"tagger_type": self.tagger_type, "text": text, "use_inflect": self.use_inflect})
         res = self.req_session.get(
-            url=f"http://ascentkorea.iptime.org:31019/tagging?{params}"
+            url=f"{self.nugget_host}/tagging?{params}"
         )
         if res.status_code == 200:
             res_json = res.json()
@@ -319,7 +321,7 @@ class Nugget:
         )
         print(params)
         res = self.req_session.get(
-            url=f"http://ascentkorea.iptime.org:31019/tagging?{params}"
+            url=f"{self.nugget_host}/tagging?{params}"
         )
         if res.status_code == 200:
             res_json = res.json()
@@ -334,7 +336,7 @@ class Nugget:
         )
         print(params)
         res = self.req_session.get(
-            url=f"http://ascentkorea.iptime.org:31019/tagging?{params}"
+            url=f"{self.nugget_host}/tagging?{params}"
         )
         if res.status_code == 200:
             res_json = res.json()
@@ -363,7 +365,7 @@ class Nugget:
             "useInflect": False,
         }
         res = self.req_session.post(
-            url="http://ascentkorea.iptime.org:31019/tagging/bulk", json=body
+            url=f"{self.nugget_host}/tagging/bulk", json=body
         )
         print(json.dumps(res.json(), indent=4, ensure_ascii=False))
 
