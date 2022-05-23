@@ -37,7 +37,7 @@ def init_elastic_client(service_config):
             )
         elif service_config.elastic_product == ELASTICSEARCH_AWS:
             es = OpenSearch(
-                hosts=[{'host': service_config.elastic_host}]
+                hosts=[service_config.elastic_host]
             )
     return es
 
