@@ -22,7 +22,7 @@ class EsUtilsTest(unittest.TestCase):
         self.logger = init_logging_handler_for_klass(klass=self.__class__)
 
         self.service_config = get_service_config()
-        self.index = "kowiki_fulltext"
+        self.index = "news-2022-v1"
         
         try:
             self.use_https = self.service_config.elastic_host.index('https://') > -1
@@ -46,12 +46,13 @@ class EsUtilsTest(unittest.TestCase):
             )
             self.user, self.passwd = None, None
 
-        self.elastic_host = self.service_config.elastic_host.replace("https://", "").replace("http://", "")
+        # self.elastic_host = self.service_config.elastic_host.replace("https://", "").replace("http://", "")
+        self.elastic_host = self.service_config.elastic_host
 
     def test_init_elastic_client(self):
         es = init_elastic_client(self.service_config)
         assert es is not None
-        assert es.indices.exists('kowiki_fulltext')
+        # assert es.indices.exists(self.index)
 
     def test_iter_all_documents(self):
 
@@ -67,7 +68,7 @@ class EsUtilsTest(unittest.TestCase):
             "size": 250,
             "query": {
                 "match": {
-                    "title_origin": "드래곤"
+                    "title": "생수병"
                 }
             }
         }

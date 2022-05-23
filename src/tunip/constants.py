@@ -37,31 +37,12 @@ SPECIAL_TOKENS = [BOS, EOS, PAD, UNK]
 
 SPECIAL_TOKENS_BERT = [BOS, EOS, PAD, UNK, SEP, CLS, MASK]
 
+SPECIAL_TOKENS_FOR_NSP = [CLS, SEP, SEP]
+PRETRAIN_SENT_SEPARATOR = u'\u2028'
+
 
 DATASET_FAMILIES = ["train", "dev", "test"]
 
-
-# TODO move it to config. for the corresponding task
-entity_black_list = [
-    "CARDINAL",
-    "DATE",
-    "EVENT",
-    "FAC",
-    "GPE",
-    "LANGUAGE",
-    "LAW",
-    "LOC",
-    "MONEY",
-    "NORP",
-    "ORDINAL",
-    "ORG",
-    "PERCENT",
-    "PERSON",
-    # "PRODUCT",
-    "QUANTITY",
-    "TIME",
-    "WORK_OF_ART",
-]
 
 GROUP_SEPARATOR = u"\u241D"
 RECORD_SEPARATOR = u"\u241E"
@@ -69,3 +50,7 @@ UNIT_SEPARATOR = u"\u241F"
 SPACE = u"\u2420"
 
 SAFE_SYMBOLS_FOR_HTTP = "/.+=:&?"
+
+# elasticsearch product type
+ELASTICSEARCH_ORIGIN = 'elasticsearch'
+ELASTICSEARCH_AWS = 'opensearch'
