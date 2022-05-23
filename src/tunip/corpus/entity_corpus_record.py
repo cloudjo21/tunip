@@ -13,6 +13,7 @@ from tunip.corpus_utils import (
     convert_tokenized_inputs_to_corpus_tokens,
     get_corpus_inputs
 )
+from tunip.service_config import get_service_config
 
 
 @dataclass
@@ -114,6 +115,7 @@ class NuggetBasedEntityCorpusRecorder(EntityCorpusRecorder):
         self.call_fn = self._get if self.method.lower() == 'get' else self._post
 
         self.use_inflect = kwargs.get("use_inflect") or False
+        self.elastic_host = get_service_config['elastic.host']
 
 
     def record(
@@ -168,7 +170,7 @@ class NuggetBasedEntityCorpusRecorder(EntityCorpusRecorder):
             "useInflect": self.use_inflect
         }
         res = self.req_session.post(
-            url="http://ascentkorea.iptime.org:31019/tagging/bulk",
+            url=f"{self.elastic_host}/tagging/bulk",
             json=body
         )
         return res
@@ -176,7 +178,7 @@ class NuggetBasedEntityCorpusRecorder(EntityCorpusRecorder):
     def _get(self, text):
         params = urlencode({"tagger_type": self.tagger_type, "text": text, "use_inflect": self.use_inflect})
         res = self.req_session.get(
-            url=f"http://ascentkorea.iptime.org:31019/tagging?{params}"
+            url=f"{self.elastic_host}/tagging?{params}"
         )
         if res.status_code == 200:
             res_json = res.json()
