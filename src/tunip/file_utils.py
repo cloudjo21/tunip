@@ -49,7 +49,7 @@ class HdfsFileHandler(FileHandler):
                 port=int(config["hdfs.port"])
             )
         except OSError:
-            print(f"service_config.filesystem: {config["fs"]}")
+            print(f"service_config.filesystem: {config['fs']}")
             self.pa_fs = None
 
     def copy_file(self, source, target):
