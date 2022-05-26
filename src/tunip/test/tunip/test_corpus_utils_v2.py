@@ -20,5 +20,5 @@ class CorpusUtilsV2Test(unittest.TestCase):
         texts = ['김철수는 오늘도 학교를 간다.']
         corpus_inputs = list(self.nugget(texts))
         new_inputs = [old_nugget_return_to_v2(c) for c in corpus_inputs]
-        print(new_inputs)
         assert new_inputs
+        assert type(new_inputs[0]) == CorpusInput

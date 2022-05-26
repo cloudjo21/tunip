@@ -135,6 +135,23 @@ def preprocess_tokens(nugget_entries, white_tags=[]):
     return token_entries_updated
 
 
+def preprocess_tokens_v2(nugget_records, white_tags=[]):
+    tokens_proc = []
+    for record in nugget_records:
+        s_offset = 0
+        e_offset = 0
+        tokens = []
+        for e in record.tokens:
+            if e.pos not in white_tags:
+                s_offset = e.start
+            else:
+                e.start = e.start - s_offset + e_offset
+                e.end = e.end - s_offset + e_offset
+                e_offset = e.end - 1
+                tokens.append(e)
+        tokens_proc.append(tokens)
+    return tokens_proc
+
 # text = 'Ç∀Twitch Plays Pokémon/시즌 1/2주차おぉ'
 # preprocessed = preprocess_korean(text)
 # print(preprocessed)

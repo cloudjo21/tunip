@@ -12,7 +12,7 @@ def old_nugget_return_to_v2(old_ret):
     for t in old_tokens:
         token = CorpusToken(start=t[0], end=t[1], pos=t[2], surface=t[3])
         tokens.append(token)
-    return CorpusInput(text=old_ret['text'], tokens=tokens)
+    return CorpusInput(text=old_ret['text'], tokens=tokens, labels=old_ret['labels'])
 
 
 class CorpusSeqLabel(BaseModel):
