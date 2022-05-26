@@ -1,4 +1,5 @@
 import json
+import nltk
 import requests
 import time
 
@@ -9,10 +10,10 @@ from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen
 
 from tunip.corpus_utils import get_text_generator_from_file, get_corpus_records
-from tunip.corpus_utils_v2 import CorpusToken, CorpusTokenOnly
+from tunip.corpus_utils_v2 import CorpusToken, CorpusTokenOnly, CorpusRecord, CorpusInput
 from tunip.logger import init_logging_handler_for_klass
 from tunip.nugget_utils import strip_spaces
-from tunip.preprocess import preprocess_korean, preprocess_tokens
+from tunip.preprocess import preprocess_korean, preprocess_tokens, preprocess_tokens_v2
 from tunip.service_config import get_service_config
 
 
@@ -41,6 +42,40 @@ class NuggetFilterToolsFactory:
         elif result_format == NuggetFilterResultFormat.NUGGET_B_E_LEX:
             nugget_cls = CorpusTokenOnly
             return_nugget_func = nugget_api_obj._return_b_e_lex
+        else:
+            raise NotSupportNuggetFilterResultFormat(result_format)
+
+        return nugget_cls, return_nugget_func
+
+
+class NuggetFilter:
+
+    @classmethod
+    def return_nugget(cls, nugget, nugget_cls):
+        return nugget_cls(**{key: nugget[i] for i, key in enumerate(nugget_cls.__fields__.keys())})
+
+    @classmethod
+    def return_nugget_b_e_lex(cls, nugget, nugget_cls):
+        # nugget: CorpusToken
+        return CorpusTokenOnly(start=nugget.start,end=nugget.end, surface=nugget.surface)
+
+    @classmethod
+    def return_b_e_lex(cls, nugget, nugget_cls):
+        return [nugget.start, nugget.end, nugget.surface]
+
+
+class NuggetFilterFuncProvider:
+
+    @classmethod
+    def apply(cls, result_format):
+        if result_format == NuggetFilterResultFormat.NUGGET:
+            nugget_cls = CorpusToken
+            return_nugget_func = NuggetFilter.return_nugget
+
+        elif result_format == NuggetFilterResultFormat.NUGGET_B_E_LEX or result_format == NuggetFilterResultFormat.B_E_LEX:
+            nugget_cls = CorpusTokenOnly
+            return_nugget_func = NuggetFilter.return_nugget_b_e_lex
+
         else:
             raise NotSupportNuggetFilterResultFormat(result_format)
 
@@ -255,6 +290,40 @@ class Nugget:
                 # sents.append(entry)
                 yield entry
 
+
+    def record_v2(self, texts):
+        texts = [preprocess_korean(text) for text in texts]
+        res = self.call_fn(texts)
+        if res.status_code == 200:
+            res_json = res.json()
+
+            for txt, res_sent in zip(texts, res_json["sentences"]):
+                tokens = []
+                for res_token in res_sent["tokens"]:
+                    tokens.append(
+                        CorpusToken.parse_obj(
+                            {'start': res_token['begin'], 'end': res_token['end'], 'pos': res_token['pos'], 'surface': res_token['surface']}
+                        )
+                    )
+                record = CorpusRecord(text=txt, tokens=tokens, labels=res_sent['entities'])
+                yield record
+
+
+    def bigrams(self, texts, white_tags, result_format):
+        res_bigrams = []
+        records_origin = self.record_v2(texts)
+        records = self.filter_v2(
+            nuggets=list(records_origin),
+            white_tags=white_tags,
+            result_format=result_format
+        )
+        # [[['철수','가'], ['밥', '을']], [['영희','가'], ['물', '을']]]
+        for record in records:
+            unigrams = [t.surface for t in record]
+            res_bigrams.append(list(nltk.bigrams(unigrams)))
+        return res_bigrams
+
+
     def post(self, texts):
         body = {
             "taggerType": self.tagger_type,
@@ -299,6 +368,15 @@ class Nugget:
 
         nugget_tokens = []
         for tokens in preprocess_tokens(list(nuggets), white_tags=white_tags):
+            nugget_tokens.append([return_nugget_func(n, nugget_cls) for n in tokens])
+
+        return nugget_tokens
+    
+    def filter_v2(self, nuggets, white_tags=[], result_format=NuggetFilterResultFormat.ALL):
+        nugget_cls, return_nugget_func = NuggetFilterFuncProvider.apply(result_format)
+
+        nugget_tokens = []
+        for tokens in preprocess_tokens_v2(list(nuggets), white_tags=white_tags):
             nugget_tokens.append([return_nugget_func(n, nugget_cls) for n in tokens])
 
         return nugget_tokens
