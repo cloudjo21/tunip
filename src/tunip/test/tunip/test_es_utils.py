@@ -51,8 +51,9 @@ class EsUtilsTest(unittest.TestCase):
 
     def test_init_elastic_client(self):
         es = init_elastic_client(self.service_config)
+        print(self.service_config)
         assert es is not None
-        # assert es.indices.exists(self.index)
+        assert es.indices.exists(self.index)
 
     def test_iter_all_documents(self):
 
