@@ -10,7 +10,7 @@ from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen
 
 from tunip.corpus_utils import get_text_generator_from_file, get_corpus_records
-from tunip.corpus_utils_v2 import CorpusToken, CorpusTokenOnly, CorpusRecord, CorpusInput
+from tunip.corpus_utils_v2 import CorpusToken, CorpusTokenOnly, CorpusRecord, CorpusSeqLabel, CorpusInput
 from tunip.logger import init_logging_handler_for_klass
 from tunip.nugget_utils import strip_spaces
 from tunip.preprocess import preprocess_korean, preprocess_tokens, preprocess_tokens_v2
@@ -299,14 +299,20 @@ class Nugget:
 
             for txt, res_sent in zip(texts, res_json["sentences"]):
                 tokens = []
+                labels = []
                 for res_token in res_sent["tokens"]:
                     tokens.append(
                         CorpusToken.parse_obj(
                             {'start': res_token['begin'], 'end': res_token['end'], 'pos': res_token['pos'], 'surface': res_token['surface']}
                         )
                     )
-                record = CorpusRecord(text=txt, tokens=tokens, labels=res_sent['entities'])
-                yield record
+                for res_label in res_sent['entities']:
+                    labels.append(
+                        CorpusSeqLabel.parse_obj(
+                            {'start': res_label['begin'], 'end': res_label['end'], 'label': res_label['tag']}
+                        )
+                    )
+                yield CorpusRecord(text=txt, tokens=tokens, labels=labels)
 
 
     def bigrams(self, texts, white_tags, result_format):
