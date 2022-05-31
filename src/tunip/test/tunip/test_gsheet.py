@@ -35,3 +35,4 @@ class GSheetTest(unittest.TestCase):
 
         assert float(cells[1][1]) == float(df.iloc[0][1])
         assert float(cells[2][2]) == float(df.iloc[1][2])
+
