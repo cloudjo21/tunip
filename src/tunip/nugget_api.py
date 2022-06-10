@@ -323,11 +323,30 @@ class Nugget:
             white_tags=white_tags,
             result_format=result_format
         )
-        # [[['철수','가'], ['밥', '을']], [['영희','가'], ['물', '을']]]
+        # [['삼성', '전자', '연구소'], ['늘', '푸른', '법률', '사무소']]
+        # res_bigrams: [[('삼성', '전자'), ('전자', '연구소')], [('늘', '푸른'), ('푸른', '법률'), ('법률', '사무소')]]
         for record in records:
             unigrams = [t.surface for t in record]
             res_bigrams.append(list(nltk.bigrams(unigrams)))
         return res_bigrams
+
+
+    def bigrams_also(self, texts, white_tags, result_format):
+        res_bigrams = []
+        res_unigrams = []
+        records_origin = self.record_v2(texts)
+        records = self.filter_v2(
+            nuggets=list(records_origin),
+            white_tags=white_tags,
+            result_format=result_format
+        )
+        # [['삼성', '전자', '연구소'], ['늘', '푸른', '법률', '사무소']]
+        # res_bigrams: [[('삼성', '전자'), ('전자', '연구소')], [('늘', '푸른'), ('푸른', '법률'), ('법률', '사무소')]]
+        for record in records:
+            unigrams = [t.surface for t in record]
+            res_bigrams.append(list(nltk.bigrams(unigrams)))
+            res_unigrams.append(unigrams)
+        return res_bigrams, res_unigrams
 
 
     def post(self, texts):
