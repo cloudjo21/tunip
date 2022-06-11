@@ -95,3 +95,17 @@ class NuggetTest(unittest.TestCase):
             )
         )
         assert nuggets == [[('오늘', '아침'), ('아침', '학교'), ('학교', '가'), ('가', '버스'), ('버스', '안'), ('안', '에서')]]
+
+    def test_bigrams_also_selective_tags(self):
+        text = "오늘 아침 학교 가는 버스안에서\n학교 가자\n지미 카터"
+        white_ptags = {
+            'unigram': ['V', 'N', 'SL', 'SH', 'SN'],
+            'bigram': ['V', 'N', 'J', 'M', 'SL', 'SH', 'SN'],
+        }
+        nugget_bigrams, nugget_unigrams = list(
+            self.nugget.bigrams_also_selective_tags(
+                [text], white_tags_dict=white_ptags
+            )
+        )
+        assert nugget_unigrams == [['아침', '학교', '가', '버스', '안']]
+        assert nugget_bigrams == [[('오늘', '아침'), ('아침', '학교'), ('학교', '가'), ('가', '버스'), ('버스', '안'), ('안', '에서')]]
