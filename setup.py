@@ -6,7 +6,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="tunip",
-    version="0.0.17",
+    version="0.0.18",
     url="https://bitbucket.org/peterleecodiit/tunip.git",
     packages=find_packages("src"),
     package_dir={"tunip": "src/tunip"},

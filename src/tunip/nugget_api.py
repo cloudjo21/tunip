@@ -52,7 +52,8 @@ class NuggetFilter:
 
     @classmethod
     def return_nugget(cls, nugget, nugget_cls):
-        return nugget_cls(**{key: nugget[i] for i, key in enumerate(nugget_cls.__fields__.keys())})
+        return nugget
+        # return nugget_cls(**{key: nugget[i] for i, key in enumerate(nugget_cls.__fields__.keys())})
 
     @classmethod
     def return_nugget_b_e_lex(cls, nugget, nugget_cls):
@@ -348,6 +349,31 @@ class Nugget:
             res_unigrams.append(unigrams)
         return res_bigrams, res_unigrams
 
+    def bigrams_also_selective_tags(self, texts, white_tags_dict: dict):
+        res_bigrams = []
+        res_unigrams = []
+        records_origin = list(self.record_v2(texts))
+        records_bigram = self.filter_v2(
+            nuggets=records_origin,
+            white_tags=white_tags_dict['bigram'],
+            result_format=NuggetFilterResultFormat.NUGGET
+        )
+        records_unigram = self.filter_v2(
+            nuggets=records_origin,
+            white_tags=white_tags_dict['unigram'],
+            result_format=NuggetFilterResultFormat.NUGGET
+        )
+        # [['삼성', '전자', '연구소'], ['늘', '푸른', '법률', '사무소']]
+        # res_bigrams: [[('삼성', '전자'), ('전자', '연구소')], [('늘', '푸른'), ('푸른', '법률'), ('법률', '사무소')]]
+        for record in records_bigram:
+            surfaces = [t.surface for t in record]
+            res_bigrams.append(list(nltk.bigrams(surfaces)))
+
+        for record in records_unigram:
+            surfaces = [t.surface for t in record]
+            res_unigrams.append(surfaces)
+
+        return res_bigrams, res_unigrams
 
     def post(self, texts):
         body = {
@@ -372,7 +398,6 @@ class Nugget:
             tokens = []
             # (start, end, label)
             entities = []
-            print(f"#### {res_json}")
             for res_token in res_json["tokens"]:
                 tokens.append(res_token["surface"])
             for res_token in res_json["entities"]:
