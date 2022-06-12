@@ -1,3 +1,7 @@
+from pkg_resources import get_distribution                                        
+                                                                                  
+__version__ = get_distribution('tunip').version
+
 from .Hangulpy import *
 from .config import *
 from .constants import *
@@ -20,3 +24,4 @@ from .snapshot_utils import *
 from .spark_utils import *
 from .span_utils import *
 from .yaml_loader import *
+
