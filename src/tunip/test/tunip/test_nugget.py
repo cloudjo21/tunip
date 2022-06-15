@@ -1,9 +1,11 @@
+import json
+import re
 import unittest
 from unittest import result
 
+from tunip.Hangulpy import is_hangul
 from tunip.corpus_utils_v2 import CorpusRecord, CorpusToken, CorpusTokenOnly
 from tunip.nugget_api import Nugget, NuggetFilterResultFormat
-
 
 class NuggetTest(unittest.TestCase):
     def setUp(self):
@@ -109,3 +111,26 @@ class NuggetTest(unittest.TestCase):
         )
         assert nugget_unigrams == [['아침', '학교', '가', '버스', '안']]
         assert nugget_bigrams == [[('오늘', '아침'), ('아침', '학교'), ('학교', '가'), ('가', '버스'), ('버스', '안'), ('안', '에서')]]
+
+    def test_bigrams_also_selective_tags_with_preprocess(self):
+        regex_normalize_nums = re.compile('\d+')
+        
+        def preprocess_for_title(text):
+            text = regex_normalize_nums.sub('0', text)
+            text = ' '.join(map(lambda w: ''.join(filter(lambda c: c.isdigit() or is_hangul(c), w)), text.split(' ')))
+            text = re.sub('  ', ' ', text)
+            return text
+
+        text = "카페 반발한 ‘일회용컵 보증금‘…환경장관 “12월 분명히 시행“" 
+        text = preprocess_for_title(text)
+        white_ptags = {
+            'unigram': ['V', 'N', 'SL', 'SH', 'SN'],
+            'bigram': ['V', 'N', 'J', 'M', 'SL', 'SH', 'SN'],
+        }
+        nugget_bigrams, nugget_unigrams = list(
+            self.nugget.bigrams_also_selective_tags(
+                [text], white_tags_dict=white_ptags
+            )
+        )
+        assert nugget_unigrams == [['카페', '반발', '일회용', '컵', '보증금', '환경', '장관', '0', '월', '시행']]
+        assert nugget_bigrams == [[('카페', '반발'), ('반발', '일회용'), ('일회용', '컵'), ('컵', '보증금'), ('보증금', '환경'), ('환경', '장관'), ('장관', '0'), ('0', '월'), ('월', '분명히'), ('분명히', '시행')]]
