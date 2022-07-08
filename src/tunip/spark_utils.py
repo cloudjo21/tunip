@@ -9,12 +9,11 @@ class SparkConnector(Singleton):
     @property
     def session(self):
         # >= spark 3.0
-        # active_session = SparkSession.getActiveSession()
-        # if active_session:
-        #     return active_session
-        # else:
-        #     
-        return self.getOrCreate()
+        active_session = SparkSession.getActiveSession()
+        if active_session:
+            return active_session
+        else:
+            return self.getOrCreate()
 
 
     def getOrCreate(self, local=False, servers_path=None, force_service_level=None):

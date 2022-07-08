@@ -6,11 +6,11 @@ with open("requirements.txt") as f:
 
 setup(
     name="tunip",
-    version="0.0.18",
+    version="0.0.19",
     url="https://bitbucket.org/peterleecodiit/tunip.git",
     packages=find_packages("src"),
     package_dir={"tunip": "src/tunip"},
-    python_requires=">=3.8",
+    python_requires=">=3.6",
     long_description=open("README.md").read(),
     install_requires=required,
 )
