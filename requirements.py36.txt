@@ -19,3 +19,5 @@ spacy-conll==3.0.2
 spacy-legacy==3.0.8
 termcolor
 toml
+pygsheets
+boto3
