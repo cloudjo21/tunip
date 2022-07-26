@@ -243,10 +243,12 @@ class LocalFileHandler(FileHandler):
              pickle.dump(contents, f)
 
     def exist(self, path):
-        return os.path.exists(path)
+        file_path = self.local_path_builder.build(path)
+        return os.path.exists(file_path)
 
     def open(self, path, mode='r'):
-        f = sm_open(path, mode=mode)
+        file_path = self.local_path_builder.build(path)
+        f = sm_open(file_path, mode=mode)
         return f
 
 
