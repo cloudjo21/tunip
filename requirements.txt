@@ -3,10 +3,12 @@ click==8.0.3
 dataclasses==0.6
 datasets
 elasticsearch==7.14.0
-emoji
+emoji==1.7.0
 fuzzywuzzy==0.18.0
 hdfs
 huggingface-hub>=0.1.0,<1.0
+#huggingface-hub==0.0.12
+nltk
 numpy
 opensearch-py
 orjson
