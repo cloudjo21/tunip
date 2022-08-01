@@ -192,10 +192,13 @@ class LocalFileHandler(FileHandler):
         self.local_path_builder = LocalPathProvider(config)
 
     def copy_file(self, source, target):
-        shutil.copyfile(source, target)
+        source_path = self.local_path_builder.build(source)
+        target_path = self.local_path_builder.build(target)
+        shutil.copyfile(source_path, target_path)
     
     def list_dir(self, path):
-        return [str(p.absolute()) for p in Path(path).glob("*")]
+        dir_path = self.local_path_builder.build(path)
+        return [str(p.absolute()) for p in Path(dir_path).glob("*")]
     
     def load(self, path, encoding="utf-8"):
         file_path = self.local_path_builder.build(path)
