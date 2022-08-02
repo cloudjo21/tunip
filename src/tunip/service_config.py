@@ -115,6 +115,19 @@ class ServiceLevelConfig:
         return fs_prefix
 
     @property
+    def filesystem_scheme(self):
+        fs_type = self.filesystem
+        if fs_type == "hdfs":
+            fs_prefix = self.hdfs_prefix
+        elif fs_type == "local":
+            fs_prefix = f"file://{self.local_prefix}"
+        else:
+            raise ServiceConfigException(
+                "NO MATCHED FILE SYSTEM: fs of application.json"
+            )
+        return fs_prefix
+
+    @property
     def elastic_host(self):
         return self.config.get("elastic.host")
 

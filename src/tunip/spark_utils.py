@@ -32,7 +32,7 @@ class SparkConnector(Singleton):
 
         spark.sparkContext._jsc.hadoopConfiguration().set(
             "fs.defaultFS",
-            f"{service_config.hdfs_prefix}/user/{service_config.username}"
+            f"{service_config.filesystem_scheme}/user/{service_config.username}"
         )
 
         return spark
