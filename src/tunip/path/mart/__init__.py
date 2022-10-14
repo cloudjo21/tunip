@@ -57,6 +57,48 @@ class MartCorpusDomainSnapshotPath(MartCorpusDomainPath):
         )
 
 
+class MartCorpusDomainTrainingStepPath(MartCorpusDomainPath):
+    def __init__(self, user_name, task_name, domain_name, training_step):
+        super(MartCorpusDomainTrainingStepPath, self).__init__(user_name, task_name, domain_name)
+        self.training_step = training_step
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.training_step}"
+
+    def has_snapshot(self):
+        return True
+
+    @classmethod
+    def from_parent(cls, parent: MartCorpusDomainPath, training_step: str):
+        return MartCorpusDomainTrainingStepPath(
+            parent.user_name, parent.task_name, parent.domain_name, training_step
+        )
+
+
+class MartCorpusDomainTrainingStepSnapshotPath(MartCorpusDomainTrainingStepPath):
+    def __init__(self, user_name, task_name, domain_name, training_step, snapshot_dt):
+        super(MartCorpusDomainTrainingStepSnapshotPath, self).__init__(
+            user_name, task_name, domain_name, training_step
+        )
+        self.snapshot_dt = snapshot_dt
+
+    def __repr__(self):
+        return f"{super().__repr__()}/{self.snapshot_dt}"
+
+    def has_snapshot(self):
+        return False
+
+    @classmethod
+    def from_parent(cls, parent: MartCorpusDomainTrainingStepPath, snapshot_dt: str):
+        return MartCorpusDomainTrainingStepSnapshotPath(
+            parent.user_name,
+            parent.task_name,
+            parent.domain_name,
+            parent.training_step,
+            snapshot_dt,
+        )
+
+
 class MartPretrainedModelPath(MartPath):
     def __init__(self, user_name, model_name):
         super(MartPretrainedModelPath, self).__init__(user_name)
@@ -78,7 +120,7 @@ class MartPretrainedModelRuntimePath(MartPretrainedModelPath):
 class MartTokenizersPath(MartPath):
     def __init__(self, user_name):
         super(MartTokenizersPath, self).__init__(user_name)
-    
+
     def __repr__(self):
         return f"{super().__repr__()}/tokenizers"
 
@@ -87,7 +129,7 @@ class MartTokenizerPath(MartTokenizersPath):
     def __init__(self, user_name, tokenizer_name):
         super(MartTokenizerPath, self).__init__(user_name)
         self.tokenizer_name = tokenizer_name
-    
+
     def __repr__(self):
         return f"{super().__repr__()}/{self.tokenizer_name}"
 
