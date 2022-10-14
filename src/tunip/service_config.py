@@ -128,6 +128,10 @@ class ServiceLevelConfig:
         return fs_prefix
 
     @property
+    def spark_master(self):
+        return self.config.get("spark.master")
+
+    @property
     def elastic_host(self):
         return self.config.get("elastic.host")
 
