@@ -44,24 +44,20 @@ class NoSnapshotPathException(Exception):
 class SnapshotPathProvider:
     def __init__(self, service_config: ServiceLevelConfig):
         self.config = service_config
-        self.regex_snapshot_dt = re.compile(r'[0-9]{8,}_[0-9]{6}_[0-9]{6}')
+        self.regex_snapshot_dt = re.compile(r"[0-9]{8,}_[0-9]{6}_[0-9]{6}")
 
-    def provide(self, nauts_path: NautsPath, force_fs: Optional[str]=None) -> Optional[list]:
+    def provide(self, nauts_path: NautsPath, force_fs: Optional[str] = None) -> Optional[list]:
         snapshot_paths = None
         filesystem_type = self.config.filesystem.upper() if not force_fs else force_fs
-        file_handler = file_utils.services.get(
-            filesystem_type, config=self.config.config
-        )
+        file_handler = file_utils.services.get(filesystem_type, config=self.config.config)
         if isinstance(nauts_path, Snapshot) and nauts_path.has_snapshot():
             real_path = repr(nauts_path)
-            if filesystem_type == 'LOCAL':
-                real_path = f"{NAUTS_LOCAL_ROOT}{real_path}"
             snapshot_paths = file_handler.list_dir(real_path)
         else:
             raise NotSupportSnapshotException()
         return snapshot_paths
 
-    def latest(self, nauts_path: NautsPath, force_fs: Optional[str]=None) -> Optional[str]:
+    def latest(self, nauts_path: NautsPath, force_fs: Optional[str] = None) -> Optional[str]:
         paths = self.provide(nauts_path, force_fs)
         if paths:
             return paths[-1]
