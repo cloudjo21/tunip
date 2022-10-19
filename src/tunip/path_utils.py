@@ -187,6 +187,16 @@ class HdfsUrlProvider(FileSystemPathProvider):
         return f"/user/{self.hdfs_username}"
 
 
+class GcsUrlProvider(FileSystemPathProvider):
+    def __init__(self, config):
+        self.gcs_username = config.get("gcs.username") or "nauts"
+        self.gcs_bucketname = config.get("gcs.bucketname")
+
+    def build(self, path):
+        file_path = f"{self.gcs_bucketname}{path}"
+        return file_path
+
+
 class LocalPathProvider(FileSystemPathProvider):
     def __init__(self, config):
         self.local_username = config.get("local.username") or "nauts"
@@ -214,6 +224,16 @@ class LocalPathProviderBuilder:
         return self._instance
 
 
+class GcsUrlProviderBuilder:
+    def __init__(self):
+        self._instance = None
+
+    def __call__(self, config):
+        if not self._instance:
+            self._instance = GcsUrlProvider(config)
+        return self._instance
+
+
 class HdfsUrlProviderBuilder:
     def __init__(self):
         self._instance = None
@@ -226,4 +246,5 @@ class HdfsUrlProviderBuilder:
 
 services = PathProviderFactory()
 services.register_builder("HDFS", HdfsUrlProviderBuilder())
+services.register_builder("GCS", GcsUrlProviderBuilder())
 services.register_builder("LOCAL", LocalPathProviderBuilder())

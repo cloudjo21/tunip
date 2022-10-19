@@ -12,8 +12,9 @@ from smart_open import open as sm_open
 from typing import TypeVar
 
 from tunip.constants import SAFE_SYMBOLS_FOR_HTTP
+from tunip.env import NAUTS_HOME
 from tunip.object_factory import ObjectFactory
-from tunip.path_utils import HdfsUrlProvider, LocalPathProvider
+from tunip.path_utils import HdfsUrlProvider, GcsUrlProvider, LocalPathProvider
 
 
 def mapcount(filename):
@@ -187,6 +188,47 @@ class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
         # return downloaded_path
 
 
+class GcsFileHandler(FileHandler):
+    def __init__(self, config):
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = str(Path(NAUTS_HOME) / 'resources' / f"{config.get('gcs.project_id')}.json")
+        self.gcs_url_builder = GcsUrlProvider(config)
+        self.pa_fs = arrow_fs.GcsFileSystem(default_bucket_location=self.gcs_url_builder.gcs_bucketname)
+
+    def copy_file(self, source, target):
+        self.pa_fs.copy_file(source, target)
+
+    def list_dir(self, path):
+        url = self.gcs_url_builder.build(path)
+        file_list = self.pa_fs.get_file_info(arrow_fs.FileSelector(url, recursive=True))
+        # :List[pyarrow.fs.FileInfo]
+        return file_list
+
+    def load(self, path, encoding='utf-8'):
+        url = self.gcs_url_builder.build(path)
+        contents = None
+        with self.pa_fs.open_input_stream(url) as stream:
+            contents = stream.readall()
+        return contents
+
+    def load_pickle(self, path):
+        file_path = self.gcs_url_builder.build(path)
+        with self.pa_fs.open_input_stream(file_path) as reader:
+            bt_contents = reader.read()
+            contents = pickle.load(bt_contents)
+        return contents
+
+    def loads_pickle(self, path):
+        file_path = self.gcs_url_builder.build(path)
+        with self.client.read(file_path) as f:
+            contents = f.read()
+        pkl_obj = pickle.loads(contents)
+        return pkl_obj
+
+    def mkdirs(self, path):
+        file_path = self.gcs_url_builder.build(path)
+        self.pa_fs.create_dir(file_path)
+
+
 class LocalFileHandler(FileHandler):
     def __init__(self, config):
         self.local_path_builder = LocalPathProvider(config)
@@ -274,6 +316,16 @@ class LocalFileHandlerBuilder:
         return self._instance
 
 
+class GcsFileHandlerBuilder:
+    def __init__(self):
+        self._instance = None
+
+    def __call__(self, config):
+        if not self._instance:
+            self._instance = GcsFileHandler(config)
+        return self._instance
+
+
 class HdfsFileHandlerBuilder:
     def __init__(self):
         self._instance = None
@@ -286,4 +338,5 @@ class HdfsFileHandlerBuilder:
 
 services = FileHandlerFactory()
 services.register_builder("HDFS", HdfsFileHandlerBuilder())
+services.register_builder("GCS", GcsFileHandlerBuilder())
 services.register_builder("LOCAL", LocalFileHandlerBuilder())

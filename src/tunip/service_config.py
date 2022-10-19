@@ -80,12 +80,18 @@ class ServiceLevelConfig:
         return self.filesystem.upper() == "HDFS"
 
     @property
+    def has_gcs_fs(self):
+        return self.filesystem.upper() == "GCS"
+
+    @property
     def username(self):
         fs_type = self.filesystem
         if fs_type == "hdfs":
             username = self.config.get("hdfs.username")
         elif fs_type == "local":
             username = self.config.get("local.username")
+        elif fs_type == 'gcs':
+            username = self.config.get("gcs.username")
         else:
             raise ServiceConfigException(
                 "NO MATCHED FILE SYSTEM: fs of application.json"
@@ -102,10 +108,17 @@ class ServiceLevelConfig:
         return NAUTS_LOCAL_ROOT
 
     @property
+    def gcs_prefix(self):
+        gcs_prefix_path = f"{self.config['gcs.protocol']}{self.config['gcs.bucketname']}"
+        return gcs_prefix_path
+
+    @property
     def filesystem_prefix(self):
         fs_type = self.filesystem
         if fs_type == "hdfs":
             fs_prefix = self.hdfs_prefix
+        elif fs_type == "gcs":
+            fs_prefix = self.gcs_prefix
         elif fs_type == "local":
             fs_prefix = self.local_prefix
         else:
@@ -119,6 +132,8 @@ class ServiceLevelConfig:
         fs_type = self.filesystem
         if fs_type == "hdfs":
             fs_prefix = self.hdfs_prefix
+        elif fs_type == "gcs":
+            fs_prefix = self.gcs_prefix
         elif fs_type == "local":
             fs_prefix = f"file://{self.local_prefix}"
         else:
@@ -157,8 +172,9 @@ class ServiceLevelConfig:
     @property
     def deploy_root_path(self):
         my_hostname = os.environ.get('CONTAINER_NAME') or socket.gethostname()
+        dfs_username = self.config.get('hdfs.username') or self.config.get('gcs.username')
         if 'CONTAINER_NAME' not in os.environ:
-            deploy_root_path = f"{NAUTS_LOCAL_ROOT}/user/{self.config.get('hdfs.username')}/{my_hostname}"
+            deploy_root_path = f"{NAUTS_LOCAL_ROOT}/user/{dfs_username}/{my_hostname}"
         else:
-            deploy_root_path = f"/user/{self.config.get('hdfs.username')}/{my_hostname}"
+            deploy_root_path = f"/user/{dfs_username}/{my_hostname}"
         return deploy_root_path
