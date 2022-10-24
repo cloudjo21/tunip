@@ -228,6 +228,11 @@ class GcsFileHandler(FileHandler):
         file_path = self.gcs_url_builder.build(path)
         self.pa_fs.create_dir(file_path)
 
+    def write(self, path, contents, encoding='utf-8', append=False):
+        file_path = self.gcs_url_builder.build(path)
+        with self.pa_fs.open_output_stream(file_path) as writer:
+            writer.write(contents.encode(encoding))
+
 
 class LocalFileHandler(FileHandler):
     def __init__(self, config):
