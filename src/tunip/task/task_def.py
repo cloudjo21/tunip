@@ -1,0 +1,11 @@
+from enum import Enum
+
+
+class TaskType(Enum):
+    TOKEN_CLASSIFICATION = 0
+    SEQUENCE_CLASSIFICATION = 1
+    QUESTION_ANSWERING = 2
+    INVERSE_CLOZE_TASK = 3
+    CAUSAL_LM = 4
+    SEQ2SEQ_LM = 5
+    REGRESSION = 6
