@@ -90,6 +90,10 @@ class ServiceLevelConfig:
         self.available_service_levels = available_service_levels
 
     @property
+    def csp(self):
+        return self.config.get("csp") or None
+
+    @property
     def filesystem(self):
         return self.config.get("fs") or "hdfs"
 
@@ -104,10 +108,14 @@ class ServiceLevelConfig:
     @property
     def has_gcs_fs(self):
         return self.filesystem.upper() == "GCS"
+
+    @property
+    def has_s3_fs(self):
+        return self.filesystem.upper() == "S3"
     
     @property
     def has_dfs(self):
-        return self.has_hdfs_fs or self.has_gcs_fs
+        return self.has_hdfs_fs or self.has_s3_fs or self.has_gcs_fs
 
     @property
     def username(self):
@@ -116,6 +124,8 @@ class ServiceLevelConfig:
             username = self.config.get("hdfs.username")
         elif fs_type == 'gcs':
             username = self.config.get("gcs.username")
+        elif fs_type == 's3':
+            username = self.config.get("s3.username")
         elif fs_type == "local":
             username = self.config.get("local.username")
         else:
@@ -143,12 +153,19 @@ class ServiceLevelConfig:
         return gcs_prefix_path
 
     @property
+    def s3_prefix(self):
+        s3_prefix_path = f"{self.config['s3.protocol']}{self.config['s3.bucketname']}"
+        return s3_prefix_path
+
+    @property
     def filesystem_prefix(self):
         fs_type = self.filesystem
         if fs_type == "hdfs":
             fs_prefix = self.hdfs_prefix
         elif fs_type == "gcs":
             fs_prefix = self.gcs_prefix
+        elif fs_type == "s3":
+            fs_prefix = self.s3_prefix
         elif fs_type == "local":
             fs_prefix = self.local_prefix
         else:
@@ -164,6 +181,8 @@ class ServiceLevelConfig:
             fs_prefix = self.hdfs_prefix
         elif fs_type == "gcs":
             fs_prefix = self.gcs_prefix
+        elif fs_type == "s3":
+            fs_prefix = self.s3_prefix
         elif fs_type == "local":
             fs_prefix = f"file://{self.local_prefix}"
         else:
@@ -229,6 +248,9 @@ class ServiceLevelConfig:
     @property
     def gcs_project_id(self):
         return self.config.get("gcs.project_id") or None
+
+    def access_config(self, key) -> Optional[str]:
+        return self.config.get(key) or None
 
 class ServiceModule:
     def __init__(self, service_config: ServiceLevelConfig):
