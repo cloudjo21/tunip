@@ -42,6 +42,15 @@ def get_service_config(servers_path=None, dev_user=None, force_service_level=Non
                 )
             ]
         )
+        local_users = list(
+            [
+                s[1]["local_username"] for s in filter(
+                    lambda server: server[1]["local_username"],
+                    servers_config["servers"].items(),
+                )
+            ]
+        ) or None
+        dev_user = local_users[0] if local_users else dev_user
         if not my_server:
             # get service level including server_type=docker or else dev
             my_server = next(

@@ -5,11 +5,11 @@ datasets
 elasticsearch==8.6.0
 emoji==1.7.0
 fuzzywuzzy==0.18.0
-gcsfs
+#gcsfs
 hdfs
 huggingface-hub>=0.1.0,<1.0
 #huggingface-hub==0.0.12
-mysqlclient
+#mysqlclient
 nltk
 numpy==1.26.4
 opensearch-py
@@ -18,7 +18,7 @@ pandas==2.1.4
 protobuf==4.25.1
 pyarrow
 pydantic==2.8.2
-pyspark==3.5.0
+pyspark==3.5.3
 python-Levenshtein
 pyyaml
 seqeval
@@ -31,12 +31,12 @@ termcolor
 toml
 pygsheets
 boto3
-google-cloud-storage
-google-cloud-bigquery
-google-cloud-pubsub
+#google-cloud-storage
+#google-cloud-bigquery
+#google-cloud-pubsub
 sqlalchemy
 # sqlalchemy==1.4.50
-sqlalchemy-bigquery
+#sqlalchemy-bigquery
 matplotlib
 urllib3==1.26.13
 pendulum

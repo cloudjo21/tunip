@@ -16,7 +16,7 @@ class AWSConfigLoader(SparkConfigLoader):
 
     def hadoop_config(self) -> dict:
         default_hadoop_config = dict()
-        if service_config.has_s3_fs:
+        if self.service_config.has_s3_fs:
             # YOU CAN ASSIGN CONFIGS
             pass
         return default_hadoop_config
@@ -27,9 +27,8 @@ class AWSConfigLoader(SparkConfigLoader):
             "spark.sql.broadcastTimeout": "720000",
             "spark.rpc.lookupTimeout": "600s",
             "spark.network.timeout": "600s",
-            "spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem",
+            "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
             "spark.jars": SPARK_JARS,
             "viewsEnabled": "true",
         }
         return default_spark_config
-

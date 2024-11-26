@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from tunip.env import NAUTS_HOME
 from tunip.service_config import ServiceLevelConfig
 from tunip.spark import SparkConfigLoader
@@ -18,8 +20,8 @@ class GCPConfigLoader(SparkConfigLoader):
 
     def hadoop_config(self) -> dict:
         default_hadoop_config = dict()
-        if service_config.has_gcs_fs:
-            gcs_keypath = str(Path(NAUTS_HOME) / "resources" / f"{service_config.config.get('gcs.project_id')}.json")
+        if self.service_config.has_gcs_fs:
+            gcs_keypath = str(Path(NAUTS_HOME) / "resources" / f"{self.service_config.config.get('gcs.project_id')}.json")
             default_hadoop_config = {
                 "fs.gs.auth.service.account.enable": "true",
                 "google.cloud.auth.service.account.json.keyfile": gcs_keypath,

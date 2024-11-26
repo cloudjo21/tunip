@@ -5,7 +5,8 @@ from pyspark.sql import SparkSession
 from tunip.env import NAUTS_HOME
 from tunip.service_config import get_service_config
 from tunip.singleton import Singleton
-from tunip.spark import SparkConfigLoader, SparkConfigLoaderFactory
+from tunip.spark import SparkConfigLoader
+from tunip.spark.factory import SparkConfigLoaderFactory
 
 
 class SparkConnector(Singleton):
@@ -52,6 +53,7 @@ class SparkConnector(Singleton):
         spark_conf.setAll(spark_conf_kvs)
         spark = SparkSession.builder.config(conf=spark_conf).getOrCreate()
 
+        # TODO /user -> service_config.root_path
         spark.sparkContext._jsc.hadoopConfiguration().set(
             "fs.defaultFS", f"{service_config.filesystem_scheme}/user/{service_config.username}"
         )
