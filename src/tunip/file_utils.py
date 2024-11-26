@@ -6,7 +6,6 @@ import pyarrow
 import shutil
 import urllib
 
-from gcsfs import GCSFileSystem
 from hdfs import InsecureClient
 from pathlib import Path
 from pyarrow import fs as arrow_fs
@@ -16,7 +15,6 @@ from typing import TypeVar
 
 from tunip.constants import SAFE_SYMBOLS_FOR_HTTP
 from tunip.env import NAUTS_HOME
-from tunip.google_cloud_utils import StorageDriver
 from tunip.object_factory import ObjectFactory
 from tunip.path_utils import HdfsUrlProvider, GcsUrlProvider, LocalPathProvider
 
@@ -204,6 +202,10 @@ class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
 
 class GcsFileHandler(FileHandler):
     def __init__(self, config):
+
+        from gcsfs import GCSFileSystem
+        from tunip.google_cloud_utils import StorageDriver
+
         self.protocol = config['gcs.protocol']
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = str(Path(NAUTS_HOME) / 'resources' / f"{config.get('gcs.project_id')}.json")
         self.gcs_url_builder = GcsUrlProvider(config)
