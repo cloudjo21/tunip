@@ -4,8 +4,8 @@ from tunip.spark import SparkConfigLoader
 
 
 SPARK_JARS = ",".join([
-    f"file:///${NAUTS_HOME}/resources/hadoop-aws-3.3.3.jar",
-    f"file:///${NAUTS_HOME}/resources/aws-java-sdk-bundle-1.11.1026.jar"
+    f"file:///{NAUTS_HOME}/resources/hadoop-aws-3.3.3.jar",
+    f"file:///{NAUTS_HOME}/resources/aws-java-sdk-bundle-1.11.1026.jar"
 ])
 
 
