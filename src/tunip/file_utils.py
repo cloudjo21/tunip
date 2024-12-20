@@ -16,7 +16,8 @@ from typing import TypeVar
 from tunip.constants import SAFE_SYMBOLS_FOR_HTTP
 from tunip.env import NAUTS_HOME
 from tunip.object_factory import ObjectFactory
-from tunip.path_utils import HdfsUrlProvider, GcsUrlProvider, LocalPathProvider
+from tunip.path_utils import HdfsUrlProvider, GcsUrlProvider, S3UrlProvider, LocalPathProvider
+from tunip.service_config import ServiceLevelConfig
 
 
 def mapcount(filename):
@@ -198,6 +199,129 @@ class HttpBasedWebHdfsFileHandler(HdfsFileHandler):
         # NOT WORKING for slash path encoded %2F
         # downloaded_path = self.client.download(hdfs_path=hdfs_path, local_path=local_path, overwrite=overwrite)
         # return downloaded_path
+
+class S3FileHandler(FileHandler):
+    def __init__(self, config: ServiceLevelConfig):
+        from boto3 import client as s3_client
+        self.s3_protocol = config.get("s3.protocol")
+        self.s3_bucketname = config.get("s3.bucketname")
+        self.s3_username = config.get("s3.username") or "nauts"
+        self.pa_fs = arrow_fs.S3FileSystem()
+        self.s3_url_builder = S3UrlProvider(config)
+        self.config = config
+
+        from tunip.aws_utils import StorageDriver
+        self.storage_driver = StorageDriver(config)
+        self.s3_client = self.storage_driver.s3
+
+    def copy_file(self, source, target):
+        self.pa_fs.copy_file(source, target)
+
+    def copy_files(self, source, target):
+        s3_source = self.s3_url_builder.build(source)
+        s3_target = self.s3_url_builder.build(target)
+        arrow_fs.copy_files(s3_source, s3_target, source_filesystem=self.pa_fs, destination_filesystem=self.pa_fs)
+    
+    def list_dir(self, path, prepend_prefix=True):
+        """
+        Return all contents of a given dir in s3.
+        Goes through the pagination to obtain all file names.
+        """
+        delim_tailed_path = path.lstrip("/") if path[-1] == "/" else path.lstrip("/") + "/"
+        paginator = self.s3_client.get_paginator('list_objects_v2')
+        s3_results = paginator.paginate(Bucket=self.s3_bucketname, Prefix=delim_tailed_path, Delimiter="/")
+        paths = []
+        for page in s3_results:
+            common_prefix_dir_path = page.get("CommonPrefixes")
+            if common_prefix_dir_path:
+                for prefix_dir_path in common_prefix_dir_path:
+                    dir_path = prefix_dir_path.get("Prefix")
+                    if dir_path:
+                        if prepend_prefix is True:
+                            paths.append(f"{self.s3_protocol}{self.s3_bucketname}/{dir_path.rstrip('/')}")
+                        else:
+                            paths.append(f"/{dir_path.rstrip('/')}")
+        return paths
+
+    def list_files(self, path, prepend_prefix=True):
+        delim_tailed_path = path.lstrip("/") if path[-1] == "/" else path.lstrip("/") + "/"
+        paginator = self.s3_client.get_paginator('list_objects_v2')
+        s3_results = paginator.paginate(Bucket=self.s3_bucketname, Prefix=delim_tailed_path, Delimiter="/")
+        paths = []
+        for page in s3_results:
+            prefix_dir_path = page.get("Prefix")
+            file_path = prefix_dir_path.get("Prefix")
+            if file_path:
+                if prepend_prefix is True:
+                    paths.append(f"{self.s3_protocol}{self.s3_bucketname}/{file_path}")
+                else:
+                    paths.append(f"/{file_path}")
+        return paths
+
+    def load(self, path, encoding='utf-8'):
+        url = self.s3_url_builder.build(path)
+        contents = None
+        with self.pa_fs.open_input_stream(url) as stream:
+            contents = stream.readall()
+        return contents
+    
+    def load_pickle(self, path):
+        file_path = self.s3_url_builder.build(path)
+        with self.pa_fs.open_input_stream(file_path) as reader:
+            contents = pickle.load(reader)
+        return contents
+
+    def loads_pickle(self, path):
+        file_path = self.s3_url_builder.build(path)
+        with self.pa_fs.open_input_stream(file_path) as reader:
+            contents = reader.read()
+        pkl_obj = pickle.loads(contents)
+        return pkl_obj
+
+    def dumps_pickle(self, path, obj):
+        file_path = self.s3_url_builder.build(path)
+        contents = pickle.dumps(obj)
+        with self.pa_fs.open_output_stream(file_path) as writer:
+            writer.write(contents)
+
+    def mkdirs(self, path):
+        file_path = self.s3_url_builder.build(path)
+        file_info: pyarrow.fs.FileInfo = self.pa_fs.get_file_info(file_path)
+        if file_info.type == pyarrow.fs.FileType.NotFound:
+            self.pa_fs.create_dir(file_path)
+
+    def write(self, path, contents, encoding='utf-8', append=False):
+        file_path = self.s3_url_builder.build(path)
+        with self.pa_fs.open_output_stream(file_path) as writer:
+            writer.write(contents.encode(encoding))
+
+    def remove_dir(self, path, use_nauts_path=True):
+        paginator = self.s3_client.get_paginator('list_objects_v2')
+        objects_to_delete = []
+        delim_tailed_path = path.lstrip("/") if path[-1] == "/" else path.lstrip("/") + "/"
+        for page in paginator.paginate(Bucket=self.s3_bucketname, Prefix=delim_tailed_path):
+            if 'Contents' in page:
+                objects_to_delete.extend([{'Key': obj['Key']} for obj in page['Contents']])
+            
+            if len(objects_to_delete) >= 1000:
+                self.s3_client.delete_objects(Bucket=self.s3_bucketname, Delete={'Objects': objects_to_delete})
+                objects_to_delete = []
+        
+        if objects_to_delete:
+            self.s3_client.delete_objects(Bucket=self.s3_bucketname, Delete={'Objects': objects_to_delete})
+
+    def download(self, path):
+        self.storage_driver.download(path)
+    
+    def transfer_from_local(self, source_local_dirpath, dest_dirpath):
+        self.storage_driver.recursive_copy_from_local(source_local_dirpath, self.s3_url_builder.s3_bucketname, dest_dirpath)
+
+    def transfer_to_local(self, source_dirpath, dest_local_dirpath):
+        """ download files of source path into the local path of destination """
+        self.storage_driver.recursive_copy_to_local(source_dirpath, self.s3_url_builder.s3_bucketname, dest_local_dirpath)
+
+    def copy_file_to_local(self, source_blob_filepath, dest_local_filepath):
+        self.storage_driver.copy_file_to_local(source_blob_filepath, self.s3_url_builder.s3_bucketname, dest_local_filepath)
 
 
 class GcsFileHandler(FileHandler):
@@ -406,7 +530,7 @@ class LocalFileHandler(FileHandler):
         os.rmdir(path)
 
 
-T = TypeVar("T", LocalFileHandler, GcsFileHandler, HdfsFileHandler)
+T = TypeVar("T", LocalFileHandler, GcsFileHandler, S3FileHandler, HdfsFileHandler)
 
 
 class FileHandlerFactory(ObjectFactory):
@@ -438,6 +562,16 @@ class GcsFileHandlerBuilder:
         return self._instance
 
 
+class S3FileHandlerBuilder:
+    def __init__(self):
+        self._instance = None
+
+    def __call__(self, config):
+        if not self._instance:
+            self._instance = S3FileHandler(config)
+        return self._instance
+
+
 class HdfsFileHandlerBuilder:
     def __init__(self):
         self._instance = None
@@ -451,4 +585,5 @@ class HdfsFileHandlerBuilder:
 services = FileHandlerFactory()
 services.register_builder("HDFS", HdfsFileHandlerBuilder())
 services.register_builder("GCS", GcsFileHandlerBuilder())
+services.register_builder("S3", S3FileHandlerBuilder())
 services.register_builder("LOCAL", LocalFileHandlerBuilder())
