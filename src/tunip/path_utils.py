@@ -197,6 +197,16 @@ class GcsUrlProvider(FileSystemPathProvider):
         return file_path
 
 
+class S3UrlProvider(FileSystemPathProvider):
+    def __init__(self, config):
+        self.s3_username = config.get("s3.username") or "nauts"
+        self.s3_bucketname = config.get("s3.bucketname")
+
+    def build(self, path):
+        file_path = f"{self.s3_bucketname}{path}"
+        return file_path
+
+
 class LocalPathProvider(FileSystemPathProvider):
     def __init__(self, config):
         self.local_username = config.get("local.username") or "nauts"
@@ -206,7 +216,7 @@ class LocalPathProvider(FileSystemPathProvider):
         return file_path
 
 
-T = TypeVar("T", LocalPathProvider, GcsUrlProvider, HdfsUrlProvider)
+T = TypeVar("T", LocalPathProvider, GcsUrlProvider, S3UrlProvider, HdfsUrlProvider)
 
 class PathProviderFactory(ObjectFactory):
 
@@ -237,6 +247,16 @@ class GcsUrlProviderBuilder:
         return self._instance
 
 
+class S3UrlProviderBuilder:
+    def __init__(self):
+        self._instance = None
+
+    def __call__(self, config):
+        if not self._instance:
+            self._instance = S3UrlProvider(config)
+        return self._instance
+
+
 class HdfsUrlProviderBuilder:
     def __init__(self):
         self._instance = None
@@ -250,4 +270,5 @@ class HdfsUrlProviderBuilder:
 services = PathProviderFactory()
 services.register_builder("HDFS", HdfsUrlProviderBuilder())
 services.register_builder("GCS", GcsUrlProviderBuilder())
+services.register_builder("S3", S3UrlProviderBuilder())
 services.register_builder("LOCAL", LocalPathProviderBuilder())
