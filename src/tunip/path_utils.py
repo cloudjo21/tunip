@@ -199,11 +199,12 @@ class GcsUrlProvider(FileSystemPathProvider):
 
 class S3UrlProvider(FileSystemPathProvider):
     def __init__(self, config):
-        self.s3_username = config.get("s3.username") or "nauts"
+        self.s3_protocol = config.get("s3.protocol")
         self.s3_bucketname = config.get("s3.bucketname")
 
     def build(self, path):
         file_path = f"{self.s3_bucketname}{path}"
+        # file_path = f"{self.s3_protocol}{self.s3_bucketname}{path}"
         return file_path
 
 
