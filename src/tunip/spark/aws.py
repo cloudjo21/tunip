@@ -29,7 +29,7 @@ class AWSConfigLoader(SparkConfigLoader):
             "spark.network.timeout": "600s",
             "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
             "spark.hadoop.fs.s3a.aws.credentials.provider":"com.amazonaws.auth.DefaultAWSCredentialsProviderChain",
+            "spark.sql.execution.arrow.enabled": "true",
             "spark.jars": SPARK_JARS,
-            "viewsEnabled": "true",
         }
         return default_spark_config

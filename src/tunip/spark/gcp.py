@@ -36,7 +36,7 @@ class GCPConfigLoader(SparkConfigLoader):
             "spark.network.timeout": "600s",
             "spark.hadoop.fs.gs.impl": "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem",
             "spark.jars": SPARK_JARS,
-            "viewsEnabled": "true",
+            "spark.sql.execution.arrow.enabled": "true",
             "materializationDataset": self.service_config.access_config("materializationDataset"),
             "materializationProject": self.service_config.gcs_project_id
         }

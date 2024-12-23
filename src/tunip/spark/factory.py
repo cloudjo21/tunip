@@ -13,7 +13,9 @@ class DummyConfigLoader(SparkConfigLoader):
         return dict()
 
     def spark_config(self) -> dict:
-        return dict()
+        return {
+            "spark.sql.execution.arrow.enabled": "true"
+        }
 
 
 class SparkConfigLoaderFactory:
