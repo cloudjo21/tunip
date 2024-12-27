@@ -8,12 +8,15 @@ class DfsDownloader:
         self.service_config = service_config
         self.file_handler = self._get_file_service(service_config)
 
-    def download(self, path):
+    def download(self, path) -> bool:
         if self.file_handler and not self.service_config.has_local_fs:
             if self.service_config.has_hdfs_fs:
                 self.file_handler.download(path, read_mode='rb', write_mode='wb')
             else:
                 self.file_handler.download(path)
+            return True
+        else:
+            return False
 
     def _get_file_service(self, service_config):
         if service_config.has_local_fs:
