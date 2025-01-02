@@ -168,7 +168,7 @@ class HdfsUrlProvider(FileSystemPathProvider):
         self.hdfs_host_root = f"http://{self.hdfs_hostname}:{self.hdfs_port}"
         self.hdfs_user_root = f"http://{self.hdfs_hostname}:{self.hdfs_port}/user/{self.hdfs_username}"
 
-    def build(self, path):
+    def build(self, path, prepend_protocol=False):
         return path
 
     def build_http(self, path):
@@ -191,9 +191,10 @@ class GcsUrlProvider(FileSystemPathProvider):
     def __init__(self, config):
         self.gcs_username = config.get("gcs.username") or "nauts"
         self.gcs_bucketname = config.get("gcs.bucketname")
+        self.gcs_protocol = config.get("gcs.protocol")
 
-    def build(self, path):
-        file_path = f"{self.gcs_bucketname}{path}"
+    def build(self, path, prepend_protocol=False):
+        file_path = f"{self.gcs_bucketname}{path}" if prepend_protocol is False else f"{self.gcs_protocol}{self.gcs_bucketname}{path}"
         return file_path
 
 
@@ -201,10 +202,10 @@ class S3UrlProvider(FileSystemPathProvider):
     def __init__(self, config):
         self.s3_protocol = config.get("s3.protocol")
         self.s3_bucketname = config.get("s3.bucketname")
+        self.s3_protocol = config.get("s3.protocol")
 
-    def build(self, path):
-        file_path = f"{self.s3_bucketname}{path}"
-        # file_path = f"{self.s3_protocol}{self.s3_bucketname}{path}"
+    def build(self, path, prepend_protocol=False):
+        file_path = f"{self.s3_bucketname}{path}" if prepend_protocol is False else f"{self.s3_protocol}{self.s3_bucketname}{path}"
         return file_path
 
 
@@ -212,7 +213,7 @@ class LocalPathProvider(FileSystemPathProvider):
     def __init__(self, config):
         self.local_username = config.get("local.username") or "nauts"
     
-    def build(self, path):
+    def build(self, path, prepend_protocol=False):
         file_path = f"{NAUTS_LOCAL_ROOT}/{path}"
         return file_path
 
