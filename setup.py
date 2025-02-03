@@ -5,7 +5,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="tunip",
-    version="0.2.3",
+    version="0.2.4",
     url="https://github.com/cloudjo21/tunip.git",
     packages=find_packages("src", exclude=["test*"]),
     package_dir={"tunip": "src/tunip"},
