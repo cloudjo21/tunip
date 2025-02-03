@@ -34,5 +34,5 @@ try:
     from .log_pubsub import *
     from .log_trx import *
 except ImportError:
-    if get_service_config().access_config("cp") != "gcp":
+    if get_service_config().access_config("csp") != "gcp":
         pass
