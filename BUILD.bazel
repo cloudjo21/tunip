@@ -1,0 +1,21 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@aspect_rules_py//py:defs.bzl", "py_library", "py_test")
+
+py_library(
+    name = "setuptools",
+    srcs = glob(["site-packages/setuptools/**/*.py"]),
+    visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "tunip",
+    srcs = glob(
+        ["src/tunip/**/*.py"],
+        exclude = ["src/tunip/test/**/*.py"],
+    ),
+    imports = ["src"],
+    deps = [
+        ":setuptools",
+    ],
+)
