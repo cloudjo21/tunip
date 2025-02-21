@@ -46,6 +46,7 @@ opensearch-py==2.3.2
 orjson==3.10.1
 packaging==24.1
 pandas==2.1.4
+paramiko>=3.5.0
 pendulum==3.0.0
 preshed==3.0.9
 proto-plus==1.23.0
