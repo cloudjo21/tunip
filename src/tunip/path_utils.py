@@ -1,3 +1,5 @@
+import os
+
 from abc import ABC, abstractmethod
 from glob import glob
 from typing import Optional, TypeVar
@@ -214,7 +216,7 @@ class LocalPathProvider(FileSystemPathProvider):
         self.local_username = config.get("local.username") or "nauts"
     
     def build(self, path, prepend_protocol=False):
-        file_path = f"{NAUTS_LOCAL_ROOT}/{path}"
+        file_path = os.path.abspath(f"{NAUTS_LOCAL_ROOT}/{path}")
         return file_path
 
 
