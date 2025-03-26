@@ -12,6 +12,7 @@ huggingface-hub>=0.1.0,<1.0
 #mysqlclient
 nltk
 numpy==1.26.4
+omegaconf
 opensearch-py
 orjson
 pandas==2.1.4
@@ -30,6 +31,7 @@ spacy==3.7.2
 termcolor
 toml
 pygsheets
+antlr4-python3-runtime
 boto3
 #google-cloud-storage
 #google-cloud-bigquery
