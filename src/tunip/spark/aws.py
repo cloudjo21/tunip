@@ -29,6 +29,6 @@ class AWSConfigLoader(SparkConfigLoader):
 
     def _spark_jars(self, home_dir):
         return ",".join([
-            f"${home_dir}/resources/hadoop-aws-3.3.3.jar",
+            f"{home_dir}/resources/hadoop-aws-3.3.3.jar",
             f"{home_dir}/resources/aws-java-sdk-bundle-1.11.1026.jar"
         ])

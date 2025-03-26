@@ -4,12 +4,12 @@ from pyspark.sql import SparkSession
 
 from tunip.env import NAUTS_HOME
 from tunip.service_config import get_service_config
-from tunip.singleton import Singleton
+# from tunip.singleton import Singleton
 from tunip.spark import SparkConfigLoader
 from tunip.spark.factory import SparkConfigLoaderFactory
 
 
-class SparkConnector(Singleton):
+class SparkConnector:
 
     @property
     def session(self):

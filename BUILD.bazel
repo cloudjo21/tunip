@@ -1,6 +1,6 @@
-package(default_visibility = ["//visibility:public"])
-
 load("@aspect_rules_py//py:defs.bzl", "py_library", "py_test")
+
+package(default_visibility = ["//visibility:public"])
 
 py_library(
     name = "setuptools",
