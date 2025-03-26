@@ -1,0 +1,13 @@
+load("@aspect_rules_py//py:defs.bzl", "py_library", "py_test")
+
+package(default_visibility = ["//visibility:public"])
+
+
+py_test(
+  name = "yaml_loader_test",
+  srcs = ["test_yaml_loader.py"],
+  deps = [
+    "//:tunip",
+    "//src/tunip:yaml_loader",
+  ]
+)

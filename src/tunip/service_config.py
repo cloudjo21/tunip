@@ -9,7 +9,11 @@ from typing import Optional
 
 from tunip.config import Config
 from tunip.constants import ELASTICSEARCH_ORIGIN
-from tunip.env import NAUTS_LOCAL_ROOT, NAUTS_HOME
+from tunip.env import DEV, NAUTS_LOCAL_ROOT, NAUTS_HOME, STAGE, PROD
+
+
+class GetResourcePathException(Exception):
+    pass
 
 
 class GetServiceConfigException(Exception):
@@ -20,21 +24,27 @@ class ServiceConfigException(Exception):
     pass
 
 
-def get_service_config(servers_path=None, dev_user=None, force_service_level=None):
-    if not force_service_level:
+def get_service_config(servers_path=None, dev_user=None, force_service_level=None, home_dir=NAUTS_HOME):
+    if force_service_level:
+        my_service_levels = [force_service_level]
+        if servers_path:
+            server_info = servers_config["servers"].get(force_service_level)
+            if server_info:
+                dev_user = server_info.get("local_username", dev_user)
+                my_service_levels = [force_service_level]
+            else:
+                raise GetServiceConfigException(f"Invalid service level: {force_service_level}")
+    else:
         hostname = socket.gethostname()
         local_ip = socket.gethostbyname(hostname)
         servers_config = (
             toml.load(
-                Path(NAUTS_HOME)
-                / "resources"
-                / "servers.toml"
-                # Path(__file__).parent.parent.parent / "resources" / "servers.toml"
+                Path(home_dir) / "resources" / "servers.toml"
+                if servers_path is None
+                else servers_path
             )
-            if servers_path is None
-            else servers_path
         )
-        my_server = list(
+        my_service_levels = list(
             [
                 s[0] for s in filter(
                     lambda server: server[1]["ip"] == local_ip,
@@ -42,7 +52,7 @@ def get_service_config(servers_path=None, dev_user=None, force_service_level=Non
                 )
             ]
         )
-        local_users = list(
+        my_service_usernames = list(
             [
                 s[1]["local_username"] for s in filter(
                     lambda server: server[1]["local_username"],
@@ -50,35 +60,37 @@ def get_service_config(servers_path=None, dev_user=None, force_service_level=Non
                 )
             ]
         ) or None
-        dev_user = local_users[0] if local_users else dev_user
-        if not my_server:
+        dev_user = my_service_usernames[0] if my_service_usernames else dev_user
+        if not my_service_levels:
             # get service level including server_type=docker or else dev
-            my_server = next(
+            my_service_levels = next(
                 filter(
                     lambda s: "server_type" in s[1] and s[1]["server_type"] == "docker",
                     servers_config["servers"].items(),
                 ),
                 ["dev", None],
             )
-    else:
-        my_server = [force_service_level]
 
-    if my_server[0] == "dev":
-        user = getpass.getuser() if dev_user is None else dev_user
-        config_path = (
-            Path(NAUTS_HOME) / "experiments" / user / "resources" / "application.json"
-        )
-        resource_path = Path(NAUTS_HOME) / "experiments" / user / "resources"
-    elif my_server[0] == "stage":
-        config_path = Path(NAUTS_HOME) / "stage" / "resources" / "application.json"
-        resource_path = Path(NAUTS_HOME) / "stage" / "resources"
-    elif my_server[0] == "prod":
-        config_path = Path(NAUTS_HOME) / "resources" / "application.json"
-        resource_path = Path(NAUTS_HOME) / "resources"
-    else:
-        raise GetServiceConfigException()
+    my_service_level = my_service_levels[0]
+    resource_path = get_resource_path(my_service_level, home_dir, dev_user)
+    config_path = (
+        Path(resource_path) / "application.json"
+    )
 
-    return ServiceLevelConfig(config=Config(config_path), resource_path=str(resource_path), service_level=my_server[0], available_service_levels=my_server)
+    return ServiceLevelConfig(config=Config(config_path), resource_path=str(resource_path), service_level=my_service_level, available_service_levels=my_service_levels, home_dir=home_dir)
+
+
+def get_resource_path(env="dev", home_dir=NAUTS_HOME, dev_user=None) -> str:
+    if env == DEV:
+        user = os.environ.get("NAUTS_DEV_USER", getpass.getuser()) if dev_user is None else dev_user
+        resource_path = Path(home_dir) / "experiments" / user / "resources"
+    elif env == STAGE:
+        resource_path = Path(home_dir) / STAGE / "resources"
+    elif env == PROD:
+        resource_path = Path(home_dir) / "resources"
+    else:
+        raise GetResourcePathException()
+    return str(resource_path)
 
 
 class DbConfig(BaseModel):
@@ -92,11 +104,12 @@ class DbConfig(BaseModel):
 
 
 class ServiceLevelConfig:
-    def __init__(self, config: Config, resource_path: Optional[str]=None, service_level: Optional[str]=None, available_service_levels: Optional[list]=None):
+    def __init__(self, config: Config, home_dir: str, resource_path: Optional[str]=None, service_level: Optional[str]=None, available_service_levels: Optional[list]=None):
         self.config = config
         self.resource_path = resource_path
         self.service_level = service_level
         self.available_service_levels = available_service_levels
+        self.home_dir = home_dir
 
     @property
     def csp(self):

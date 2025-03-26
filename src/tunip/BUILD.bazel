@@ -1,0 +1,12 @@
+load("@aspect_rules_py//py:defs.bzl", "py_library", "py_test")
+
+package(default_visibility = ["//visibility:public"])
+
+py_library(
+  name = "yaml_loader",
+  srcs = ["yaml_loader.py"],
+  deps = [
+    "@pip_deps//omegaconf"
+  ]
+)
+

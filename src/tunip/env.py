@@ -8,3 +8,7 @@ TAGGED_JSONL_SUFFIX = ".tjsonl"
 
 JSON_SUFFIX = ".json"
 JSON_GZ_SUFFIX = ".json.gz"
+
+DEV = "dev"
+STAGE = "stage"
+PROD = "prod"

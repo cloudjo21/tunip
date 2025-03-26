@@ -1,6 +1,6 @@
-from pkg_resources import get_distribution                                        
-                                                                                  
-__version__ = get_distribution('tunip').version
+#from pkg_resources import get_distribution                                        
+#                                                                                  
+#__version__ = get_distribution('tunip').version
 
 from .service_config import get_service_config
 
