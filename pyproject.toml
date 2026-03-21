@@ -1,6 +1,6 @@
 [project]
 name = "tunip"
-version = "0.2.5"
+version = "0.3.0"
 description = "tunip"
 readme = "README.md"
 requires-python = ">=3.13.9"
